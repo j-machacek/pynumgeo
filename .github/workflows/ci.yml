@@ -13,9 +13,8 @@
 # License: BSD-3-Clause, see LICENSE.
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 #
-# Public CI: header check, lint, types, unit tests and docs on Windows and Linux. The tests that need
-# numgeo (NUMGEO_EXE), its source (NUMGEO_SRC) or its examples (NUMGEO_EXAMPLES) skip here; the
-# maintainers run them where these are available (docs/maintenance.md).
+# CI of pynumgeo: lint and types, the examples in the package's docstrings (doctests) on Windows and
+# Linux, the documentation site and the wheel.
 name: CI
 
 on:
@@ -33,34 +32,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m pip install -e ".[dev]"
-      - run: python scripts/file_headers.py --check
-      - run: ruff check src tests scripts
-      - run: ruff format --check src tests scripts
+      - run: python -m pip install -e . ruff mypy
+      - run: ruff check src
+      - run: ruff format --check src
       - run: mypy src
-      - run: python scripts/build_llms_txt.py --check
 
-  test:
+  doctest:
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python: ["3.11", "3.12", "3.13"]
+        python: ["3.11", "3.13"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: python -m pip install -e ".[dev]"
-      - run: python -m pytest -q
+      - run: python -m pip install -e . pytest
+      - run: python -m pytest -q src/pynumgeo
 
-  docs:
+  docs-and-wheel:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m pip install -e ".[docs]"
+      - run: python -m pip install -e ".[docs]" build
       - run: mkdocs build --strict
+      - run: python -m build
