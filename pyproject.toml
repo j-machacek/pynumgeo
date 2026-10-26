@@ -1,0 +1,83 @@
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#                                                pynumgeo
+#                              Python API for the finite element code numgeo
+#                                     Copyright (C) 2026 Jan Machacek
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#
+# Author: Jan Machacek
+#
+# pynumgeo writes, checks and runs numgeo input files and reads numgeo results. It follows the
+# development of numgeo: new developments in the numgeo source code are taken over into the API, and a
+# CI pipeline tests every change.
+#
+# License: BSD-3-Clause, see LICENSE.
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pynumgeo"
+dynamic = ["version"]
+description = "Python API for the finite element code numgeo: input decks, validation, runs and results"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Jan Machacek" }]
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.23", "pydantic>=2.5,<3"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: BSD License",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Topic :: Scientific/Engineering",
+  "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+meshio = ["meshio>=5"]
+pandas = ["pandas>=1.5"]
+docs = ["mkdocs-material>=9", "mkdocstrings[python]>=0.24"]
+dev = ["pytest>=7", "pytest-cov", "ruff>=0.5", "mypy>=1.8", "pre-commit", "meshio>=5"]
+
+[project.scripts]
+pynumgeo = "pynumgeo.cli.__main__:main"
+
+[tool.hatch.version]
+path = "src/pynumgeo/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pynumgeo"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/pynumgeo", "README.md", "LICENSE", "pyproject.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "src/pynumgeo"]
+addopts = "--doctest-modules -ra"
+markers = [
+  "solver: needs a numgeo executable (NUMGEO_EXE)",
+  "source: needs a numgeo-src checkout (NUMGEO_SRC)",
+  "examples: needs the example decks (NUMGEO_EXAMPLES)",
+  "slow: long-running",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+python_version = "3.12"  # numpy>=2.3 stubs need >=3.12 syntax; the code itself targets 3.11 (ruff)
+strict = true
+files = ["src/pynumgeo"]
+plugins = ["pydantic.mypy"]
+warn_unused_ignores = true

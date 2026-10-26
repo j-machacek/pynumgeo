@@ -1,0 +1,71 @@
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#                                                pynumgeo
+#                              Python API for the finite element code numgeo
+#                                     Copyright (C) 2026 Jan Machacek
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#
+# Author: Jan Machacek
+#
+# pynumgeo writes, checks and runs numgeo input files and reads numgeo results. It follows the
+# development of numgeo: new developments in the numgeo source code are taken over into the API, and a
+# CI pipeline tests every change.
+#
+# License: BSD-3-Clause, see LICENSE.
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+site_name: pynumgeo
+site_description: Python API for the finite element code numgeo
+copyright: Copyright (C) 2026 Jan Machacek - BSD-3-Clause
+repo_name: pynumgeo
+strict: true
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+  palette:
+    - scheme: default
+      toggle: {icon: material/brightness-7, name: Dark mode}
+    - scheme: slate
+      toggle: {icon: material/brightness-4, name: Light mode}
+
+nav:
+  - Home: index.md
+  - Installation: install.md
+  - Quickstart: quickstart.md
+  - Concepts: concepts.md
+  - For agents: for-agents.md
+  - API reference:
+      - Top level: api/pynumgeo.md
+      - Deck: api/deck.md
+      - Mesh: api/mesh.md
+      - Reading and writing: api/io.md
+      - Validation: api/validation.md
+      - Running numgeo: api/solver.md
+      - Results: api/results.md
+      - Catalogue: api/catalogue.md
+      - Issues: api/issue.md
+      - Command line: api/cli.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc: {permalink: true}
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: false
+            show_root_heading: true
+            members_order: source
+            filters: ["!^_"]
+            merge_init_into_class: true

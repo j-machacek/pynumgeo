@@ -1,0 +1,35 @@
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#                                                pynumgeo
+#                              Python API for the finite element code numgeo
+#                                     Copyright (C) 2026 Jan Machacek
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#
+# Author: Jan Machacek
+#
+# pynumgeo writes, checks and runs numgeo input files and reads numgeo results. It follows the
+# development of numgeo: new developments in the numgeo source code are taken over into the API, and a
+# CI pipeline tests every change.
+#
+# License: BSD-3-Clause, see LICENSE.
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+# Only the package and its documentation belong to this repository: everything else is ignored.
+/*
+!/src/
+!/docs/
+!/README.md
+!/LICENSE
+!/pyproject.toml
+!/mkdocs.yml
+!/.gitignore
+!/.github/
+/docs/changelog.md
+/docs/compatibility.md
+/docs/maintenance.md
+
+# Python and tool caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

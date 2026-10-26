@@ -1,0 +1,60 @@
+# pynumgeo
+
+> Python API for the finite element code numgeo (pynumgeo 2026.2.0.dev0, numgeo build numgeo2026-v2, source 834564ed). Read, build, validate and write numgeo input decks, run the solver and read its results; headless, Windows and Linux.
+
+Rules for agents: take every numgeo keyword, option, parameter order and default from the catalogue (`pynumgeo.catalogue.describe(name)`, `keyword()`, `material_model()`, `element_type()`), never from memory. Validate before running (`validate`), fix every error. numgeo's exit status is 0 also after errors: use `RunResult.status`. Node labels must be 1..N in the order of definition. Do not use option words (find, generate, internal, instance, ...) inside names. Write input files in normal case, never all capitals. Units must be consistent; examples use m, kN, kPa, t, s.
+
+## Functions (`import pynumgeo as ng`)
+
+- `ng.read(path: 'str | os.PathLike[str]', *, strict: 'bool' = False) -> 'Deck'`: Read an input file into a :class:`~pynumgeo.deck.Deck`.
+- `ng.parse(path: 'str | os.PathLike[str]', workdir: 'str | os.PathLike[str] | None' = None) -> 'ReadResult'`: Read an input file; never raises for input errors, they are in ``issues``.
+- `ng.parse_text(text: 'str', name: 'str' = '<string>') -> 'ReadResult'`: Like :func:`parse` for a string (includes are not allowed).
+- `ng.write(deck: 'Deck', path: 'str | os.PathLike[str]', *, header: 'bool' = True) -> 'Path'`: Write ``deck`` to ``path`` (UTF-8 without BOM, ``\n`` line ends) and return the path.
+- `ng.write_text(deck: 'Deck', *, header: 'bool' = True) -> 'str'`: The input file text of ``deck`` (see module docstring).
+- `ng.validate(deck: 'Deck', *, profile: 'BuildProfile | None' = None, select: 'Iterable[str] | None' = None) -> 'list[Issue]'`: Check ``deck`` and return the issues (errors first, then warnings and infos, each in rule order).
+- `ng.run(deck_or_path: 'Deck | str | os.PathLike[str]', workdir: 'str | os.PathLike[str]', job: 'str' = 'job', executable: 'str | os.PathLike[str] | None' = None, ncpus: 'int' = 1, timeout: 'float | None' = None, check_only: 'bool' = False, flags: 'Iterable[str]' = (), env: 'Mapping[str, str | None] | None' = None, on_line: 'Callable[[str], None] | None' = None, *, native_check: 'bool' = False, files: 'Iterable[str | os.PathLike[str]]' = (), on_sta: 'Callable[[str], None] | None' = None) -> 'RunResult'`: Run numgeo and judge the outcome.
+- `ng.open_results(workdir: 'str | Path', job: 'str' = 'job') -> 'Results'`: Open the results of job ``job`` in ``workdir``.
+
+## Classes
+
+- `ng.Deck`: A numgeo input deck (see module docstring). Methods: `assign`, `defined_names`, `material`, `rename`, `safe_names`, `step`, `summary`.
+- `ng.Mesh`: Nodes, element blocks, sets and surfaces of a deck (see module docstring). Methods: `add_elements`, `add_elset`, `add_nodes`, `add_nset`, `add_surface`, `check`, `element_count`, `element_labels`, `elset`, `find_nearest_node`, `node_count`, `nset`, `renumbered`, `summary`, `surface`.
+- `ng.Material`: ``*Material`` with its sub-keywords (``*Mechanical``, ``*Density``, ``*Permeability``, ...). Methods: `add`, `property`, `set_mechanical`.
+- `ng.Section`: Material assignment ``*Solid section, elset=..., material=...`` (``*Assign material`` is the same).
+- `ng.Amplitude`: ``*Amplitude, name=..., type=...`` with its data lines (type in lower case, e.g. ``tabular``).
+- `ng.Step`: ``*Step`` ... ``*End step``: header options, the procedure keyword and the step's keywords in order. Methods: `add`, `keywords`.
+- `ng.Keyword`: A keyword block in generic form. Methods: `has_option`, `option`.
+- `ng.Issue`: One finding. Methods: `as_dict`.
+- `ng.RunResult`: Outcome of :func:`pynumgeo.solver.run` (or :func:`pynumgeo.solver.assess` for an existing job folder). Methods: `console_path`, `errors`, `log_path`, `msg_path`, `ok`, `raise_for_status`, `sta_path`, `summary`, `warnings`.
+- `ng.RunStatus`: Outcome of a numgeo run (compares equal to its name, e.g. ``status == "SUCCESS"``).
+
+## Catalogue (`ng.catalogue`)
+
+126 keywords, 198 element types, 48 constitutive models, 2053 solver message sites, generated from the numgeo source.
+
+- `catalogue.describe(name: 'str', *, with_docs: 'bool' = True) -> 'str'`: Shortcut for ``load().describe(...)``.
+- `catalogue.keyword(name: 'str', context: 'str | None' = None) -> 'KeywordSpec'`: Shortcut for ``load().keyword(...)``.
+- `catalogue.keyword_entries(name: 'str') -> 'list[KeywordSpec]'`: All entries of a keyword (it may exist in several contexts).
+- `catalogue.element_type(name: 'str') -> 'ElementTypeSpec'`: Shortcut for ``load().element_type(...)``.
+- `catalogue.material_model(name: 'str') -> 'MaterialModelSpec'`: Shortcut for ``load().material_model(...)``.
+- `catalogue.suggest(name: 'str', n: 'int' = 3) -> 'list[str]'`: Shortcut for ``load().suggest(...)``.
+- `catalogue.doc_page(page: 'str | None') -> 'str | None'`: Text of a bundled documentation page (``docs/reference/...md``), if bundled.
+
+## Validator
+
+165 rules with stable ids `NG-<AREA>-<nnn>` (areas: AMPL, BC, CONT, IC, KW, LOAD, MAT, MESH, NAME, OUT, REF, STEP); reader issues are `NG-READ-*`. Each issue has `id`, `severity` (error/warning/info), `message`, `location`, `keyword` and `source` (numgeo source lines the rule mirrors); `Issue.as_dict()` gives JSON. `pynumgeo.validation.rules()` lists all rules with their titles.
+
+## Command line (`--json` on every command; exit 0 fine, 1 errors/failed run, 2 usage error)
+
+- `pynumgeo validate input --profile --all --json`: read an input file and report everything numgeo would reject
+- `pynumgeo run input --workdir --job --exe --ncpus --timeout --check-only --quiet --json`: run numgeo on an input file and judge the outcome
+- `pynumgeo info name --no-docs --json`: describe a keyword, material:<model> or element:<type>
+- `pynumgeo roundtrip input --output --json`: read and write an input file (normal-case, deterministic)
+- `pynumgeo catalogue --list --json`: catalogue summary (source commit, counts)
+
+## Docs
+
+- [Quickstart](quickstart.md): build, validate, write, read, run, results
+- [Concepts](concepts.md): reader emulation, normal-case writer, validation, run judgement, catalogue
+- [For agents](for-agents.md): machine-readable output and a working loop
+- [API reference](api/pynumgeo.md)
