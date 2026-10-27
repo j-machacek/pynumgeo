@@ -143,6 +143,13 @@ _CONSOLE_WARNING = re.compile(r"^(?:WARNING|Warning)\b\s*[:(,]")
 MAX_CONSOLE_MESSAGES = 50
 _STOP_CODE = re.compile(r"^\s*(?:ERROR )?STOP\s+(?P<code>.+?)\s*$")  # gfortran/ifx print the stop code
 _BACKTRACE = re.compile(r"^\s*(?:#\d+\s+0x|at\s+\S+:\d+\s*$|Error termination\. Backtrace:|Backtrace for this error)")
+#: Words of which every console line that :func:`parse_console` reads contains at least one (searched in the
+#: line in lower case): lines without them are skipped without the patterns above (a material routine can print
+#: millions of lines; a search with ``re.IGNORECASE`` would take as long as the patterns).
+_CONSOLE_WORDS = re.compile(
+    r"error|warning|version|stop|input check|not found|invalid|requested|unknown|unable|signal|fortran|forrtl|"
+    r"segmentation|violation|overflow|killed|aborted|double free|malloc|illegal|floating point"
+)
 
 
 @dataclass(frozen=True)
@@ -484,6 +491,9 @@ def parse_console(lines: Iterable[str], name: str = "console") -> ConsoleInfo:
     n = len(buf)
     while i < n:
         ln = buf[i]
+        if not _CONSOLE_WORDS.search(ln.lower()):  # no pattern below can match (each needs one of the words)
+            i += 1
+            continue
         s = ln.strip()
         j = i + 1
         if not s or (i == 0 and ln.startswith(CONSOLE_MARK)):  # empty, or the line pynumgeo writes first

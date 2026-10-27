@@ -1,0 +1,24 @@
+**==================================================================
+**            numgeo material definitions
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t01_strip_footing
+** analysis  : Strip_footing
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D (plane-strain)
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+** Material = Sand
+*Material, name=Sand, phases=1
+*Density
+1.8
+*Mechanical = Mohr-Coulomb-2
+40000, 0.3, 1, 35, 5, 0
+

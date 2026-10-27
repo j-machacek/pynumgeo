@@ -35,6 +35,7 @@ from typing import Any, Union
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from pynumgeo.catalogue import normalise_keyword
+from pynumgeo.io.numbers import is_number, parse_real, to_token
 
 __all__ = ["Keyword", "OptionInput", "Token"]
 
@@ -54,6 +55,8 @@ class Keyword(BaseModel):
         data: data lines, one list of tokens per line.
         children: child keywords (material sub-keywords, output cards, ``*Normal``/``*Friction``, ...).
         source: where the keyword was read from (``file:line``), not part of comparisons.
+        comment: text the writer puts above the keyword as ``**`` lines (not read by numgeo, not part of
+            comparisons; the reader does not fill it).
     """
 
     model_config = ConfigDict(extra="forbid", validate_assignment=True)
@@ -64,6 +67,7 @@ class Keyword(BaseModel):
     data: list[list[Token]] = Field(default_factory=list)
     children: list[Keyword] = Field(default_factory=list)
     source: str | None = Field(default=None, exclude=True, repr=False)
+    comment: str | None = Field(default=None, exclude=True, repr=False)
 
     @field_validator("keyword")
     @classmethod
@@ -79,6 +83,12 @@ class Keyword(BaseModel):
                     raise TypeError("boolean values are not numgeo syntax; give 1/0 or the keyword's own words")
         return v
 
+    @field_validator("data")
+    @classmethod
+    def _norm_data(cls, v: list[list[Token]]) -> list[list[Token]]:
+        # a text token that numgeo reads as a number is that number ("2.0" -> 2.0), as the reader makes it
+        return [[to_token(t) if isinstance(t, str) else t for t in row] for row in v]
+
     @field_validator("options")
     @classmethod
     def _norm_opts(cls, v: list[tuple[str, str | None]]) -> list[tuple[str, str | None]]:
@@ -90,7 +100,8 @@ class Keyword(BaseModel):
         return (
             self.keyword == other.keyword
             and _ieq(self.value, other.value)
-            and [(k, _up(v)) for k, v in self.options] == [(k, _up(v)) for k, v in other.options]
+            and len(self.options) == len(other.options)
+            and all(ka == kb and _ieq(va, vb) for (ka, va), (kb, vb) in zip(self.options, other.options, strict=True))
             and _data_eq(self.data, other.data)
             and self.children == other.children
         )
@@ -105,6 +116,7 @@ class Keyword(BaseModel):
         options: Iterable[OptionInput] = (),
         data: Sequence[Sequence[Token]] = (),
         children: Iterable[Keyword] = (),
+        comment: str | None = None,
     ) -> Keyword:
         """Convenience constructor (see the module example)."""
         opts: list[tuple[str, str | None]] = []
@@ -116,7 +128,14 @@ class Keyword(BaseModel):
                 opts.append((k, v.strip()))
             else:
                 opts.append((o, None))
-        return cls(keyword=keyword, value=value, options=opts, data=[list(r) for r in data], children=list(children))
+        return cls(
+            keyword=keyword,
+            value=value,
+            options=opts,
+            data=[list(r) for r in data],
+            children=list(children),
+            comment=comment,
+        )
 
     def option(self, key: str) -> str | None:
         """Value of the first option whose key equals ``key`` (case-insensitive); ``None`` if absent."""
@@ -147,6 +166,9 @@ def _up(v: str | None) -> str | None:
 
 
 def _ieq(a: str | None, b: str | None) -> bool:
+    """Equal as numgeo reads them: case and blanks ignored, numbers by value (``1`` equals ``1.0``)."""
+    if a is not None and b is not None and is_number(a) and is_number(b):
+        return parse_real(a) == parse_real(b)
     return _up(a) == _up(b)
 
 

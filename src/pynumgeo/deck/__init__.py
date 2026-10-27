@@ -14,7 +14,8 @@
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Semantic model of a numgeo input deck."""
 
+from pynumgeo.deck.compare import diff
 from pynumgeo.deck.deck import Amplitude, Deck, Material, Section, Step
 from pynumgeo.deck.keyword import Keyword, Token
 
-__all__ = ["Amplitude", "Deck", "Keyword", "Material", "Section", "Step", "Token"]
+__all__ = ["Amplitude", "Deck", "Keyword", "Material", "Section", "Step", "Token", "diff"]

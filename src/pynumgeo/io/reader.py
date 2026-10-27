@@ -42,7 +42,7 @@ from __future__ import annotations
 
 import math
 import os
-import re
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -50,17 +50,30 @@ import numpy as np
 from pynumgeo import catalogue as _cat
 from pynumgeo.deck.deck import Amplitude, Deck, Material, Section, Step
 from pynumgeo.deck.keyword import Keyword, Token
-from pynumgeo.io.lexer import Preprocessed, preprocess, preprocess_text
-from pynumgeo.io.numbers import is_number, parse_real
-from pynumgeo.io.syntax import KeywordBlock, Option, parse_blocks
+from pynumgeo.io.lexer import (
+    Preprocessed,
+    _delete_blanks,
+    _drop_trailing_comma,
+    _strip_comment,
+    preprocess,
+    preprocess_text,
+)
+from pynumgeo.io.numbers import parse_real, to_token
+from pynumgeo.io.syntax import _ENDS, MATERIAL_CHILDREN, KeywordBlock, Option, parse_blocks, split_options
 from pynumgeo.issue import Issue, has_errors
 from pynumgeo.mesh.mesh import ElementBlock, ElementSet, Mesh, NodeSet, SetKind, Surface
 
-__all__ = ["ReadError", "ReadResult", "parse", "parse_text", "read", "to_token"]
-
-_INT = re.compile(r"^[+-]?\d+$")
-_NUMSTART = frozenset("+-.0123456789")
-_LETTERS = re.compile(r"[A-DF-Za-df-z]")  # any letter except e/E (float() would accept inf/nan)
+__all__ = [
+    "FragmentResult",
+    "ReadError",
+    "ReadResult",
+    "data_tokens",
+    "parse",
+    "parse_fragment",
+    "parse_text",
+    "read",
+    "to_token",
+]
 
 
 class ReadError(ValueError):
@@ -86,27 +99,27 @@ class ReadResult:
         return not has_errors(self.issues)
 
 
-def to_token(text: str) -> Token:
-    """Data token: ``int`` for integers, ``float`` for reals, else the text unchanged.
-
-    >>> to_token("12"), to_token("0.0d0"), to_token("Soil.all")
-    (12, 0.0, 'Soil.all')
-    """
-    t = text.strip()
-    if _INT.match(t):
-        return int(t)
-    if t[:1] in _NUMSTART and not _LETTERS.search(t):
-        try:
-            return float(t)
-        except ValueError:
-            pass
-    if is_number(t):
-        return parse_real(t)
-    return t
-
-
 def _loc(b: KeywordBlock) -> str | None:
     return str(b.pos) if b.pos else None
+
+
+def data_tokens(line: str) -> list[Token] | None:
+    """The tokens numgeo reads from one data line, ``None`` for a line it skips (blank or comment).
+
+    numgeo cuts the line at ``**``, deletes the blanks (not between ``$`` signs) and a trailing comma and
+    splits it at the commas; numbers become ``int`` / ``float`` (:func:`to_token`), text keeps its spelling.
+    A builder can give a line in any spelling and gets the tokens the reader would produce from it.
+
+    >>> data_tokens("Base, u1, 0   ** fixed")
+    ['Base', 'u1', 0]
+    >>> data_tokens("2.0d6, 0.3,"), data_tokens("  ** note")
+    ([2000000.0, 0.3], None)
+    """
+    cased = _strip_comment(line)
+    if cased.strip(" ") == "":
+        return None
+    cased = _drop_trailing_comma(_delete_blanks(cased))
+    return [to_token(c) for c in split_options(cased)]
 
 
 def _rows(b: KeywordBlock) -> list[list[Token]]:
@@ -776,14 +789,7 @@ class _Reader:
             )
         items = []
         for c in kids[1:]:
-            if not self.cat.keyword_entries(c.keyword) and c.keyword not in (
-                "*HHT",
-                "*BWE",
-                "*UBOUNDARY",
-                "*DSLOAD",
-                "*RIGIDBODY",
-                "*LINESEARCH",
-            ):
+            if not self.cat.keyword_entries(c.keyword) and c.keyword not in _STEP_ALIASES:
                 self.issue(
                     "NG-READ-INPUT-001",
                     "error",
@@ -792,6 +798,10 @@ class _Reader:
                 )
             items.append(_generic(c))
         self.deck.steps.append(Step(name=name, procedure=proc, items=items, extra_options=extra, source=_loc(b), **st))
+
+
+#: step keywords numgeo reads that the catalogue lists under another spelling
+_STEP_ALIASES = ("*HHT", "*BWE", "*UBOUNDARY", "*DSLOAD", "*RIGIDBODY", "*LINESEARCH")
 
 
 def _model_ndim(mesh: Mesh, cat: _cat.Catalogue) -> int:
@@ -866,11 +876,112 @@ def parse(path: str | os.PathLike[str], workdir: str | os.PathLike[str] | None =
     return ReadResult(deck=deck, issues=r.issues, preprocessed=pre)
 
 
-def parse_text(text: str, name: str = "<string>") -> ReadResult:
-    """Like :func:`parse` for a string (includes are not allowed)."""
-    pre = preprocess_text(text, name)
+def _resolver(includes: Mapping[str, str] | None) -> Callable[[str], tuple[str, str]] | None:
+    if includes is None:
+        return None
+    files = dict(includes)
+
+    def resolve(inc: str) -> tuple[str, str]:
+        # numgeo opens the name as written; Windows matches it in any case
+        if inc in files:
+            return inc + ".inp", files[inc]
+        hit = [k for k in files if k.lower() == inc.lower()]
+        if hit:
+            return hit[0] + ".inp", files[hit[0]]
+        raise FileNotFoundError(f"INCLUDE file not found: {inc}.inp (numgeo stops)")
+
+    return resolve
+
+
+def parse_text(text: str, name: str = "<string>", *, includes: Mapping[str, str] | None = None) -> ReadResult:
+    """Like :func:`parse` for a string.
+
+    Args:
+        includes: include name (the text after ``=`` of the include line) -> content of that file, e.g. the
+            result of :func:`~pynumgeo.io.writer.write_texts` keyed by include name. Without it, includes raise
+            :class:`FileNotFoundError`.
+    """
+    pre = preprocess_text(text, name, include_resolver=_resolver(includes))
     r = _Reader(pre)
     return ReadResult(deck=r.run(), issues=r.issues, preprocessed=pre)
+
+
+@dataclass
+class FragmentResult:
+    """What :func:`parse_fragment` read: keywords of one context, or a partial deck (``context="model"``)."""
+
+    keywords: list[Keyword]
+    deck: Deck
+    issues: list[Issue] = field(default_factory=list)
+
+    @property
+    def ok(self) -> bool:
+        """True if no issue has severity ``error``."""
+        return not has_errors(self.issues)
+
+
+_FRAGMENT_CONTEXTS = ("model", "step", "material")
+_FORBIDDEN_IN_FRAGMENT = frozenset({*_ENDS, *_ENDS.values(), "*MATERIAL", "*ENDINPUT"})
+
+
+def parse_fragment(text: str, context: str = "model", name: str = "<fragment>") -> FragmentResult:
+    """Read keyword lines that belong inside a deck, e.g. lines a user types for a model, a step or a material.
+
+    The lines are preprocessed like numgeo input (upper case, blanks, ``**``) and grouped like the reader
+    groups them. Includes are not allowed.
+
+    Args:
+        context: ``"model"`` - model definitions; they may define sets, amplitudes, materials, assignments
+            and other model keywords, all of which are in ``deck``; ``keywords`` are the deck's model keywords.
+            ``"step"`` - keywords inside a ``*Step`` (no procedure); ``"material"`` - sub-keywords of a
+            ``*Material``. For these two, ``keywords`` holds them and ``deck`` is empty.
+
+    >>> r = parse_fragment("*Controls, u, modify\\n1e-3, 1e-3, 1e-2, 1e-5, 1e-6, 1.0", "step")
+    >>> [(k.keyword, k.data) for k in r.keywords], r.ok
+    ([('*CONTROLS', [[0.001, 0.001, 0.01, 1e-05, 1e-06, 1.0]])], True)
+    """
+    if context not in _FRAGMENT_CONTEXTS:
+        raise ValueError(f"context must be one of {_FRAGMENT_CONTEXTS}, not {context!r}")
+    pre = preprocess_text(text, name)
+    if context == "model":
+        r = _Reader(pre)
+        deck = r.run()
+        return FragmentResult(keywords=list(deck.keywords), deck=deck, issues=r.issues)
+    issues = [
+        Issue("NG-READ-INPUT-" + q.code.upper(), "warning", q.message, str(q.pos) if q.pos else None)
+        for q in pre.quirks
+    ]
+    lines = [ln for ln in pre.lines if ln.pos is not None]  # without the prepended default amplitude
+    try:
+        blocks = parse_blocks(lines)
+    except ValueError as e:
+        issues.append(Issue("NG-READ-INPUT-002", "error", str(e)))
+        return FragmentResult(keywords=[], deck=Deck(), issues=issues)
+    cat = _cat.load()
+    out: list[Keyword] = []
+    for b in blocks:
+        if context == "material" and b.keyword not in MATERIAL_CHILDREN:
+            issues.append(
+                Issue("NG-READ-MAT-004", "error", f"{b.keyword} is not a *Material sub-keyword", _loc(b), b.keyword)
+            )
+            continue
+        if b.keyword in _FORBIDDEN_IN_FRAGMENT:
+            issues.append(
+                Issue("NG-READ-INPUT-003", "error", f"{b.keyword} cannot stand inside a {context}", _loc(b), b.keyword)
+            )
+            continue
+        if context == "step" and not cat.keyword_entries(b.keyword) and b.keyword not in _STEP_ALIASES:
+            issues.append(
+                Issue(
+                    "NG-READ-INPUT-001",
+                    "error",
+                    f"unknown step keyword {b.keyword}; did you mean {cat.suggest(b.keyword)}?",
+                    _loc(b),
+                    b.keyword,
+                )
+            )
+        out.append(_generic(b))
+    return FragmentResult(keywords=out, deck=Deck(), issues=issues)
 
 
 def read(path: str | os.PathLike[str], *, strict: bool = False) -> Deck:

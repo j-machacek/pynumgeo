@@ -67,6 +67,8 @@ class ElementBlock:
     labels: IntArray
     connectivity: IntArray
     options: list[tuple[str, str | None]] = field(default_factory=list)
+    #: ``**`` lines the writer puts above the block (not part of comparisons)
+    comment: str | None = None
 
     def __post_init__(self) -> None:
         self.labels = _ints(self.labels)
@@ -95,6 +97,8 @@ class _LabelSet:
     values: list[float] = field(default_factory=list)
     internal: bool = False
     instance: str | None = None
+    #: ``**`` lines the writer puts above the set (not part of comparisons)
+    comment: str | None = None
 
     def __post_init__(self) -> None:
         self.members = _ints(self.members)
@@ -137,6 +141,8 @@ class Surface:
     name: str
     type: Literal["element", "node"] = "element"
     rows: list[tuple[str, ...]] = field(default_factory=list)
+    #: ``**`` lines the writer puts above the surface (not part of comparisons)
+    comment: str | None = None
 
     @property
     def key(self) -> str:
@@ -163,6 +169,8 @@ class Mesh:
         self.nsets: list[NodeSet] = []
         self.elsets: list[ElementSet] = []
         self.surfaces: list[Surface] = []
+        #: ``**`` lines the writer puts above ``*Node`` (not part of comparisons)
+        self.comment: str | None = None
 
     # ------------------------------------------------------------------ building
     def add_nodes(self, coords: npt.ArrayLike, labels: npt.ArrayLike | None = None) -> IntArray:
@@ -186,7 +194,9 @@ class Mesh:
         self.node_labels = np.concatenate([self.node_labels, lab])
         return lab
 
-    def add_elements(self, type: str, connectivity: npt.ArrayLike, labels: npt.ArrayLike | None = None) -> IntArray:
+    def add_elements(
+        self, type: str, connectivity: npt.ArrayLike, labels: npt.ArrayLike | None = None, *, comment: str | None = None
+    ) -> IntArray:
         """Append a block of elements of one type; labels default to the next numbers."""
         conn = np.atleast_2d(np.asarray(connectivity, dtype=np.int64))
         if labels is None:
@@ -194,26 +204,35 @@ class Mesh:
             lab = np.arange(mx + 1, mx + 1 + conn.shape[0], dtype=np.int64)
         else:
             lab = _ints(labels)
-        self.blocks.append(ElementBlock(type=type, labels=lab, connectivity=conn))
+        self.blocks.append(ElementBlock(type=type, labels=lab, connectivity=conn, comment=comment))
         return lab
 
-    def add_nset(self, name: str, members: Iterable[int] | npt.ArrayLike, *, internal: bool = False) -> NodeSet:
+    def add_nset(
+        self, name: str, members: Iterable[int] | npt.ArrayLike, *, internal: bool = False, comment: str | None = None
+    ) -> NodeSet:
         """Add a node set given by node labels."""
-        s = NodeSet(name=name, members=_ints(members), internal=internal)
+        s = NodeSet(name=name, members=_ints(members), internal=internal, comment=comment)
         self.nsets.append(s)
         return s
 
-    def add_elset(self, name: str, members: Iterable[int] | npt.ArrayLike, *, internal: bool = False) -> ElementSet:
+    def add_elset(
+        self, name: str, members: Iterable[int] | npt.ArrayLike, *, internal: bool = False, comment: str | None = None
+    ) -> ElementSet:
         """Add an element set given by element labels."""
-        s = ElementSet(name=name, members=_ints(members), internal=internal)
+        s = ElementSet(name=name, members=_ints(members), internal=internal, comment=comment)
         self.elsets.append(s)
         return s
 
     def add_surface(
-        self, name: str, rows: Sequence[Sequence[str]], type: Literal["element", "node"] = "element"
+        self,
+        name: str,
+        rows: Sequence[Sequence[str]],
+        type: Literal["element", "node"] = "element",
+        *,
+        comment: str | None = None,
     ) -> Surface:
         """Add a surface: element-based rows ``(elset, "F1")`` or node-based rows ``(nset,)``."""
-        s = Surface(name=name, type=type, rows=[tuple(r) for r in rows])
+        s = Surface(name=name, type=type, rows=[tuple(r) for r in rows], comment=comment)
         self.surfaces.append(s)
         return s
 
@@ -311,15 +330,18 @@ class Mesh:
         for b in self.blocks:
             m = b.labels.shape[0]
             conn = vmap(b.connectivity) if b.connectivity.size else b.connectivity.copy()
-            new.blocks.append(ElementBlock(b.type, np.arange(start, start + m, dtype=np.int64), conn, list(b.options)))
+            new.blocks.append(
+                ElementBlock(b.type, np.arange(start, start + m, dtype=np.int64), conn, list(b.options), b.comment)
+            )
             start += m
         for s in self.nsets:
             mem = np.array([lookup[int(x)] for x in s.members], dtype=np.int64) if s.kind == "list" else s.members
-            new.nsets.append(NodeSet(s.name, s.kind, mem, list(s.values), s.internal, s.instance))
+            new.nsets.append(NodeSet(s.name, s.kind, mem, list(s.values), s.internal, s.instance, s.comment))
         for e in self.elsets:
             mem = np.array([el_lookup[int(x)] for x in e.members], dtype=np.int64) if e.kind == "list" else e.members
-            new.elsets.append(ElementSet(e.name, e.kind, mem, list(e.values), e.internal, e.instance))
-        new.surfaces = [Surface(s.name, s.type, list(s.rows)) for s in self.surfaces]
+            new.elsets.append(ElementSet(e.name, e.kind, mem, list(e.values), e.internal, e.instance, e.comment))
+        new.surfaces = [Surface(s.name, s.type, list(s.rows), s.comment) for s in self.surfaces]
+        new.comment = self.comment
         return new, node_map, elem_map
 
     def __eq__(self, other: object) -> bool:

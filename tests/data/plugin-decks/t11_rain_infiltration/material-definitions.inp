@@ -1,0 +1,36 @@
+**==================================================================
+**            numgeo material definitions
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t11_rain_infiltration
+** analysis  : Rain_infiltration
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D (plane-strain)
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+** Material = Silty_sand
+*Material, name=Silty_sand, phases=3
+*Density
+2.66, 1.0, 0.001
+*Mechanical = Linear_Elasticity
+30000, 0.3
+*Bulk modulus
+1e5, 100
+*Dynamic viscosity
+1e-6, 1e-8
+*Permeability = Isotropic
+1e-12
+*Hydraulic = vanGenuchten, swr=0.05
+0.2, 2.0
+*Jacobian = Smoothed
+*Relative permeability = vanGenuchten
+1e-4, 1e-4, 2.0
+*Bishop effective stress = Saturation
+

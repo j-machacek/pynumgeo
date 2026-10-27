@@ -1,0 +1,59 @@
+**==================================================================
+**            numgeo material definitions
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t06_anchored_excavation
+** analysis  : Anchored_excavation
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D (plane-strain)
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+** Material = Sand
+*Material, name=Sand, phases=1
+*Density
+2.0
+*Mechanical = Mohr-Coulomb-2
+60000, 0.3, 2, 35, 5, 0
+
+** Material = Diaphragm_wall (beam section)
+*Material, name=Diaphragm_wall, phases=1
+*Density
+0.0
+*Beam properties
+0.8, 30000000.0, 12500000.0, 0.0427, 0.0427, 0.1, 0.833333333333, 0.833333333333
+
+*Material, name=Anchor-tendon-material, phases=1
+*Truss properties
+0.000282743338823, 195000000
+*Density
+7.81
+
+** wished-in-place dummy of 'Anchor' (E x 1e-6) until step 'Anchor installation'
+
+*Material, name=Anchor-tendon-dummy, phases=1
+*Truss properties
+0.000282743338823, 195
+*Density
+7.81
+
+*Material, name=Anchor-grout-material, phases=1
+*Density
+2.2
+*Beam properties
+0.00706858347058, 20000000, 8333333.33333, 9.9401955055e-06, 9.9401955055e-06, 1.9880391011e-05, 0.9, 0.9
+
+** wished-in-place dummy of 'Anchor' (E x 1e-6) until step 'Anchor installation'
+
+*Material, name=Anchor-grout-dummy, phases=1
+*Density
+2.2
+*Beam properties
+0.00706858347058, 20, 8.33333333333, 9.9401955055e-06, 9.9401955055e-06, 1.9880391011e-05, 0.9, 0.9
+

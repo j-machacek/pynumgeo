@@ -1,0 +1,98 @@
+**==================================================================
+**            numgeo input file
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t11_rain_infiltration
+** analysis  : Rain_infiltration
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D (plane-strain)
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+**
+** Mesh
+**
+*Include = t11_rain_infiltration-mesh
+
+**
+** Material definitions
+**
+*include, input=material-definitions
+
+**
+** Solid Sections
+**
+*Assign material, elset=Silty_sand, material=Silty_sand
+
+**
+** Initial Conditions
+**
+*initial conditions, type=void ratio, default
+Silty_sand, 0.6
+*initial conditions, type=pore water pressure, default
+Silty_sand, 0.0, -49.05, -5.0, 0.0
+
+**
+** Step 1
+**
+*Step, name=Geostatic, inc=10000, maxiter=32, miniter=1
+*Geostatic
+*Solver, Pardiso
+
+** Groundwater table (Pore water pressure)
+*Boundary
+Base, pw, 0.0
+
+** Self weight (Gravity)
+*Body force, instant
+Silty_sand, Grav, 9.81, 0,-1,0
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Node output
+PW
+*Element output
+SAT
+*End Step
+
+**
+** Step 2
+**
+*Step, name=Rain_1_day, inc=10000, maxiter=32, miniter=1
+*Transient
+60.0, 86400.0, 1.0, 1800.0
+*Solver, Pardiso
+
+** Groundwater table (Pore water pressure)
+*Boundary
+Base, pw, 0.0
+
+** Self weight (Gravity)
+*Body force, instant
+Silty_sand, Grav, 9.81, 0,-1,0
+
+** Rain (inflow) (Inflow/Outflow)
+*DSload, instant
+Surface, flow-w, -2e-06
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Node output
+PW, SAT
+*Element output
+SAT, PERM-REL, DARCY_W2
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Surface_point
+PW
+*End Step
+
+*End Input
+

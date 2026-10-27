@@ -1,6 +1,6 @@
 # pynumgeo
 
-> Python API for the finite element code numgeo (pynumgeo 2026.2.0.dev0, numgeo build numgeo2026-v2, source 834564ed). Read, build, validate and write numgeo input decks, run the solver and read its results; headless, Windows and Linux.
+> Python API for the finite element code numgeo (pynumgeo 2026.2.0.dev2, numgeo build numgeo2026-v2, source 834564ed). Read, build, validate and write numgeo input decks, run the solver and read its results; headless, Windows and Linux.
 
 Rules for agents: take every numgeo keyword, option, parameter order and default from the catalogue (`pynumgeo.catalogue.describe(name)`, `keyword()`, `material_model()`, `element_type()`), never from memory. Validate before running (`validate`), fix every error. numgeo's exit status is 0 also after errors: use `RunResult.status`. Node labels must be 1..N in the order of definition. Do not use option words (find, generate, internal, instance, ...) inside names. Write input files in normal case, never all capitals. Units must be consistent; examples use m, kN, kPa, t, s.
 
@@ -8,9 +8,14 @@ Rules for agents: take every numgeo keyword, option, parameter order and default
 
 - `ng.read(path: 'str | os.PathLike[str]', *, strict: 'bool' = False) -> 'Deck'`: Read an input file into a :class:`~pynumgeo.deck.Deck`.
 - `ng.parse(path: 'str | os.PathLike[str]', workdir: 'str | os.PathLike[str] | None' = None) -> 'ReadResult'`: Read an input file; never raises for input errors, they are in ``issues``.
-- `ng.parse_text(text: 'str', name: 'str' = '<string>') -> 'ReadResult'`: Like :func:`parse` for a string (includes are not allowed).
-- `ng.write(deck: 'Deck', path: 'str | os.PathLike[str]', *, header: 'bool' = True) -> 'Path'`: Write ``deck`` to ``path`` (UTF-8 without BOM, ``\n`` line ends) and return the path.
-- `ng.write_text(deck: 'Deck', *, header: 'bool' = True) -> 'str'`: The input file text of ``deck`` (see module docstring).
+- `ng.parse_text(text: 'str', name: 'str' = '<string>', *, includes: 'Mapping[str, str] | None' = None) -> 'ReadResult'`: Like :func:`parse` for a string; ``includes`` maps include names to their content.
+- `ng.write(deck: 'Deck', path: 'str | os.PathLike[str]', *, header: 'bool' = True, comments: 'bool' = True, includes: 'Mapping[str, str] | None' = None) -> 'Path'`: Write ``deck`` to ``path`` (UTF-8 without BOM, ``\n`` line ends) and return the path; with ``includes`` the parts go to include files next to it.
+- `ng.write_text(deck: 'Deck', *, header: 'bool' = True, comments: 'bool' = True) -> 'str'`: The input file text of ``deck`` (see module docstring).
+- `ng.write_texts(deck: 'Deck', *, includes: 'Mapping[str, str]', header: 'bool' = True, comments: 'bool' = True) -> 'dict[str, str]'`: The text of the main file and of include files (parts `mesh`, `materials`), the numgeo-GiD layout of an input deck.
+- `ng.diff(a: 'Deck', b: 'Deck', *, rtol: 'float' = 0.0) -> 'list[str]'`: Where ``b`` differs from ``a`` as numgeo reads them, one line per difference (empty: the decks mean the same).
+- `ng.parse_fragment(text: 'str', context: 'str' = 'model', name: 'str' = '<fragment>') -> 'FragmentResult'`: Read keyword lines that belong inside a deck (context `model`, `step` or `material`).
+- `ng.data_tokens(line: 'str') -> 'list[Token] | None'`: The tokens numgeo reads from one data line, ``None`` for a line it skips (blank or comment).
+- `ng.format_keyword(kw: 'Keyword', context: 'str | None' = None, *, names=frozenset()) -> 'str'` / `ng.format_material(m: 'Material', *, names=frozenset()) -> 'str'`: One keyword or material as the writer spells it (previews).
 - `ng.validate(deck: 'Deck', *, profile: 'BuildProfile | None' = None, select: 'Iterable[str] | None' = None) -> 'list[Issue]'`: Check ``deck`` and return the issues (errors first, then warnings and infos, each in rule order).
 - `ng.run(deck_or_path: 'Deck | str | os.PathLike[str]', workdir: 'str | os.PathLike[str]', job: 'str' = 'job', executable: 'str | os.PathLike[str] | None' = None, ncpus: 'int' = 1, timeout: 'float | None' = None, check_only: 'bool' = False, flags: 'Iterable[str]' = (), env: 'Mapping[str, str | None] | None' = None, on_line: 'Callable[[str], None] | None' = None, *, native_check: 'bool' = False, files: 'Iterable[str | os.PathLike[str]]' = (), on_sta: 'Callable[[str], None] | None' = None) -> 'RunResult'`: Run numgeo and judge the outcome.
 - `ng.open_results(workdir: 'str | Path', job: 'str' = 'job') -> 'Results'`: Open the results of job ``job`` in ``workdir``.

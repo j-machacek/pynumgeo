@@ -1,0 +1,39 @@
+**==================================================================
+**            numgeo material definitions
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t14_segmental_wall_safety_factor
+** analysis  : Segmental_wall
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D (plane-strain)
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+** Material = Soil
+*Material, name=Soil, phases=1
+*Density
+2.0
+*Mechanical = Mohr-Coulomb-2
+35000, 0.3, 1, 35, 5, 0
+*Reducible Strength
+
+** Material = Facing_panel
+*Material, name=Facing_panel, phases=1
+*Density
+2.0
+*Mechanical = Linear_Elasticity
+3.6e7, 0.0
+
+** Material = Geogrid (truss section)
+*Material, name=Geogrid, phases=1
+*Truss properties, tension-only
+1.0, 2000.0
+*Density
+0.0
+

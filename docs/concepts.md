@@ -31,7 +31,8 @@ pynumgeo reads an input file in two steps.
    lost.
 
 Decks compare by meaning: `deck_a == deck_b` ignores source positions, the spelling case of keywords
-and options, and `1` versus `1.0`.
+and options, and `1` versus `1.0`. `ng.diff(deck_a, deck_b, rtol=1e-9)` lists where two decks differ, with a relative
+tolerance for reals.
 
 ```python
 import pynumgeo as ng
@@ -89,11 +90,29 @@ survives writing and reading unchanged. No line is longer than 256 characters; e
 would be longer are split over two lines, as numgeo allows. The same deck gives the same bytes on every
 platform.
 
+Text tokens are tokens as numgeo reads them: `Keyword.make("*Density", data=[["2.0"]])` holds the number
+`2.0`, and option values compare by value (`frequency=1` equals `frequency=1.0`).
+
+**Include files.** `ng.write_texts(deck, includes={"mesh": "model-mesh", "materials": "material-definitions"})`
+writes the numgeo-GiD layout: the main file includes `model-mesh.inp` (nodes, elements, sets, surfaces) and
+`material-definitions.inp` where those parts stood. numgeo copies an include into the input before reading it,
+so the files mean the same as one file; `ng.write(deck, path, includes=...)` writes them next to `path`, and
+`ng.parse` (or `ng.parse_text(text, includes={name: text})`) reads them back as the same deck.
+
+**Comments.** Every object of a deck (keyword, element block, set, surface, material, amplitude, section, step,
+and `Mesh.comment` for `*Node`) has an optional `comment` that the writer puts above it as `**` lines;
+`Deck.end_comment` goes above `*End input`. Comments are not part of comparisons; the reader does not fill them.
+
+**Fragments.** `ng.parse_fragment(text, "step")` reads keyword lines that a user types for a step (or a
+`"material"`, or the `"model"`), preprocessed and grouped like a whole deck; `ng.data_tokens(line)` gives the
+tokens of one data line as numgeo reads it (`None` for a blank or comment line); `ng.format_keyword(kw)` and
+`ng.format_material(m)` render single objects, e.g. for a preview.
+
 Parts and instances are read into one flat model; their sets are named `<instance>.<set>`, as numgeo
 names them internally. The writer refuses names that numgeo would read as options (`WriteError`); this
 happens for such sets when the instance name contains an option word (`SoilInstance.All` contains
-`instance`). `deck.safe_names()` renames every such name together with all references and returns the
-mapping (`{"SoilInstance.All": "SoilInst.All"}`); numgeo then names its print files after the new names.
+`instance`). `deck.safe_names()` renames every such name (sets, surfaces, materials, amplitudes and interactions)
+together with all references and returns the mapping (`{"SoilInstance.All": "SoilInst.All"}`); numgeo then names its print files after the new names.
 
 ## Validation
 

@@ -47,9 +47,10 @@ from __future__ import annotations
 from collections.abc import Iterable, Sequence
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from pynumgeo.deck.keyword import Keyword, OptionInput, Token
+from pynumgeo.io.numbers import to_token
 from pynumgeo.mesh.mesh import Mesh
 
 __all__ = ["Amplitude", "Deck", "Material", "Section", "Step"]
@@ -68,6 +69,13 @@ class Amplitude(BaseModel):
     type: str
     data: list[list[Token]] = Field(default_factory=list)
     source: str | None = Field(default=None, exclude=True, repr=False)
+    #: ``**`` lines the writer puts above it (not part of comparisons)
+    comment: str | None = Field(default=None, exclude=True, repr=False)
+
+    @field_validator("data")
+    @classmethod
+    def _norm_data(cls, v: list[list[Token]]) -> list[list[Token]]:
+        return [[to_token(t) if isinstance(t, str) else t for t in row] for row in v]
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Amplitude):
@@ -94,6 +102,8 @@ class Material(BaseModel):
     properties: list[Keyword] = Field(default_factory=list)
     extra_options: list[tuple[str, str | None]] = Field(default_factory=list)
     source: str | None = Field(default=None, exclude=True, repr=False)
+    #: ``**`` lines the writer puts above it (not part of comparisons)
+    comment: str | None = Field(default=None, exclude=True, repr=False)
 
     def add(
         self,
@@ -101,9 +111,10 @@ class Material(BaseModel):
         value: str | None = None,
         options: Iterable[OptionInput] = (),
         data: Sequence[Sequence[Token]] = (),
+        comment: str | None = None,
     ) -> None:
         """Append a material sub-keyword, e.g. ``add("*Density", data=[[2.0]])``."""
-        self.properties.append(Keyword.make(keyword, value=value, options=options, data=data))
+        self.properties.append(Keyword.make(keyword, value=value, options=options, data=data, comment=comment))
 
     def property(self, keyword: str) -> Keyword | None:
         """First sub-keyword of that kind (``*Mechanical``, ``*Density``, ...)."""
@@ -161,6 +172,8 @@ class Section(BaseModel):
     keyword: str = "*SOLIDSECTION"
     amgcl_direct: bool = False
     source: str | None = Field(default=None, exclude=True, repr=False)
+    #: ``**`` lines the writer puts above it (not part of comparisons)
+    comment: str | None = Field(default=None, exclude=True, repr=False)
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Section):
@@ -194,6 +207,8 @@ class Step(BaseModel):
     items: list[Keyword] = Field(default_factory=list)
     extra_options: list[tuple[str, str | None]] = Field(default_factory=list)
     source: str | None = Field(default=None, exclude=True, repr=False)
+    #: ``**`` lines the writer puts above it (not part of comparisons)
+    comment: str | None = Field(default=None, exclude=True, repr=False)
 
     def add(
         self,
@@ -202,9 +217,10 @@ class Step(BaseModel):
         options: Iterable[OptionInput] = (),
         data: Sequence[Sequence[Token]] = (),
         children: Iterable[Keyword] = (),
+        comment: str | None = None,
     ) -> Keyword:
         """Append a step keyword (``*Boundary``, ``*Cload``, ``*Output``, ``*Solver``, ...) and return it."""
-        kw = Keyword.make(keyword, value=value, options=options, data=data, children=children)
+        kw = Keyword.make(keyword, value=value, options=options, data=data, children=children, comment=comment)
         self.items.append(kw)
         return kw
 
@@ -244,6 +260,8 @@ class Deck(BaseModel):
     keywords: list[Keyword] = Field(default_factory=list)
     steps: list[Step] = Field(default_factory=list)
     comments: list[str] = Field(default_factory=list)
+    #: ``**`` lines the writer puts above ``*End input`` (not part of comparisons)
+    end_comment: str | None = Field(default=None, exclude=True, repr=False)
 
     def assign(self, elset: str, material: str) -> Section:
         """Assign a material to an element set (``*Solid section``)."""

@@ -39,7 +39,7 @@ from __future__ import annotations
 import math
 import re
 
-__all__ = ["format_int", "format_real", "is_number", "parse_int", "parse_real"]
+__all__ = ["format_int", "format_real", "is_number", "parse_int", "parse_real", "to_token"]
 
 # mantissa: digits with optional point; exponent: [EeDdQq][sign]digits or sign digits
 _REAL = re.compile(
@@ -49,6 +49,8 @@ _REAL = re.compile(
     re.VERBOSE,
 )
 _INT = re.compile(r"^[+-]?\d+$")
+_NUMSTART = frozenset("+-.0123456789")
+_LETTERS = re.compile(r"[A-DF-Za-df-z]")  # any letter except e/E (float() would accept inf/nan)
 
 
 def is_number(token: str) -> bool:
@@ -99,3 +101,25 @@ def format_real(value: float) -> str:
 def format_int(value: int) -> str:
     """Integer as text."""
     return str(int(value))
+
+
+def to_token(text: str) -> int | float | str:
+    """Data token: ``int`` for integers, ``float`` for reals (Fortran syntax), else the text unchanged.
+
+    This is how the reader turns the fields of a data line into tokens; :class:`~pynumgeo.deck.Keyword`
+    applies it to text tokens as well, so that ``"2.0"`` and ``2.0`` are the same token.
+
+    >>> to_token("12"), to_token("0.0d0"), to_token("Soil.all")
+    (12, 0.0, 'Soil.all')
+    """
+    t = text.strip()
+    if _INT.match(t):
+        return int(t)
+    if t[:1] in _NUMSTART and not _LETTERS.search(t):
+        try:
+            return float(t)
+        except ValueError:
+            pass
+    if is_number(t):
+        return parse_real(t)
+    return t

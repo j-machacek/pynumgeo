@@ -1,0 +1,164 @@
+**==================================================================
+**            numgeo input file
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t09_site_response
+** analysis  : Site_response
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D (plane-strain)
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+**
+** Mesh
+**
+*Include = t09_site_response-mesh
+
+**
+** Material definitions
+**
+*include, input=material-definitions
+
+**
+** Amplitudes
+**
+
+*Amplitude, name=Input_VEL, Type=tabular
+0.0, 0.0
+0.025, 0.0309016994375
+0.05, 0.0587785252292
+0.075, 0.0809016994375
+0.1, 0.0951056516295
+0.125, 0.1
+0.15, 0.0951056516295
+0.175, 0.0809016994375
+0.2, 0.0587785252292
+0.225, 0.0309016994375
+0.25, 1.22464679915e-17
+0.275, -0.0309016994375
+0.3, -0.0587785252292
+0.325, -0.0809016994375
+0.35, -0.0951056516295
+0.375, -0.1
+0.4, -0.0951056516295
+0.425, -0.0809016994375
+0.45, -0.0587785252292
+0.475, -0.0309016994375
+0.5, -2.44929359829e-17
+0.525, 0.0309016994375
+0.55, 0.0587785252292
+0.575, 0.0809016994375
+0.6, 0.0951056516295
+0.625, 0.1
+0.65, 0.0951056516295
+0.675, 0.0809016994375
+0.7, 0.0587785252292
+0.725, 0.0309016994375
+0.75, 3.67394039744e-17
+0.775, -0.0309016994375
+0.8, -0.0587785252292
+0.825, -0.0809016994375
+0.85, -0.0951056516295
+0.875, -0.1
+0.9, -0.0951056516295
+0.925, -0.0809016994375
+0.95, -0.0587785252292
+0.975, -0.0309016994375
+1.0, -4.89858719659e-17
+1.5, 0.0
+4.0, 0.0
+
+**
+** Solid Sections
+**
+*Assign material, elset=Soil_column, material=Soil
+
+**
+** Initial Conditions
+**
+*initial conditions, type=stress, geostatic
+Soil_column, 0.0, 0.0, -20.0, -372.78, 0.428571428571, 0.428571428571
+
+**
+** Step 1
+**
+*Step, name=Geostatic, inc=10000, maxiter=32, miniter=1
+*Geostatic
+*Solver, Pardiso
+
+** Base fixed (Solid displacement)
+*Boundary
+Base, u1, 0
+Base, u2, 0
+
+*Equation, type=Equal DOF
+*Penalty = 1000.0
+Left_side, Right_side, u1
+
+*Equation, type=Equal DOF
+*Penalty = 1000.0
+Left_side, Right_side, u2
+
+** Self weight (Gravity)
+*Body force, instant
+Soil_column, Grav, 9.81, 0,-1,0
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Node output
+U
+*Element output
+S, E
+*End Step
+
+**
+** Step 2
+**
+*Step, name=Earthquake, inc=10000, maxiter=32, miniter=1
+*Dynamic
+0.005, 4.0, 0.005, 0.005
+*Hilber-Hughes-Taylor = -0.1
+*Solver, Pardiso
+
+*Reset
+Displacement
+
+** Base vertical (Solid displacement)
+*Boundary
+Base, u2, 0
+
+*Equation, type=Equal DOF
+*Penalty = 1000.0
+Left_side, Right_side, u1
+
+*Equation, type=Equal DOF
+*Penalty = 1000.0
+Left_side, Right_side, u2
+
+** Self weight (Gravity)
+*Body force, instant
+Soil_column, Grav, 9.81, 0,-1,0
+
+** Compliant base (Compliant base)
+*DSload, amplitude=Input_VEL
+Base, compliant, 1, 191.150363689
+
+*Output, field, VTK, ASCII
+*Frequency = 10
+*Node output
+U, V, A
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Surface_point
+U, V, A
+*End Step
+
+*End Input
+

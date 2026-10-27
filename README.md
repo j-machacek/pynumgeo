@@ -42,7 +42,7 @@ pynumgeo --version
 The documentation is in `docs/` (`pip install ".[docs]"`, then `mkdocs serve`); `docs/llms.txt` is a
 one-page summary for agents.
 
-pynumgeo `2026.2.0.dev0` is built against the numgeo developer source `834564ed` (`numgeo2026-v2`) and will
+pynumgeo `2026.2.0.dev2` is built against the numgeo developer source `834564ed` (`numgeo2026-v2`) and will
 be released with the next numgeo release. Every input file it writes starts with a header that names the
 pynumgeo version, its author and the numgeo build it was written for.
 

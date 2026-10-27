@@ -22,7 +22,10 @@ set, ``*Nset, nset=BodenInstance.All`` as a set of an instance whose name is the
 * node and element sets: ``src/input/read_set_.f90:123-152, 558-582``; element sets also ``MATERIAL``
   (``*Solid section`` reads ``ELSET``/``MATERIAL`` by substring);
 * surfaces, materials, amplitudes: the option tests of their readers (``read_surface_``,
-  ``read_material_``, ``read_amplitude_``).
+  ``read_material_``, ``read_amplitude_``);
+* interactions: their name stands in ``*Interaction, name=``, ``*Contact pair, interaction=`` and
+  ``*Contact options, name=``, and each of these readers searches its own words in it
+  (``read_interaction_.f90:425-512``, ``read_contact_pairing_.f90:80-154``, ``read_contact_options_.f90:99-123``).
 
 Sets that pynumgeo creates when it flattens parts and instances are named ``<instance>.<set>`` like
 numgeo's internal names; written as a flat deck, an instance name such as ``BodenInstance`` puts the
@@ -56,6 +59,33 @@ RISKY_WORDS: dict[str, tuple[str, ...]] = {
     "surface": ("TYPE", "INSTANCE", "INCLUDE"),
     "material": ("ELSET", "PHASES", "INCLUDE"),
     "amplitude": ("NAME", "TYPE", "VELOCITY", "ACCELERATION", "HYDROSTATIC", "INCREMENT", "INSTANT", "INCLUDE"),
+    "interaction": (
+        # *Interaction, name=... (read_normal_contact_setting)
+        "USER",
+        "NORMAL",
+        "MECHANICAL",
+        "NOSEPARATION",
+        "STIFFNESS_FACTOR",
+        "NONCONSTANT",
+        "VISCOUS",
+        "WATER-FILLEDGAP",
+        "WATERFILLEDGAP",
+        # *Contact pair, interaction=... (read_contact_pairing)
+        "ADJUST",
+        "PERTURBATION",
+        "REFINE",
+        "GENERAL",
+        "NIGP",
+        "NGP",
+        "NLGEOM",
+        "DOUBLEPASS",
+        # *Contact options, name=... (read_contact_options)
+        "CLEARANCE",
+        "CHECKDISP",
+        "CHECKDIST",
+        "REDUCTION",
+        "INCLUDE",
+    ),
     "step": ("INCLUDE",),
 }
 
@@ -77,6 +107,27 @@ _SHORT = {
     "INCREMENT": "Incr",
     "INSTANT": "Inst",
     "INCLUDE": "Incl",
+    "USER": "Usr",
+    "NORMAL": "Nrml",
+    "MECHANICAL": "Mech",
+    "NOSEPARATION": "NoSep",
+    "STIFFNESS_FACTOR": "Stiff_fac",
+    "NONCONSTANT": "NonConst",
+    "VISCOUS": "Visc",
+    "WATER-FILLEDGAP": "Water-gap",
+    "WATERFILLEDGAP": "WaterGap",
+    "ADJUST": "Adj",
+    "PERTURBATION": "Pert",
+    "REFINE": "Refn",
+    "GENERAL": "Genl",
+    "NIGP": "N_igp",
+    "NGP": "N_gp",
+    "NLGEOM": "Nl_geom",
+    "DOUBLEPASS": "Dbl_pass",
+    "CLEARANCE": "Clr",
+    "CHECKDISP": "ChkDisp",
+    "CHECKDIST": "ChkDist",
+    "REDUCTION": "Redn",
 }
 
 
@@ -103,7 +154,8 @@ def safe_name(kind: str, name: str) -> str:
             def repl(m: re.Match[str], short: str = short) -> str:
                 return _cased(short, m.group(0))
 
-            out = re.sub(w, repl, out, flags=re.I)
+            # numgeo deletes blanks before it searches, so the word may stand with blanks in the name
+            out = re.sub(r"\s*".join(map(re.escape, w)), repl, out, flags=re.I)
     raise ValueError(f"cannot make {name!r} safe")  # pragma: no cover
 
 
@@ -112,11 +164,14 @@ def _cased(short: str, original: str) -> str:
         return short.upper()
     if original.islower():
         return short.lower()
+    if original[:1].islower():  # the word starts inside a word of the name ("LongPile" -> "Lon_gpile")
+        return short[:1].lower() + short[1:]
     return short
 
 
 def named_objects(deck: Deck) -> Iterator[tuple[str, str]]:
-    """``(kind, name)`` of everything the deck names (sets, surfaces, materials, amplitudes, steps)."""
+    """``(kind, name)`` of everything the deck names (sets, surfaces, materials, amplitudes, interactions,
+    steps)."""
     for ns in deck.mesh.nsets:
         yield "node set", ns.name
     for es in deck.mesh.elsets:
@@ -127,14 +182,19 @@ def named_objects(deck: Deck) -> Iterator[tuple[str, str]]:
         yield "amplitude", a.name
     for m in deck.materials:
         yield "material", m.name
+    for kw in deck.keywords:
+        if kw.keyword == "*INTERACTION":
+            name = kw.option("NAME")
+            if name:
+                yield "interaction", name
     for st in deck.steps:
         yield "step", st.name
 
 
 def rename(deck: Deck, old: str, new: str) -> int:
-    """Rename every set, surface, material and amplitude called ``old`` (case-insensitive) to ``new``, and
-    every reference to it: section assignments, surface rows, option values and data-line words of all
-    keywords (model, materials, steps). Returns the number of places changed.
+    """Rename every set, surface, material, amplitude and interaction called ``old`` (case-insensitive) to
+    ``new``, and every reference to it: section assignments, surface rows, option values and data-line words
+    of all keywords (model, materials, steps). Returns the number of places changed.
 
     Step names are not renamed. A word that equals ``old`` is replaced wherever it stands, so ``old``
     should be a name, not a word with another meaning in the deck (``All`` is fine, ``u1`` is not).

@@ -40,9 +40,18 @@ from pynumgeo._version import NUMGEO_DOCS_COMMIT, NUMGEO_SOURCE_COMMIT, NUMGEO_V
 
 if TYPE_CHECKING:  # pragma: no cover
     from pynumgeo import catalogue
-    from pynumgeo.deck import Amplitude, Deck, Keyword, Material, Section, Step
-    from pynumgeo.io.reader import ReadError, ReadResult, parse, parse_text, read
-    from pynumgeo.io.writer import WriteError, write, write_text
+    from pynumgeo.deck import Amplitude, Deck, Keyword, Material, Section, Step, diff
+    from pynumgeo.io.reader import (
+        FragmentResult,
+        ReadError,
+        ReadResult,
+        data_tokens,
+        parse,
+        parse_fragment,
+        parse_text,
+        read,
+    )
+    from pynumgeo.io.writer import WriteError, format_keyword, format_material, write, write_text, write_texts
     from pynumgeo.issue import Issue
     from pynumgeo.mesh import Mesh
     from pynumgeo.results import open_results
@@ -56,6 +65,7 @@ __all__ = [
     "Amplitude",
     "BuildProfile",
     "Deck",
+    "FragmentResult",
     "Issue",
     "Keyword",
     "Material",
@@ -69,14 +79,20 @@ __all__ = [
     "WriteError",
     "__version__",
     "catalogue",
+    "data_tokens",
+    "diff",
+    "format_keyword",
+    "format_material",
     "open_results",
     "parse",
+    "parse_fragment",
     "parse_text",
     "read",
     "run",
     "validate",
     "write",
     "write_text",
+    "write_texts",
 ]
 
 _LAZY = {
@@ -87,16 +103,23 @@ _LAZY = {
     "Material": ("pynumgeo.deck", "Material"),
     "Section": ("pynumgeo.deck", "Section"),
     "Step": ("pynumgeo.deck", "Step"),
+    "diff": ("pynumgeo.deck", "diff"),
     "Mesh": ("pynumgeo.mesh", "Mesh"),
     "Issue": ("pynumgeo.issue", "Issue"),
     "ReadError": ("pynumgeo.io.reader", "ReadError"),
     "ReadResult": ("pynumgeo.io.reader", "ReadResult"),
+    "FragmentResult": ("pynumgeo.io.reader", "FragmentResult"),
+    "parse_fragment": ("pynumgeo.io.reader", "parse_fragment"),
+    "data_tokens": ("pynumgeo.io.reader", "data_tokens"),
     "parse": ("pynumgeo.io.reader", "parse"),
     "parse_text": ("pynumgeo.io.reader", "parse_text"),
     "read": ("pynumgeo.io.reader", "read"),
     "WriteError": ("pynumgeo.io.writer", "WriteError"),
     "write": ("pynumgeo.io.writer", "write"),
     "write_text": ("pynumgeo.io.writer", "write_text"),
+    "write_texts": ("pynumgeo.io.writer", "write_texts"),
+    "format_keyword": ("pynumgeo.io.writer", "format_keyword"),
+    "format_material": ("pynumgeo.io.writer", "format_material"),
     "BuildProfile": ("pynumgeo.validation", "BuildProfile"),
     "validate": ("pynumgeo.validation", "validate"),
     "run": ("pynumgeo.solver", "run"),

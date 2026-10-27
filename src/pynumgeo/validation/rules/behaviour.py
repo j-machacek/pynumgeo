@@ -2678,23 +2678,42 @@ def ic_contact_lines(ctx: Context) -> Iterator[Finding]:
             )
 
 
+def _ic_sets(kw: Keyword) -> list[str]:
+    return [str(r[0]) for r in kw.data if r]
+
+
 @rule(
     "NG-IC-108",
     "error",
-    "fluctuation blocks must come after all other state-variable blocks",
-    source="src/initial/initial_state_variables_.f90:176-178 (get_initial_state_variables)",
+    "default and user state-variable blocks must come before a fluctuation block on the same elements",
+    source="src/initial/initial_state_variables_.f90:90-102,176-178 (get_initial_state_variables); "
+    "src/fem/fem_global_assemble_elements_.f90:271-306",
 )
 def ic_fluctuation_last(ctx: Context) -> Iterator[Finding]:
-    seen_fluct = False
+    # numgeo sets default and user state variables per integration point, going through the blocks in input
+    # order; a block whose sets do not hold the element is passed over, but the fluctuation branch returns, so
+    # for the elements of a fluctuation block every later default or user block is lost. Fluctuation and
+    # *-DATA blocks are applied afterwards, outside that loop, and are not affected.
+    fluct: list[tuple[str, set[int] | None]] = []  # (set name, members or None if unknown)
     for i, kw, t, sub in _ics(ctx.deck):
         if t != "STATEVARIABLES":
             continue
         if sub == "FLUCTUATION":
-            seen_fluct = True
-        elif seen_fluct:
+            fluct += [(s, _elset_members(ctx.deck, s)) for s in _ic_sets(kw)]
+            continue
+        if not fluct or sub.endswith("-DATA"):
+            continue
+        hit: set[str] = set()
+        for s in _ic_sets(kw):
+            mem = _elset_members(ctx.deck, s)
+            for fs, fmem in fluct:
+                if _key(fs) == _key(s) or mem is None or fmem is None or mem & fmem:
+                    hit.add(fs)
+        if hit:
             yield (
-                "*Initial conditions, type=state variables after a fluctuation block is skipped by numgeo "
-                "(the fluctuation branch returns); write fluctuation blocks last",
+                f"*Initial conditions, type=state variables{', ' + sub.lower() if sub else ''} after the "
+                f"fluctuation block of {', '.join(sorted(hit))}: numgeo skips it for the elements of that "
+                "set (the fluctuation branch returns); write fluctuation blocks last",
                 _loc(kw, f"keywords[{i}]"),
             )
 

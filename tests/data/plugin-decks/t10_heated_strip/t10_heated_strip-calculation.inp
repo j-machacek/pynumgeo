@@ -1,0 +1,86 @@
+**==================================================================
+**            numgeo input file
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t10_heated_strip
+** analysis  : Heated_strip
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D (plane-strain)
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+**
+** Mesh
+**
+*Include = t10_heated_strip-mesh
+
+**
+** Material definitions
+**
+*include, input=material-definitions
+
+**
+** Solid Sections
+**
+*Assign material, elset=Soil, material=Soil
+
+**
+** Initial Conditions
+**
+*Initial conditions, type=temperature
+Soil, 283.15
+
+**
+** Step 1
+**
+*Step, name=Heating_30_days, inc=10000, maxiter=32, miniter=1
+*Transient
+21600.0, 2592000.0, 21600.0, 21600.0
+*Solver, Pardiso
+
+** Base fixed (Solid displacement)
+*Boundary
+Base, u1, 0
+Base, u2, 0
+
+** Rollers (Solid displacement)
+*Boundary
+Sides, u1, 0
+
+** Strip at 50 degC (Temperature)
+*Boundary
+Heated_strip_TT, tt, 323.15
+
+** Base at 10 degC (Temperature)
+*Boundary
+Base_TT, tt, 283.15
+
+** Air (Film condition)
+*Dload, instant
+Surface_to_the_air_T1, FILM1, 0.01, 283.15
+*Dload, instant
+Surface_to_the_air_T3, FILM3, 0.01, 283.15
+*Dload, instant
+Surface_to_the_air_T4, FILM4, 0.01, 283.15
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Node output
+U, TEMP
+*Element output
+S, HFL1, HFL2
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Strip_centre
+U, TEMP
+*End Step
+
+*End Input
+

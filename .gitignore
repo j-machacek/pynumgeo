@@ -15,6 +15,7 @@
 # Only the package and its documentation belong to this repository: everything else is ignored.
 /*
 !/src/
+!/tests/
 !/docs/
 !/README.md
 !/LICENSE

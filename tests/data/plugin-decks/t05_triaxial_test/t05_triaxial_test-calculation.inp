@@ -1,0 +1,124 @@
+**==================================================================
+**            numgeo input file
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t05_triaxial_test
+** analysis  : Triaxial_test
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D axisymmetric
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+**
+** Mesh
+**
+*Include = t05_triaxial_test-mesh
+
+**
+** Material definitions
+**
+*include, input=material-definitions
+
+**
+** Amplitudes
+**
+
+*Amplitude, name=Plate_ramp, Type=ramp
+0.0, 0.0, 1.0, 1.0
+
+**
+** Solid Sections
+**
+*Assign material, elset=Sample, material=Sand
+
+**
+** Initial Conditions
+**
+*initial conditions, type=stress, full
+Sample, -100.0, -100.0, -100.0, 0.0, 0.0, 0.0
+*initial conditions, type=state variables
+Sample, void_ratio, 0.8
+
+**
+** Step 1
+**
+*Step, name=Isotropic_stress, inc=10000, maxiter=32, miniter=1
+*Geostatic
+*Solver, Pardiso
+
+** Axis (Solid displacement)
+*Boundary
+Axis, u1, 0
+
+** Bottom plate (Solid displacement)
+*Boundary
+Bottom_plate, u2, 0
+
+** Cell pressure (Pressure)
+*DSload, instant
+Mantle, P, -100.0
+
+** Cell pressure on the top (Pressure)
+*DSload, instant
+Top_plate, P, -100.0
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Node output
+U
+*Element output
+S, E
+*End Step
+
+**
+** Step 2
+**
+*Step, name=Shearing, inc=10000, maxiter=32, miniter=1
+*Static
+0.0005, 1.0, 1e-05, 0.005
+*Solver, Pardiso
+
+*Reset
+Displacement, Strain
+
+** Axis (Solid displacement)
+*Boundary
+Axis, u1, 0
+
+** Bottom plate (Solid displacement)
+*Boundary
+Bottom_plate, u2, 0
+
+** Top plate (Solid displacement)
+*Boundary, amplitude=Plate_ramp
+Top_plate, u2, -0.02
+
+** 10 % axial strain
+*Termination
+Sample, E22, -0.1
+
+** Cell pressure (Pressure)
+*DSload, instant
+Mantle, P, -100.0
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Element output
+S, E, VOID_RATIO
+
+*Output, print
+*Frequency = 1
+*Element output, elset = Sample
+S, E, VOID_RATIO
+*Node output, nset = Top_plate
+U, RF
+*End Step
+
+*End Input
+

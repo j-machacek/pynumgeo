@@ -1,0 +1,539 @@
+**==================================================================
+**            numgeo input file
+**==================================================================
+**
+** Input file for the finite element code numgeo (Machacek & Staubach)
+**
+** The input file was created by numgeo-FreeCAD (Machacek & Dogra)
+**
+** document  : t14_segmental_wall_safety_factor
+** analysis  : Segmental_wall
+** date      : 26.10.2026 22:32
+** runtime   : FreeCAD 1.1 / Python 3.11.18 / Qt binding none (headless)
+** dimension : 2D (plane-strain)
+** units     : length (m), force (kN), stress (kPa), density (t/m^3), time (s)
+** sign      : compression negative; vertical axis = y
+**==================================================================
+
+**
+** Mesh
+**
+*Include = t14_segmental_wall_safety_factor-mesh
+
+**
+** Material definitions
+**
+*include, input=material-definitions
+
+**
+** Solid Sections
+**
+*Assign material, elset=Fill, material=Soil
+*Assign material, elset=Facing, material=Facing_panel
+*Assign material, elset=Geogrid, material=Geogrid
+
+**
+** Embedded regions
+**
+
+** Geogrids in the fill
+*Embedded region, interaction, type=Mohr-Coulomb, section=sheet
+Geogrid, Fill, 200000.0, 2000000.0, 0.0, 20.0, 2.0
+
+** Geogrids in the facing
+*Embedded region, interaction
+Geogrid, Facing, 1000000.0, 1000000.0
+
+**
+** Contact interactions
+**
+
+** Interaction = Soil-facing
+*Interaction, Name=Soil-facing
+*Normal, Mechanical=Penalty, stiffness_factor=20
+*Friction, model=Coulomb, stiffness_factor=1
+0.363970, 0
+*Contact options, Name=Soil-facing, clearance=1d-6
+
+**
+** Contact pairs
+**
+*Contact pair, Interaction=Soil-facing, Discretisation=IPS, nigp=3, gap=activation
+Soil-face, Facing-face
+
+**
+** Step 1
+**
+*Step, name=Placing_lift_1, inc=10000, maxiter=100, miniter=1
+*Static
+0.05, 1.0, 1e-05, 0.05
+*Solver, MUMPS
+
+** Base (Solid displacement)
+*Boundary
+Bottom, u1, 0
+Bottom, u2, 0
+
+** Right (Solid displacement)
+*Boundary
+Right, u1, 0
+
+** Hinge (Solid displacement)
+*Boundary
+Facing-toe, u1, 0
+Facing-toe, u2, 0
+
+** Remove_Lift-2, Remove_Lift-3, Remove_Lift-4, Remove_Lift-5, Remove_Lift-6, Remove_Facing-2, Remove_Facing-3, Remove_Facing-4, Remove_Facing-5, Remove_Facing-6, Remove_Geogrid-2, Remove_Geogrid-3, Remove_Geogrid-4, Remove_Geogrid-5, Remove_Geogrid-6
+*Model change, remove
+Lift-2, Lift-3, Lift-4, Lift-5, Lift-6, Facing-2, Facing-3, Facing-4, Facing-5, Facing-6, Geogrid-2, Geogrid-3, Geogrid-4, Geogrid-5, Geogrid-6
+
+** Weight lift 1 (Gravity)
+*Body force, ramp
+Lift-1, Grav, 10.0, 0,-1,0
+
+** Weight panel 1 (Gravity)
+*Body force, ramp
+Facing-1, Grav, 10.0, 0,-1,0
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Node output
+U
+*Element output
+S, E
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Face
+U, COORDS
+*Element output, elset = Geogrid
+STRESS-TRUSS, STATE-TRUSS, INTERFACE-SHEAR, INTERFACE-CAP
+*End Step
+
+**
+** Step 2
+**
+*Step, name=Placing_lift_2, inc=10000, maxiter=100, miniter=1
+*Static
+0.05, 1.0, 1e-05, 0.05
+*Solver, MUMPS
+
+** Base (Solid displacement)
+*Boundary
+Bottom, u1, 0
+Bottom, u2, 0
+
+** Right (Solid displacement)
+*Boundary
+Right, u1, 0
+
+** Hinge (Solid displacement)
+*Boundary
+Facing-toe, u1, 0
+Facing-toe, u2, 0
+
+** Add_Lift-2, Add_Facing-2, Add_Geogrid-2
+*Model change, add
+Lift-2, Facing-2, Geogrid-2
+
+** Weight lift 1 (Gravity)
+*Body force, instant
+Lift-1, Grav, 10.0, 0,-1,0
+
+** Weight panel 1 (Gravity)
+*Body force, instant
+Facing-1, Grav, 10.0, 0,-1,0
+
+** Weight lift 2 (Gravity)
+*Body force, ramp
+Lift-2, Grav, 10.0, 0,-1,0
+
+** Weight panel 2 (Gravity)
+*Body force, ramp
+Facing-2, Grav, 10.0, 0,-1,0
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Face
+U, COORDS
+*Element output, elset = Geogrid
+STRESS-TRUSS, STATE-TRUSS, INTERFACE-SHEAR, INTERFACE-CAP
+*End Step
+
+**
+** Step 3
+**
+*Step, name=Placing_lift_3, inc=10000, maxiter=100, miniter=1
+*Static
+0.05, 1.0, 1e-05, 0.05
+*Solver, MUMPS
+
+** Base (Solid displacement)
+*Boundary
+Bottom, u1, 0
+Bottom, u2, 0
+
+** Right (Solid displacement)
+*Boundary
+Right, u1, 0
+
+** Hinge (Solid displacement)
+*Boundary
+Facing-toe, u1, 0
+Facing-toe, u2, 0
+
+** Add_Lift-3, Add_Facing-3, Add_Geogrid-3
+*Model change, add
+Lift-3, Facing-3, Geogrid-3
+
+** Weight lift 1 (Gravity)
+*Body force, instant
+Lift-1, Grav, 10.0, 0,-1,0
+
+** Weight panel 1 (Gravity)
+*Body force, instant
+Facing-1, Grav, 10.0, 0,-1,0
+
+** Weight lift 2 (Gravity)
+*Body force, instant
+Lift-2, Grav, 10.0, 0,-1,0
+
+** Weight panel 2 (Gravity)
+*Body force, instant
+Facing-2, Grav, 10.0, 0,-1,0
+
+** Weight lift 3 (Gravity)
+*Body force, ramp
+Lift-3, Grav, 10.0, 0,-1,0
+
+** Weight panel 3 (Gravity)
+*Body force, ramp
+Facing-3, Grav, 10.0, 0,-1,0
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Face
+U, COORDS
+*Element output, elset = Geogrid
+STRESS-TRUSS, STATE-TRUSS, INTERFACE-SHEAR, INTERFACE-CAP
+*End Step
+
+**
+** Step 4
+**
+*Step, name=Placing_lift_4, inc=10000, maxiter=100, miniter=1
+*Static
+0.05, 1.0, 1e-05, 0.05
+*Solver, MUMPS
+
+** Base (Solid displacement)
+*Boundary
+Bottom, u1, 0
+Bottom, u2, 0
+
+** Right (Solid displacement)
+*Boundary
+Right, u1, 0
+
+** Hinge (Solid displacement)
+*Boundary
+Facing-toe, u1, 0
+Facing-toe, u2, 0
+
+** Add_Lift-4, Add_Facing-4, Add_Geogrid-4
+*Model change, add
+Lift-4, Facing-4, Geogrid-4
+
+** Weight lift 1 (Gravity)
+*Body force, instant
+Lift-1, Grav, 10.0, 0,-1,0
+
+** Weight panel 1 (Gravity)
+*Body force, instant
+Facing-1, Grav, 10.0, 0,-1,0
+
+** Weight lift 2 (Gravity)
+*Body force, instant
+Lift-2, Grav, 10.0, 0,-1,0
+
+** Weight panel 2 (Gravity)
+*Body force, instant
+Facing-2, Grav, 10.0, 0,-1,0
+
+** Weight lift 3 (Gravity)
+*Body force, instant
+Lift-3, Grav, 10.0, 0,-1,0
+
+** Weight panel 3 (Gravity)
+*Body force, instant
+Facing-3, Grav, 10.0, 0,-1,0
+
+** Weight lift 4 (Gravity)
+*Body force, ramp
+Lift-4, Grav, 10.0, 0,-1,0
+
+** Weight panel 4 (Gravity)
+*Body force, ramp
+Facing-4, Grav, 10.0, 0,-1,0
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Face
+U, COORDS
+*Element output, elset = Geogrid
+STRESS-TRUSS, STATE-TRUSS, INTERFACE-SHEAR, INTERFACE-CAP
+*End Step
+
+**
+** Step 5
+**
+*Step, name=Placing_lift_5, inc=10000, maxiter=100, miniter=1
+*Static
+0.05, 1.0, 1e-05, 0.05
+*Solver, MUMPS
+
+** Base (Solid displacement)
+*Boundary
+Bottom, u1, 0
+Bottom, u2, 0
+
+** Right (Solid displacement)
+*Boundary
+Right, u1, 0
+
+** Hinge (Solid displacement)
+*Boundary
+Facing-toe, u1, 0
+Facing-toe, u2, 0
+
+** Add_Lift-5, Add_Facing-5, Add_Geogrid-5
+*Model change, add
+Lift-5, Facing-5, Geogrid-5
+
+** Weight lift 1 (Gravity)
+*Body force, instant
+Lift-1, Grav, 10.0, 0,-1,0
+
+** Weight panel 1 (Gravity)
+*Body force, instant
+Facing-1, Grav, 10.0, 0,-1,0
+
+** Weight lift 2 (Gravity)
+*Body force, instant
+Lift-2, Grav, 10.0, 0,-1,0
+
+** Weight panel 2 (Gravity)
+*Body force, instant
+Facing-2, Grav, 10.0, 0,-1,0
+
+** Weight lift 3 (Gravity)
+*Body force, instant
+Lift-3, Grav, 10.0, 0,-1,0
+
+** Weight panel 3 (Gravity)
+*Body force, instant
+Facing-3, Grav, 10.0, 0,-1,0
+
+** Weight lift 4 (Gravity)
+*Body force, instant
+Lift-4, Grav, 10.0, 0,-1,0
+
+** Weight panel 4 (Gravity)
+*Body force, instant
+Facing-4, Grav, 10.0, 0,-1,0
+
+** Weight lift 5 (Gravity)
+*Body force, ramp
+Lift-5, Grav, 10.0, 0,-1,0
+
+** Weight panel 5 (Gravity)
+*Body force, ramp
+Facing-5, Grav, 10.0, 0,-1,0
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Face
+U, COORDS
+*Element output, elset = Geogrid
+STRESS-TRUSS, STATE-TRUSS, INTERFACE-SHEAR, INTERFACE-CAP
+*End Step
+
+**
+** Step 6
+**
+*Step, name=Placing_lift_6, inc=10000, maxiter=100, miniter=1
+*Static
+0.05, 1.0, 1e-05, 0.05
+*Solver, MUMPS
+
+** Base (Solid displacement)
+*Boundary
+Bottom, u1, 0
+Bottom, u2, 0
+
+** Right (Solid displacement)
+*Boundary
+Right, u1, 0
+
+** Hinge (Solid displacement)
+*Boundary
+Facing-toe, u1, 0
+Facing-toe, u2, 0
+
+** Add_Lift-6, Add_Facing-6, Add_Geogrid-6
+*Model change, add
+Lift-6, Facing-6, Geogrid-6
+
+** Weight lift 1 (Gravity)
+*Body force, instant
+Lift-1, Grav, 10.0, 0,-1,0
+
+** Weight panel 1 (Gravity)
+*Body force, instant
+Facing-1, Grav, 10.0, 0,-1,0
+
+** Weight lift 2 (Gravity)
+*Body force, instant
+Lift-2, Grav, 10.0, 0,-1,0
+
+** Weight panel 2 (Gravity)
+*Body force, instant
+Facing-2, Grav, 10.0, 0,-1,0
+
+** Weight lift 3 (Gravity)
+*Body force, instant
+Lift-3, Grav, 10.0, 0,-1,0
+
+** Weight panel 3 (Gravity)
+*Body force, instant
+Facing-3, Grav, 10.0, 0,-1,0
+
+** Weight lift 4 (Gravity)
+*Body force, instant
+Lift-4, Grav, 10.0, 0,-1,0
+
+** Weight panel 4 (Gravity)
+*Body force, instant
+Facing-4, Grav, 10.0, 0,-1,0
+
+** Weight lift 5 (Gravity)
+*Body force, instant
+Lift-5, Grav, 10.0, 0,-1,0
+
+** Weight panel 5 (Gravity)
+*Body force, instant
+Facing-5, Grav, 10.0, 0,-1,0
+
+** Weight lift 6 (Gravity)
+*Body force, ramp
+Lift-6, Grav, 10.0, 0,-1,0
+
+** Weight panel 6 (Gravity)
+*Body force, ramp
+Facing-6, Grav, 10.0, 0,-1,0
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Node output
+U
+*Element output
+S, E, STRESS-TRUSS
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Face
+U, COORDS
+*Element output, elset = Geogrid
+STRESS-TRUSS, STATE-TRUSS, INTERFACE-SHEAR, INTERFACE-CAP
+*End Step
+
+**
+** Step 7
+**
+*Step, name=Strength_reduction, inc=1000, maxiter=100, miniter=1
+*Reduction
+1.0, 0.01, 0.05, 0.0001
+*Solver, MUMPS
+
+*Accelerator, type = Linear
+0.5, 1.0
+
+** Base (Solid displacement)
+*Boundary
+Bottom, u1, 0
+Bottom, u2, 0
+
+** Right (Solid displacement)
+*Boundary
+Right, u1, 0
+
+** Hinge (Solid displacement)
+*Boundary
+Facing-toe, u1, 0
+Facing-toe, u2, 0
+
+** Weight lift 1 (Gravity)
+*Body force, instant
+Lift-1, Grav, 10.0, 0,-1,0
+
+** Weight panel 1 (Gravity)
+*Body force, instant
+Facing-1, Grav, 10.0, 0,-1,0
+
+** Weight lift 2 (Gravity)
+*Body force, instant
+Lift-2, Grav, 10.0, 0,-1,0
+
+** Weight panel 2 (Gravity)
+*Body force, instant
+Facing-2, Grav, 10.0, 0,-1,0
+
+** Weight lift 3 (Gravity)
+*Body force, instant
+Lift-3, Grav, 10.0, 0,-1,0
+
+** Weight panel 3 (Gravity)
+*Body force, instant
+Facing-3, Grav, 10.0, 0,-1,0
+
+** Weight lift 4 (Gravity)
+*Body force, instant
+Lift-4, Grav, 10.0, 0,-1,0
+
+** Weight panel 4 (Gravity)
+*Body force, instant
+Facing-4, Grav, 10.0, 0,-1,0
+
+** Weight lift 5 (Gravity)
+*Body force, instant
+Lift-5, Grav, 10.0, 0,-1,0
+
+** Weight panel 5 (Gravity)
+*Body force, instant
+Facing-5, Grav, 10.0, 0,-1,0
+
+** Weight lift 6 (Gravity)
+*Body force, instant
+Lift-6, Grav, 10.0, 0,-1,0
+
+** Weight panel 6 (Gravity)
+*Body force, instant
+Facing-6, Grav, 10.0, 0,-1,0
+
+*Output, field, VTK, ASCII
+*Frequency = 1
+*Node output
+U
+*Element output
+S, E, STRESS-TRUSS
+
+*Output, print
+*Frequency = 1
+*Node output, nset = Face
+U, COORDS
+*Element output, elset = Geogrid
+STRESS-TRUSS, STATE-TRUSS, INTERFACE-SHEAR, INTERFACE-CAP
+*End Step
+
+*End Input
+
