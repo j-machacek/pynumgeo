@@ -22,6 +22,9 @@
 site_name = "pynumgeo"
 site_description = "Python API for the finite element code numgeo"
 site_author = "Jan Machacek"
+site_url = "https://j-machacek.github.io/pynumgeo/"
+repo_url = "https://github.com/j-machacek/pynumgeo"
+repo_name = "j-machacek/pynumgeo"
 copyright = "Copyright &copy; 2026 Jan Machacek &middot; BSD-3-Clause"
 extra_css = ["stylesheets/extra.css"]
 

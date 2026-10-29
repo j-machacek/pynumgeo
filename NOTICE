@@ -1,0 +1,19 @@
+pynumgeo
+Copyright (c) 2026 Jan Machacek
+Licensed under the BSD 3-Clause License, see LICENSE.
+
+The pynumgeo source code is written by Jan Machacek. In addition, the package ships data taken from
+numgeo, in src/pynumgeo/catalogue/data/:
+
+  * docs/reference/  - the keyword reference pages of the numgeo documentation
+                       (numgeo documentation commit eceee974);
+  * catalogue.json,
+    messages.json    - keyword, option and message tables derived from the numgeo source code
+                       (numgeo source commit 834564ed).
+
+These numgeo texts are
+
+  Copyright (c) 2018-2026 Jan Machacek, Patrick Staubach (the copyright holders of numgeo)
+
+and are redistributed with pynumgeo with the permission of the copyright holders. numgeo itself is
+not part of pynumgeo; see https://www.numgeo.de.

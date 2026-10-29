@@ -19,6 +19,7 @@
 !/docs/
 !/README.md
 !/LICENSE
+!/NOTICE
 !/pyproject.toml
 !/zensical.toml
 !/.gitignore

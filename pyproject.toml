@@ -23,11 +23,12 @@ dynamic = ["version"]
 description = "Python API for the finite element code numgeo: input decks, validation, runs and results"
 readme = "README.md"
 license = "BSD-3-Clause"
-license-files = ["LICENSE"]
+license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "Jan Machacek" }]
 requires-python = ">=3.11"
 dependencies = ["numpy>=1.23", "pydantic>=2.5,<3"]
 classifiers = [
+  "Development Status :: 4 - Beta",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -37,6 +38,12 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Typed",
 ]
+
+[project.urls]
+Homepage = "https://github.com/j-machacek/pynumgeo"
+Documentation = "https://j-machacek.github.io/pynumgeo/"
+Source = "https://github.com/j-machacek/pynumgeo"
+numgeo = "https://www.numgeo.de"
 
 [project.optional-dependencies]
 meshio = ["meshio>=5"]
@@ -54,7 +61,7 @@ path = "src/pynumgeo/_version.py"
 packages = ["src/pynumgeo"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/pynumgeo", "README.md", "LICENSE", "pyproject.toml"]
+include = ["src/pynumgeo", "README.md", "LICENSE", "NOTICE", "pyproject.toml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "src/pynumgeo"]

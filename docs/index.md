@@ -62,7 +62,8 @@ documentation and the source differ, pynumgeo follows the source.
 pynumgeo follows the numgeo release it is built for: version `2026.2.x` is built against the current
 numgeo developer source and is released with the next numgeo release. `pynumgeo --version` names the
 numgeo build and source commit it was made for; every input file it writes carries the same in its
-header.
+header. Until then, pre-releases (`2026.2.0.devN`) are published on [PyPI](https://pypi.org/project/pynumgeo/)
+and installed with `pip install --pre pynumgeo`.
 
 ## Status
 

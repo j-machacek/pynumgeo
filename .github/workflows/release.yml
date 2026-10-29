@@ -1,0 +1,64 @@
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#                                                pynumgeo
+#                              Python API for the finite element code numgeo
+#                                     Copyright (C) 2026 Jan Machacek
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#
+# Author: Jan Machacek
+#
+# pynumgeo writes, checks and runs numgeo input files and reads numgeo results. It follows the
+# development of numgeo: new developments in the numgeo source code are taken over into the API, and a
+# CI pipeline tests every change.
+#
+# License: BSD-3-Clause, see LICENSE.
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#
+# Release of pynumgeo to PyPI: runs when a GitHub release is published. The release tag must be
+# "v" + the version in src/pynumgeo/_version.py (e.g. v2026.2.0.dev2); mark .devN/aN/bN/rcN releases as
+# pre-releases on GitHub. Uploads use PyPI Trusted Publishing (no token): on pypi.org add a (pending)
+# publisher for owner j-machacek, repository pynumgeo, workflow release.yml, environment pypi.
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build twine
+      - name: Release tag must match the package version
+        run: |
+          version=$(python -c "import re, pathlib; print(re.search(r'__version__ = \"(.+?)\"', pathlib.Path('src/pynumgeo/_version.py').read_text()).group(1))")
+          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
+            echo "release tag ${GITHUB_REF_NAME} does not match package version v${version}"; exit 1
+          fi
+      - run: python -m build
+      - run: python -m twine check --strict dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/pynumgeo/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

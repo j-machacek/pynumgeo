@@ -21,14 +21,16 @@ pynumgeo needs Python 3.11 or newer and runs on Windows and Linux. Its only runt
 numpy and pydantic 2.
 
 ```console
-pip install pynumgeo                 # once released on PyPI
-pip install "pynumgeo[meshio]"       # + meshio for mesh import/export (Gmsh, VTK, ...)
-pip install "pynumgeo[pandas]"       # + pandas for result tables
+pip install --pre pynumgeo                   # pre-releases (2026.2.0.devN) until 2026.2.0
+pip install --pre "pynumgeo[meshio]"         # + meshio for mesh import/export (Gmsh, VTK, ...)
+pip install --pre "pynumgeo[pandas]"         # + pandas for result tables
 ```
 
-From a checkout of the repository:
+From a checkout of the [repository](https://github.com/j-machacek/pynumgeo):
 
 ```console
+git clone https://github.com/j-machacek/pynumgeo.git
+cd pynumgeo
 pip install -e .
 pip install -e ".[docs]"             # to build this documentation: zensical build
 ```
