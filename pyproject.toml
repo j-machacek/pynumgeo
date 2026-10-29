@@ -14,7 +14,7 @@
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 
 [build-system]
-requires = ["hatchling>=1.21"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
@@ -22,7 +22,8 @@ name = "pynumgeo"
 dynamic = ["version"]
 description = "Python API for the finite element code numgeo: input decks, validation, runs and results"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 authors = [{ name = "Jan Machacek" }]
 requires-python = ">=3.11"
 dependencies = ["numpy>=1.23", "pydantic>=2.5,<3"]
@@ -31,7 +32,6 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "License :: OSI Approved :: BSD License",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
   "Topic :: Scientific/Engineering",
@@ -41,7 +41,7 @@ classifiers = [
 [project.optional-dependencies]
 meshio = ["meshio>=5"]
 pandas = ["pandas>=1.5"]
-docs = ["mkdocs-material>=9", "mkdocstrings[python]>=0.24"]
+docs = ["zensical>=0.0.73", "mkdocstrings-python>=2.0"]
 dev = ["pytest>=7", "pytest-cov", "ruff>=0.5", "mypy>=1.8", "pre-commit", "meshio>=5"]
 
 [project.scripts]

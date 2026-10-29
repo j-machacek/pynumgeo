@@ -1,0 +1,92 @@
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#                                                pynumgeo
+#                              Python API for the finite element code numgeo
+#                                     Copyright (C) 2026 Jan Machacek
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#
+# Author: Jan Machacek
+#
+# pynumgeo writes, checks and runs numgeo input files and reads numgeo results. It follows the
+# development of numgeo: new developments in the numgeo source code are taken over into the API, and a
+# CI pipeline tests every change.
+#
+# License: BSD-3-Clause, see LICENSE.
+# =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
+#
+# Documentation site of pynumgeo, built with Zensical:
+#   pip install -e ".[docs]"
+#   zensical serve            # preview on http://localhost:8000
+#   zensical build --strict   # static site in site/
+
+[project]
+site_name = "pynumgeo"
+site_description = "Python API for the finite element code numgeo"
+site_author = "Jan Machacek"
+copyright = "Copyright &copy; 2026 Jan Machacek &middot; BSD-3-Clause"
+extra_css = ["stylesheets/extra.css"]
+
+nav = [
+  { "Home" = "index.md" },
+  { "Installation" = "install.md" },
+  { "Quickstart" = "quickstart.md" },
+  { "Concepts" = "concepts.md" },
+  { "For agents" = "for-agents.md" },
+  { "API reference" = [
+    { "Top level" = "api/pynumgeo.md" },
+    { "Deck" = "api/deck.md" },
+    { "Mesh" = "api/mesh.md" },
+    { "Reading and writing" = "api/io.md" },
+    { "Validation" = "api/validation.md" },
+    { "Running numgeo" = "api/solver.md" },
+    { "Results" = "api/results.md" },
+    { "Catalogue" = "api/catalogue.md" },
+    { "Issues" = "api/issue.md" },
+    { "Command line" = "api/cli.md" },
+  ] },
+]
+
+[project.theme]
+language = "en"
+logo = "assets/pynumgeo-mark.svg"
+favicon = "assets/favicon.svg"
+features = [
+  "content.code.copy",
+  "navigation.footer",
+  "navigation.sections",
+  "navigation.top",
+  "search.highlight",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
+toggle.name = "Dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "Light mode"
+
+[project.markdown_extensions]
+admonition = {}
+tables = {}
+toc.permalink = true
+pymdownx.highlight = {}
+pymdownx.superfences = {}
+
+[project.plugins.mkdocstrings.handlers.python]
+paths = ["src"]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+docstring_style = "google"
+show_source = false
+show_root_heading = true
+members_order = "source"
+filters = ["!^_"]
+merge_init_into_class = true

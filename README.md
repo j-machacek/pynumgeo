@@ -15,6 +15,13 @@ License: BSD-3-Clause, see LICENSE.
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/pynumgeo-logo-dark.svg">
+    <img src="docs/assets/pynumgeo-logo.svg" alt="pynumgeo" height="80">
+  </picture>
+</p>
+
 # pynumgeo
 
 Python API for the finite element code [numgeo](https://www.numgeo.de): the object model of a numgeo
@@ -39,7 +46,8 @@ pynumgeo info "*Initial conditions"
 pynumgeo --version
 ```
 
-The documentation is in `docs/` (`pip install ".[docs]"`, then `mkdocs serve`); `docs/llms.txt` is a
+The documentation is in `docs/` and is built with [Zensical](https://zensical.org) (`pip install ".[docs]"`,
+then `zensical serve`); `docs/llms.txt` is a
 one-page summary for agents.
 
 pynumgeo `2026.2.0.dev2` is built against the numgeo developer source `834564ed` (`numgeo2026-v2`) and will

@@ -1,0 +1,21 @@
+/* pynumgeo documentation: numgeo colours (navy #2F2E42, soil brown #A05A2C). */
+[data-md-color-primary="custom"] {
+  --md-primary-fg-color: #2f2e42;
+  --md-primary-fg-color--light: #4a4960;
+  --md-primary-fg-color--dark: #1f1e2d;
+  --md-primary-bg-color: #ffffff;
+  --md-primary-bg-color--light: #ffffffb3;
+}
+
+[data-md-color-accent="custom"] {
+  --md-accent-fg-color: #a05a2c;
+  --md-accent-fg-color--transparent: #a05a2c1a;
+}
+
+[data-md-color-scheme="default"] {
+  --md-typeset-a-color: #a05a2c;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color: #d08a58;
+}

@@ -30,7 +30,7 @@ From a checkout of the repository:
 
 ```console
 pip install -e .
-pip install -e ".[docs]"             # to build this documentation: mkdocs build
+pip install -e ".[docs]"             # to build this documentation: zensical build
 ```
 
 ## The numgeo executable

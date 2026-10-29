@@ -20,7 +20,7 @@
 !/README.md
 !/LICENSE
 !/pyproject.toml
-!/mkdocs.yml
+!/zensical.toml
 !/.gitignore
 !/.github/
 /docs/changelog.md
