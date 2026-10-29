@@ -17,8 +17,8 @@ License: BSD-3-Clause, see LICENSE.
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/j-machacek/pynumgeo/main/docs/assets/pynumgeo-logo-dark.png">
-    <img src="https://raw.githubusercontent.com/j-machacek/pynumgeo/main/docs/assets/pynumgeo-logo.png" alt="pynumgeo" height="80">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/pynumgeo-logo-dark.svg">
+    <img src="docs/assets/pynumgeo-logo.svg" alt="pynumgeo" height="80">
   </picture>
 </p>
 
