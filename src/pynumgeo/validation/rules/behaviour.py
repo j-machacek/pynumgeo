@@ -3406,6 +3406,90 @@ def friction_unknown(ctx: Context) -> Iterator[Finding]:
             )
 
 
+_FRICTION_CHANGE_MODELS = ("COULOMB", "MOHR-COULOMB", "MC")
+
+
+def _friction_changes(deck: Deck) -> Iterator[tuple[Step, Keyword]]:
+    """``*Model change`` keywords numgeo reads as friction changes (MATERIAL is checked first)."""
+    for _, st, _, kw in _step_items(deck):
+        if kw.keyword == "*MODELCHANGE":
+            text = _opt_text(kw)
+            if "FRICTION" in text and "MATERIAL" not in text:
+                yield st, kw
+
+
+@rule(
+    "NG-CONT-125",
+    "error",
+    "*Model change, friction needs an interaction with Coulomb or Mohr-Coulomb friction and its parameters",
+    source="src/input/read_model_change_.f90:136-217 (read_model_change, numgeo-src 60fca8b5)",
+)
+def friction_change(ctx: Context) -> Iterator[Finding]:
+    deck = ctx.deck
+    changes = list(_friction_changes(deck))
+    if not changes:
+        return
+    library = {_key(str(m["name"])): m for m in ctx.catalogue.section("interactions", "contact_models")}
+    interactions = {_key(str(kw.option("NAME"))): kw for kw in _interactions(deck)}
+    for st, kw in changes:
+        where = f"step {st.name}: *Model change, friction"
+        if not kw.data:
+            yield (
+                f"{where} needs at least one line 'interaction name, parameters of the friction model'",
+                _sloc(st, kw),
+            )
+        for r in kw.data:
+            if len(r) < 2:
+                yield f"{where}: {_row(r)!r} needs the interaction name and the parameters", _sloc(st, kw)
+                continue
+            name = str(r[0])
+            inter = interactions.get(_key(name))
+            if inter is None:
+                yield f"{where}: unknown interaction {name!r}", _sloc(st, kw)
+                continue
+            fr = _friction(inter)
+            if fr is None:
+                yield (
+                    f"{where}: interaction {name} has no friction model (*Friction); for frictionless contact "
+                    "up to the change use *Friction, model=Coulomb with tan(delta) = 0 and c = 0",
+                    _sloc(st, kw),
+                )
+                continue
+            if any(_key(k) == "USER" for k, _ in inter.options):
+                yield (
+                    f"{where}: interaction {name} has user defined contact properties (*Interaction, user)",
+                    _sloc(st, kw),
+                )
+                continue
+            model = _friction_model(fr)
+            if model not in _FRICTION_CHANGE_MODELS:
+                shown = "this model" if ctx.catalogue.is_private_name(model) else model.lower()
+                yield (
+                    f"{where}: the friction of interaction {name} ({shown}) cannot be changed (Coulomb and "
+                    "Mohr-Coulomb)",
+                    _sloc(st, kw),
+                )
+                continue
+            values = [t for row in fr.data for t in row]
+            new = list(r[1:])
+            if len(new) != len(values):
+                yield (
+                    f"{where}: {len(new)} parameters for interaction {name}, the data line of its *Friction "
+                    f"has {len(values)}",
+                    _sloc(st, kw),
+                )
+                continue
+            entry = library.get(model)
+            if entry is not None and len(values) == int(entry["nprops"]):
+                a, b = _num(new[0]), _num(values[0])
+                if a is None or b is None or abs(a - b) > 1.0e-12 * max(abs(a), abs(b)):
+                    yield (
+                        f"{where}: the tangential penalty (first value, {new[0]}) of interaction {name} cannot be "
+                        f"changed; give the value of its *Friction ({values[0]})",
+                        _sloc(st, kw),
+                    )
+
+
 # ============================================================================= output
 def _outputs(deck: Deck) -> Iterator[tuple[Step, Keyword]]:
     for _, st, _, kw in _step_items(deck):

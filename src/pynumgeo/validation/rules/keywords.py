@@ -597,7 +597,10 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
         "substring", "warning", "src/input/read_step_.f90:1742,1925,2192", ("FIELD", "PRINT", "USER")
     ),
     ("step", "*MODELCHANGE"): _Policy(
-        "substring", "warning", "src/input/read_model_change_.f90:75,241-244", ("MATERIAL", "REMOVE", "ADD")
+        "substring",
+        "warning",
+        "src/input/read_model_change_.f90:82,136,221,333-338",
+        ("MATERIAL", "FRICTION", "REMOVE", "ADD"),
     ),
     ("step", "*EQUATION"): _Policy("substring", "warning", "src/input/read_equation_.f90:46-120"),
     ("step", "*EXECUTECOMMAND"): _Policy("substring", "warning", "src/input/read_step_.f90:3296-3330"),

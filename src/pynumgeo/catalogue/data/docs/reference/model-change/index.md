@@ -11,3 +11,4 @@ This option allows you to modify essential model settings during analysis, such 
 
 * [Material](./material.md)
 * [Remove](./elements.md) and [Add](./elements.md) elements
+* [Friction](./friction.md): parameters of the friction model of an interaction

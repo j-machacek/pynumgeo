@@ -7054,7 +7054,7 @@
        "source": {
         "anchor": "f4e43fba17c9a7d5",
         "file": "src/input/read_model_change_.f90",
-        "line": 91,
+        "line": 98,
         "routine": "read_model_change"
        },
        "type": "name",
@@ -7067,18 +7067,57 @@
        "source": {
         "anchor": "f4e43fba17c9a7d5",
         "file": "src/input/read_model_change_.f90",
-        "line": 91,
+        "line": 98,
         "routine": "read_model_change"
        },
        "type": "name",
        "unit": null
       }
      ],
-     "repeat": "until next line containing '*'; at least one line (l.79-87)",
+     "repeat": "until next line containing '*'; at least one line (l.86-94)",
      "source": {
       "anchor": "dd0ab02bf2bafd89",
       "file": "src/input/read_model_change_.f90",
-      "line": 78,
+      "line": 85,
+      "routine": "read_model_change"
+     }
+    },
+    {
+     "count_rule": "narg == 1 + number of values of the *Friction data line of the interaction",
+     "description": "FRICTION: interaction name, then the values of the data line of its *Friction definition ([tangential penalty,] tan(delta)[, tan(theta)], c)",
+     "fields": [
+      {
+       "default": null,
+       "name": "interaction",
+       "required": true,
+       "source": {
+        "anchor": "9b9307ec486fcf9f",
+        "file": "src/input/read_model_change_.f90",
+        "line": 159,
+        "routine": "read_model_change"
+       },
+       "type": "name",
+       "unit": null
+      },
+      {
+       "default": null,
+       "name": "values",
+       "required": true,
+       "source": {
+        "anchor": "f0af82c775fde737",
+        "file": "src/input/read_model_change_.f90",
+        "line": 161,
+        "routine": "read_model_change"
+       },
+       "type": "real",
+       "unit": null
+      }
+     ],
+     "repeat": "until next line containing '*'; at least one line (l.140-145)",
+     "source": {
+      "anchor": "dd0ab02bf2bafd89",
+      "file": "src/input/read_model_change_.f90",
+      "line": 139,
       "routine": "read_model_change"
      }
     },
@@ -7093,18 +7132,18 @@
        "source": {
         "anchor": "82c5afef76747e8c",
         "file": "src/input/read_model_change_.f90",
-        "line": 200,
+        "line": 292,
         "routine": "read_model_change"
        },
        "type": "name",
        "unit": null
       }
      ],
-     "repeat": "until next line containing '*'; at least one set (l.189-197)",
+     "repeat": "until next line containing '*'; at least one set (l.281-289)",
      "source": {
       "anchor": "dd0ab02bf2bafd89",
       "file": "src/input/read_model_change_.f90",
-      "line": 188,
+      "line": 280,
       "routine": "read_model_change"
      }
     }
@@ -7120,7 +7159,7 @@
    "handler": {
     "anchor": "634e8d2e0590fa42",
     "file": "src/input/read_model_change_.f90",
-    "line": 54,
+    "line": 60,
     "routine": "read_model_change"
    },
    "keyword": "*MODELCHANGE",
@@ -7128,7 +7167,7 @@
     "*MODELCHANGE",
     "*MODELCHANGE,"
    ],
-   "notes": "REMOVE/ADD refused in *Reduction and explicit dynamic steps, with *Embedded region absorbed/<private>/plate and with general contact (l.134-158); an element in a REMOVE and an ADD set of the same step -> error (l.225-240). docs/reference/model-change/elements.md carries front matter 'level: confidential'.",
+   "notes": "REMOVE/ADD refused in *Reduction and explicit dynamic steps, with *Embedded region absorbed/<private>/plate and with general contact (l.226-250); an element in a REMOVE and an ADD set of the same step -> error (l.317-332). docs/reference/model-change/elements.md carries front matter 'level: confidential'. FRICTION (numgeo-src 60fca8b5): the parameters of the friction model of an interaction from this step on, see docs/reference/model-change/friction.md. Line numbers of read_model_change_.f90 refer to numgeo-src 60fca8b5.",
    "options": [
     {
      "default": null,
@@ -7141,12 +7180,31 @@
      "source": {
       "anchor": "1b47b86736a2ca6f",
       "file": "src/input/read_model_change_.f90",
-      "line": 75,
+      "line": 82,
       "routine": "read_model_change"
      },
      "value_type": "flag",
      "values": [
       "MATERIAL"
+     ]
+    },
+    {
+     "default": null,
+     "default_source": null,
+     "doc": "docs/reference/model-change/friction.md",
+     "match": "substring 'FRICTION' (checked after MATERIAL, before REMOVE/ADD)",
+     "name": "FRICTION",
+     "notes": "numgeo-src 60fca8b5 (30.10.2026). Interaction defined before the first step, with *Friction, model=Coulomb or Mohr-Coulomb, not *Interaction, user; the tangential penalty (first value, if given in *Friction) must be repeated unchanged (l.203-213); as many values as the data line of its *Friction (l.195-200).",
+     "required": false,
+     "source": {
+      "anchor": "2593f39c5063fa68",
+      "file": "src/input/read_model_change_.f90",
+      "line": 136,
+      "routine": "read_model_change"
+     },
+     "value_type": "flag",
+     "values": [
+      "FRICTION"
      ]
     },
     {
@@ -7160,7 +7218,7 @@
      "source": {
       "anchor": "09432ac1b5d8f597",
       "file": "src/input/read_model_change_.f90",
-      "line": 129,
+      "line": 221,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7174,12 +7232,12 @@
      "doc": "docs/reference/model-change/elements.md",
      "match": "substring 'ADD'",
      "name": "ADD",
-     "notes": "One of MATERIAL/REMOVE/ADD required, else error (l.243-247).",
+     "notes": "One of MATERIAL/FRICTION/REMOVE/ADD required, else error (l.334-338).",
      "required": false,
      "source": {
       "anchor": "09432ac1b5d8f597",
       "file": "src/input/read_model_change_.f90",
-      "line": 129,
+      "line": 221,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7192,18 +7250,18 @@
      "default_source": {
       "anchor": "9e0523db61bedf98",
       "file": "src/input/read_model_change_.f90",
-      "line": 162,
+      "line": 254,
       "routine": "read_model_change"
      },
      "doc": "docs/reference/model-change/elements.md",
      "match": "substring 'POSITION=DEFORMED' / 'POSITION=DESIGN'",
      "name": "POSITION",
-     "notes": "Only with ADD (error with REMOVE l.164-167); other value -> error (l.168-171); all ADD blocks of a step must use the same position (l.173-180).",
+     "notes": "Only with ADD (error with REMOVE l.256-259); other value -> error (l.260-263); all ADD blocks of a step must use the same position (l.265-272).",
      "required": false,
      "source": {
       "anchor": "9e0523db61bedf98",
       "file": "src/input/read_model_change_.f90",
-      "line": 162,
+      "line": 254,
       "routine": "read_model_change"
      },
      "value_type": "enum",
@@ -15288,12 +15346,13 @@
     }
    ],
    "model_change": {
-    "application_time": "beginning of the step: model_change_material and model_change_elements_topology before the BCs are initialised (src/main.f90:428-434), model_change_elements_state after a possible restart read (src/main.f90:526-535)",
+    "application_time": "beginning of the step: model_change_material and model_change_elements_topology before the BCs are initialised (src/main.f90:428-434), model_change_elements_state after a possible restart read (src/main.f90:526-535); model_change_friction after model_change_material, also for the skipped steps of a restart (numgeo-src 60fca8b5: src/main.f90:320,434)",
     "keyword": "*MODELCHANGE",
     "options": {
-     "ADD": "data lines with element set names; POSITION=DESIGN (default) | DEFORMED; src/input/read_model_change_.f90:129-240",
-     "MATERIAL": "data lines 'elset, material' (narg==2); src/input/read_model_change_.f90:75-125",
-     "REMOVE": "data lines with element set names; src/input/read_model_change_.f90:129-240"
+     "ADD": "data lines with element set names; POSITION=DESIGN (default) | DEFORMED; src/input/read_model_change_.f90:221-332",
+     "FRICTION": "data lines 'interaction, values of the *Friction data line'; src/input/read_model_change_.f90:136-220",
+     "MATERIAL": "data lines 'elset, material' (narg==2); src/input/read_model_change_.f90:82-132",
+     "REMOVE": "data lines with element set names; src/input/read_model_change_.f90:221-332"
     },
     "semantics": [
      {
@@ -15345,6 +15404,11 @@
       "item": "restart",
       "source": "src/fem/fem_global_model_change_elements_.f90:161-196",
       "text": "removals/activations of skipped steps replayed (flags only, no ramp force)"
+     },
+     {
+      "item": "friction change",
+      "source": "src/fem/fem_global_model_change_friction_.f90:38-70 (numgeo-src 60fca8b5)",
+      "text": "contact%interaction%props replaced by the values of the data line at the beginning of the step; kept in the following steps; contact state (status, stresses, state variables) untouched; Coulomb with tan(delta) = c = 0 gives the tractions and tangent of frictionless contact"
      }
     ]
    },

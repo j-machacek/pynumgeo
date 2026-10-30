@@ -55,8 +55,8 @@ The [documentation](https://j-machacek.github.io/pynumgeo/) is built with [Zensi
 from `docs/` (`pip install -e ".[docs]"`, then `zensical serve`); `docs/llms.txt` is a one-page summary for
 agents.
 
-pynumgeo `2026.2.0.dev2` is a pre-release (hence `pip install --pre`) built against the numgeo developer
-source `834564ed` (`numgeo2026-v2`); `2026.2.0` will be released together with numgeo2026-v2. Every input file it writes starts with a header that names the
+pynumgeo `2026.2.0.dev3` is a pre-release (hence `pip install --pre`) built against the numgeo developer
+source `834564ed` (`numgeo2026-v2`), with `*Model change, friction` of `60fca8b5`; `2026.2.0` will be released together with numgeo2026-v2. Every input file it writes starts with a header that names the
 pynumgeo version, its author and the numgeo build it was written for.
 
 Author: Jan Machacek. Licence: BSD-3-Clause (`LICENSE`). The numgeo reference texts bundled with the
