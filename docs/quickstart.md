@@ -116,7 +116,7 @@ print("\n".join(text.splitlines()[:5]))
 ```text
 ** =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 **                                            numgeo input file
-**             Created with pynumgeo 2026.2.0.dev3, the Python API for numgeo by Jan Machacek
+**             Created with pynumgeo 2026.2.0.dev4, the Python API for numgeo by Jan Machacek
 **                           Written for numgeo2026-v2 (numgeo source 834564ed)
 ** =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 ```

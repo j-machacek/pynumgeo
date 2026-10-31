@@ -36497,6 +36497,387 @@
        "statev_index": 2
       }
      ]
+    },
+    {
+     "aliases": [],
+     "doc": "docs/reference/material/mechanical/concrete.md",
+     "library_entry": {
+      "anchor": "e1bb1824e86c1278",
+      "file": "src/materials/material_library.f90",
+      "line": 1242,
+      "routine": "build_material_library"
+     },
+     "n_opt_props_library": 1,
+     "name": "CONCRETE",
+     "notes": "Concrete model of Schaedlich & Schweiger (2014) (the 'Concrete model' of PLAXIS), rate-independent part with constant parameters: linear elasticity, Mohr-Coulomb yield surface with strain hardening and softening in compression, Rankine yield surfaces with linear softening in tension, non-associated flow in compression; softening regularised with the fracture energies and the equivalent length L_eq of the element (crack band). The input check (check_concrete_props, called from read_material) stops on inadmissible parameters; the snap-back limits of L_eq are checked per element at the first call of the model. Optional VISCOSITY: relaxation time of a viscous regularisation (overstress Q, state variables Q11 to Q23). Added in the numgeo-src working tree of 30./31.10.2026 (not yet committed): the references point into that tree.",
+     "nprops": {
+      "exact": 14,
+      "library_source": {
+       "anchor": "74d8b737c848d50d",
+       "file": "src/materials/material_library.f90",
+       "line": 1248,
+       "routine": "build_material_library"
+      },
+      "rule": "size(props) == lib%material(label)%nprops (all data lines concatenated)",
+      "source": {
+       "anchor": "a340183993a49939",
+       "file": "src/input/read_material_.f90",
+       "line": 512,
+       "routine": "read_material"
+      }
+     },
+     "nstatev": 14,
+     "nstatev_source": {
+      "anchor": "c3c23080b2329b36",
+      "file": "src/materials/material_library.f90",
+      "line": 1249,
+      "routine": "build_material_library"
+     },
+     "optional_parameters": [
+      {
+       "default": "0.0",
+       "default_source": {
+        "anchor": "189e9f15773e2be1",
+        "file": "src/materials/material_library.f90",
+        "line": 1252,
+        "routine": "build_material_library"
+       },
+       "meaning": "relaxation time of the viscous regularisation (time); 0: rate-independent",
+       "name": "VISCOSITY",
+       "position": 1
+      }
+     ],
+     "order_established_from_source": true,
+     "parameter_order_source": {
+      "file": "src/materials/models/material_concrete_.f90",
+      "kind": "assignment",
+      "routine": "read_props"
+     },
+     "parameters": [
+      {
+       "constraint": "E > 0 (checked when the input is read)",
+       "default": null,
+       "doc_name": "E",
+       "index": 1,
+       "meaning": "Young's modulus",
+       "name": "E",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "e955bb6fd98b009d",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 499,
+        "routine": "read_props"
+       },
+       "symbol": "E",
+       "unit": "F/A"
+      },
+      {
+       "constraint": "0 <= nu < 0.5 (checked)",
+       "default": null,
+       "doc_name": "nu",
+       "index": 2,
+       "meaning": "Poisson's ratio",
+       "name": "nu",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "1339aeb6452d49d7",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 500,
+        "routine": "read_props"
+       },
+       "symbol": "nu",
+       "unit": "-"
+      },
+      {
+       "constraint": "f_c > 0 (checked)",
+       "default": null,
+       "doc_name": "f_c",
+       "index": 3,
+       "meaning": "uniaxial compressive strength (positive)",
+       "name": "f_c",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "0e84a219246b5afd",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 501,
+        "routine": "read_props"
+       },
+       "symbol": "f_c",
+       "unit": "F/A"
+      },
+      {
+       "constraint": "0 < f_t < sigma_rot = f_c/2 (1/sin(phi_max) - 1) (checked)",
+       "default": null,
+       "doc_name": "f_t",
+       "index": 4,
+       "meaning": "uniaxial tensile strength (positive)",
+       "name": "f_t",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "7dfba9ced2a0271b",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 502,
+        "routine": "read_props"
+       },
+       "symbol": "f_t",
+       "unit": "F/A"
+      },
+      {
+       "constraint": "0 < phi_max < 90 (checked)",
+       "default": null,
+       "doc_name": "phi_max",
+       "index": 5,
+       "meaning": "maximum friction angle",
+       "name": "phi_max",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "50297717a2254698",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 503,
+        "routine": "read_props"
+       },
+       "symbol": "phi_max",
+       "unit": "deg"
+      },
+      {
+       "constraint": "0 <= psi <= phi_max (checked)",
+       "default": null,
+       "doc_name": "psi",
+       "index": 6,
+       "meaning": "dilatancy angle",
+       "name": "psi",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "361a16c91ee1bfaa",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 504,
+        "routine": "read_props"
+       },
+       "symbol": "psi",
+       "unit": "deg"
+      },
+      {
+       "constraint": "0 < f_c0n <= 1 (checked)",
+       "default": null,
+       "doc_name": "f_c0n",
+       "index": 7,
+       "meaning": "normalised initial yield stress in compression f_c0/f_c",
+       "name": "f_c0n",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "9852bf0b05b0aa7d",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 505,
+        "routine": "read_props"
+       },
+       "symbol": "f_c0n",
+       "unit": "-"
+      },
+      {
+       "constraint": "0 < f_cfn <= 1 (checked)",
+       "default": null,
+       "doc_name": "f_cfn",
+       "index": 8,
+       "meaning": "normalised failure strength in compression f_cf/f_c (end of the softening controlled by G_c)",
+       "name": "f_cfn",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "1b4d21db3a2ce285",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 506,
+        "routine": "read_props"
+       },
+       "symbol": "f_cfn",
+       "unit": "-"
+      },
+      {
+       "constraint": "0 < f_cun <= f_cfn (checked)",
+       "default": null,
+       "doc_name": "f_cun",
+       "index": 9,
+       "meaning": "normalised residual strength in compression f_cu/f_c",
+       "name": "f_cun",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "a172b9967b5f284c",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 507,
+        "routine": "read_props"
+       },
+       "symbol": "f_cun",
+       "unit": "-"
+      },
+      {
+       "constraint": "G_c > 0 (checked)",
+       "default": null,
+       "doc_name": "G_c",
+       "index": 10,
+       "meaning": "fracture energy in compression",
+       "name": "G_c",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "62316d661bede6d7",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 508,
+        "routine": "read_props"
+       },
+       "symbol": "G_c",
+       "unit": "F/L"
+      },
+      {
+       "constraint": "eps_cp^p < 0 (checked)",
+       "default": null,
+       "doc_name": "eps_cp^p",
+       "index": 11,
+       "meaning": "plastic strain at the peak in uniaxial compression (negative)",
+       "name": "eps_cp^p",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "fab500c9eb5769bb",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 509,
+        "routine": "read_props"
+       },
+       "symbol": "eps_cp^p",
+       "unit": "-"
+      },
+      {
+       "constraint": "a = 0 or a >= a_min = 2 sin(phi_max) f_c/E / ((1 - sin(phi_max)) (f_c/E - eps_cp^p)) (checked)",
+       "default": null,
+       "doc_name": "a",
+       "index": 12,
+       "meaning": "increase of the plastic peak strain with the confining pressure; 0: constant",
+       "name": "a",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "2e359108b391f462",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 510,
+        "routine": "read_props"
+       },
+       "symbol": "a",
+       "unit": "-"
+      },
+      {
+       "constraint": "0 <= f_tun <= 1 (checked)",
+       "default": null,
+       "doc_name": "f_tun",
+       "index": 13,
+       "meaning": "normalised residual tensile strength f_tu/f_t",
+       "name": "f_tun",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "a6b7b476cfc3e1e0",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 511,
+        "routine": "read_props"
+       },
+       "symbol": "f_tun",
+       "unit": "-"
+      },
+      {
+       "constraint": "G_t > 0 (checked)",
+       "default": null,
+       "doc_name": "G_t",
+       "index": 14,
+       "meaning": "fracture energy in tension",
+       "name": "G_t",
+       "name_source": "doc",
+       "required": true,
+       "source": {
+        "anchor": "79ea44ca5a875454",
+        "file": "src/materials/models/material_concrete_.f90",
+        "line": 512,
+        "routine": "read_props"
+       },
+       "symbol": "G_t",
+       "unit": "F/L"
+      }
+     ],
+     "public": true,
+     "public_source": {
+      "anchor": "9fab1515eb2df551",
+      "file": "src/database/material_ty_.f90",
+      "line": 77,
+      "routine": "material_base_ty (default public=.true.)"
+     },
+     "restrictions": [
+      "continuum elements only (triangles, quadrilaterals, tetrahedra, hexahedra; 2D, axisymmetric, 3D): an element without equivalent length stops the analysis (material_concrete_.f90, concrete)",
+      "snap-back limits: L_eq < 2 min(E,K) G_t / ((1 - f_tun^2) f_t^2) and L_eq < 2 E G_c / ((1 - f_cfn^2) f_c^2), checked per element by numgeo",
+      "VISCOSITY must not be negative (checked by numgeo)",
+      "no time dependency of stiffness and strength, no creep and shrinkage (docs/reference/material/mechanical/concrete.md)"
+     ],
+     "statev_names": [
+      {
+       "name": "EPS-PL-C",
+       "statev_index": 1
+      },
+      {
+       "name": "EPS-PL-T",
+       "statev_index": 2
+      },
+      {
+       "name": "H-C",
+       "statev_index": 3
+      },
+      {
+       "name": "H-T",
+       "statev_index": 4
+      },
+      {
+       "name": "F-CY",
+       "statev_index": 5
+      },
+      {
+       "name": "F-TY",
+       "statev_index": 6
+      },
+      {
+       "name": "L-EQ",
+       "statev_index": 7
+      },
+      {
+       "name": "YIELD-MODE",
+       "statev_index": 8
+      },
+      {
+       "name": "Q11",
+       "statev_index": 9
+      },
+      {
+       "name": "Q22",
+       "statev_index": 10
+      },
+      {
+       "name": "Q33",
+       "statev_index": 11
+      },
+      {
+       "name": "Q12",
+       "statev_index": 12
+      },
+      {
+       "name": "Q13",
+       "statev_index": 13
+      },
+      {
+       "name": "Q23",
+       "statev_index": 14
+      }
+     ]
     }
    ],
    "mechanical_viscosity_models": [
@@ -37466,9 +37847,9 @@
     "bishop_models": 5,
     "hydraulic_models": 6,
     "material_keywords": 41,
-    "material_loop_case_statements": 38,
-    "mechanical_library_models": 55,
-    "mechanical_models_count_and_order_from_source": 55,
+    "material_loop_case_statements": 39,
+    "mechanical_library_models": 56,
+    "mechanical_models_count_and_order_from_source": 56,
     "mechanical_models_without_doc_page": [
      "UNSATURATED_ELASTICITY",
      "DRUCKER-PRAGER",
@@ -37488,10 +37869,10 @@
      "HCA-HYPO-IGS",
      "HYPO-MODULAR"
     ],
-    "mechanical_parameters_catalogued": 842,
+    "mechanical_parameters_catalogued": 856,
     "mechanical_user_models": 2,
     "mechanical_viscosity_models": 3,
-    "optional_mechanical_parameters_catalogued": 299,
+    "optional_mechanical_parameters_catalogued": 300,
     "permeability_models": 6,
     "relative_permeability_models": 5
    },

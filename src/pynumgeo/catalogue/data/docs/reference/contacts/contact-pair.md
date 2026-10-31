@@ -34,8 +34,23 @@ than the other, choose the finer surface as slave. This is in particular importa
 
 In case `General` is used, all surfaces defined in the model are merged and paired with itself. No subsequent line is allowed in this case. Note that this method also allows for self-contact. The surfaces in the model have to be defined prior. An automatic detection of material surfaces is not yet implemented.
 
+### Several contact pairs on one slave surface
+
+Contact pairs whose slave surfaces share nodes are merged into the first of them: the slave surface of the merged pair is the union of the slave surfaces, its master surface the union of the master surfaces (a face that belongs to the surfaces of both pairs is taken once). Contact pairs that share master nodes but no slave nodes are an error; reverse the order of the surfaces in one of them.
+
+With `discretisation=IPS` the interactions of the merged pairs are kept: an integration point of the slave surface uses the interaction of the master face it is projected onto, i.e. the interaction of the contact pair in which that master face was defined (a master face of several merged pairs keeps the interaction of the first of them, with a warning). One slave surface can thus slide with a friction coefficient of zero on one body and with friction on another, and the friction of each interaction can be changed with [*Model change, friction](../model-change/friction.md). The friction parameters (including the tangential penalty), the adhesion, the clearance, `no separation`, the penetration tolerance and the viscosity are taken from the interaction of the face and can differ. The normal penalty (penalty factor or stiffness factor), the friction model and the search options `check_disp` and `check_dist` of [*Contact options](./contact-options.md) are those of the first pair and must be the same in the interactions of merged pairs; an interaction without friction is given as Coulomb friction with tan(δ) = 0. Otherwise all faces of the merged pair use the interaction of the first pair, and a warning is written to the log file.
+
+Example (grout column in contact with a steel casing and, after the casing has been withdrawn, with the soil; frictionless on the casing, friction of the soil after the hardening):
+
+```
+*Contact pair, interaction=grout-steel, discretisation=IPS, nigp=3
+grout-face, casing-inner-face
+*Contact pair, interaction=grout-soil, discretisation=IPS, nigp=3
+grout-face, soil-face
+```
+
 Note that contact in 3D models is currently limited to the
-`element mortar` and `NTN` surface discretisation methods. In addition, fluid contact and fluid interaction as described in [*Interaction](./interaction.md) are only available for the
+`element mortar`, `NTN` and `IPS` surface discretisation methods. In addition, fluid contact and fluid interaction as described in [*Interaction](./interaction.md) are only available for the
 `element mortar` technique.
 
 ---

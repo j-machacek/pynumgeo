@@ -18,7 +18,7 @@ pynumgeo follows the numgeo version: numgeo ``numgeo2026-v2`` corresponds to pyn
 (``.devN`` until it is released together with numgeo).
 """
 
-__version__ = "2026.2.0.dev3"
+__version__ = "2026.2.0.dev4"
 
 #: numgeo version string this pynumgeo was derived from (console banner of the solver).
 NUMGEO_VERSION = "numgeo2026-v2"

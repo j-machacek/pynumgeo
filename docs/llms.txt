@@ -1,6 +1,6 @@
 # pynumgeo
 
-> Python API for the finite element code numgeo (pynumgeo 2026.2.0.dev3, numgeo build numgeo2026-v2, source 834564ed). Read, build, validate and write numgeo input decks, run the solver and read its results; headless, Windows and Linux.
+> Python API for the finite element code numgeo (pynumgeo 2026.2.0.dev4, numgeo build numgeo2026-v2, source 834564ed). Read, build, validate and write numgeo input decks, run the solver and read its results; headless, Windows and Linux.
 
 Rules for agents: take every numgeo keyword, option, parameter order and default from the catalogue (`pynumgeo.catalogue.describe(name)`, `keyword()`, `material_model()`, `element_type()`), never from memory. Validate before running (`validate`), fix every error. numgeo's exit status is 0 also after errors: use `RunResult.status`. Node labels must be 1..N in the order of definition. Do not use option words (find, generate, internal, instance, ...) inside names. Write input files in normal case, never all capitals. Units must be consistent; examples use m, kN, kPa, t, s.
 
