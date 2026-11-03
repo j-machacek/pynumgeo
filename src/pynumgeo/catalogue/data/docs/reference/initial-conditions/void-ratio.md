@@ -25,4 +25,4 @@ advanced) constitutive models sometimes require more complicated
 approaches to initialize the void ratio (such as the void ratio
 following the Bauer's equation in the hypoplastic model). To initialize
 the void ratio in the mechanical model, use the
-`*Initial state variables` keyword.
+[`*Initial conditions, type=state variables`](./state-variables.md) keyword.

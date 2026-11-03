@@ -11,6 +11,10 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 02.11.2026, J. Machacek - Frame.integration_points (dataset Integration points) (with help of Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """The results of one numgeo run: :func:`open_results`, :class:`Results`, :class:`Frame`.
 
@@ -53,10 +57,12 @@ from pynumgeo.results.printfiles import (
 from pynumgeo.results.sta import StaRow, read_msg_steps, read_sta
 from pynumgeo.results.vtk import VtuData, cell_blocks, read_pvd, read_vtm, read_vtu
 
-__all__ = ["MODEL_BLOCK", "Frame", "Results", "open_results"]
+__all__ = ["IP_DATASET", "MODEL_BLOCK", "Frame", "Results", "open_results"]
 
 #: Name of the ``.vtm`` block holding the 1D/2D/3D model datasets (VTK_write_results_.f90:1135).
 MODEL_BLOCK = "Model elements"
+#: Name of the ``.vtm`` dataset with the values at the integration points (VTK_write_results_.f90:1387).
+IP_DATASET = "Integration points"
 #: Relative tolerance for matching a frame time with the ``g11.4`` times of the ``.sta`` (4 digits).
 _STA_RTOL = 5.1e-4
 
@@ -131,6 +137,28 @@ class Frame:
         found = [d for d in self.datasets if d.name == name]
         if len(found) != 1:
             raise KeyError(f"{len(found)} datasets named {name!r} in {self.path}: {[d.name for d in self.datasets]}")
+        return found[0]
+
+    @property
+    def integration_points(self) -> VtuData:
+        """The values at the integration points (dataset ``Integration points``), neither averaged nor
+        extrapolated: one point and one vertex cell per integration point, at its coordinates.
+
+        Point data: ``IntegrationPoint`` (number within the element), ``Stress`` and ``Strain`` (VTK order,
+        continuum elements only, zero at the other elements), ``Void ratio`` and the requested element and
+        state variables (names in lower case); cell data: ``ElementLabel`` and ``MaterialID`` of point i in
+        cell i. numgeo writes the dataset in the frames of a step whose field output has ``*Integration point``
+        or ``IP`` in an ``*Element output`` list (VTK_write_results_.f90:248-291).
+
+        Raises:
+            KeyError: the frame has no such dataset.
+        """
+        found = [d for d in self.datasets if d.name == IP_DATASET]
+        if not found:
+            raise KeyError(
+                f"{self.path}: no dataset {IP_DATASET!r}; request *Integration point in the *Output, field of "
+                f"step {self.step_name or self.step}"
+            )
         return found[0]
 
     @property

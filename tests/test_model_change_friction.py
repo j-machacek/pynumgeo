@@ -11,6 +11,9 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 30.10.2026, J. Machacek - Initial version
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """*Model change, friction (numgeo-src 60fca8b5): catalogue, check of the options and of the data lines
 (src/input/read_model_change_.f90:136-217), messages and the bundled reference page."""

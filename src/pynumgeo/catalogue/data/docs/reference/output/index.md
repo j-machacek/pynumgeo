@@ -1,7 +1,7 @@
 # Output definition
 
 ```numgeo 
-*Output, <type>, <format 1>, <format 2> [, flush]
+*Output, <type>, <format 1>, <format 2>
 *Frequency = <output interval>
 *Node, nset = <set name>
 <variable 1>, ..., <variable n>
@@ -48,8 +48,10 @@ Output quantities can be requested for different locations in the model:
     integration points (such as stress, strain, temperature, heat flux
     and state variables of constitutive models). Here, the values for each integration point
     are separately given in the output. Thus, no weighting or smoothing
-    takes place - the output quantities are therefore exact. The output
-    is currently only available as "print output".
+    takes place - the output quantities are therefore exact. The field
+    output (VTK) writes them for all elements as the block **Integration points**
+    ([`*Integration point` of the field output](field.md#integration-point-output));
+    the [print output](print.md#integration-point-output) writes them for an element set.
 
 !!! note "Diagnostic files of the embedded regions"
 

@@ -50,8 +50,8 @@ In coupled poromechanics problems, finite elements sometimes exhibit pressure os
 ---|---|---|---|---|---|---        
 ``u3p3-stab-ax``     | axisym.       | triangle       | 3              | linear                    | 1             | (1), (5), (6)          
 ``u4p4-stab-ax-red`` | axisym.       | rectangle      | 4              | linear                    | 1             | (4), (5), (6), (7) 
-``u8p8-stab-ax``     | axisym.       | rectangle      | 4              | quadratic                 | 9             | (1), (5)
-``u8p8-stab-ax-red`` | axisym.       | rectangle      | 4              | quadratic                 | 4             | (4), (5)
+``u8p8-stab-ax``     | axisym.       | rectangle      | 8              | quadratic                 | 9             | (1), (5)
+``u8p8-stab-ax-red`` | axisym.       | rectangle      | 8              | quadratic                 | 4             | (4), (5)
 
 ### 3D Elements
 

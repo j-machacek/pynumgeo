@@ -2,12 +2,12 @@
 
 ```numgeo 
 *Material, ...
-**Relative Permeability = <relative permeability model> 
-*<parameter 1>, ... , <parameter n>
+*Relative permeability = <relative permeability model> 
+<parameter 1>, ... , <parameter n>
 ...
 ``` 
 
-This parameter is only needed for porous materials with more than one phase. The available models in numgeo are described in the subsections accessible through the navigation bar on the left. $k^w$ and $k^a$ are the relative permeability with respect to the pore water and pore air, respectively.
+This keyword is only available for three-phase materials (`Phases = 3`). The available models in numgeo are described in the subsections accessible through the navigation bar on the left. $k^w$ and $k^a$ are the relative permeability with respect to the pore water and pore air, respectively.
 
 Note that all models in numgeo include minimum relative permeabilities $k^\beta_{min}$ for the pore fluids $\beta= \{w,a\}$. The usage often reduces convergence issues and numerical instabilities at nearly dry or nearly saturated states with (often) only small losses in accuracy. 
 

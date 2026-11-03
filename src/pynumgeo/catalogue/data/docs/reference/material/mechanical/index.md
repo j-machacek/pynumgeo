@@ -17,6 +17,7 @@ Set this parameter equal to the mechanical model to be used for the calculation 
 [Barotropic Elasticity](./barotropic_elasticity.md) | Barotropic (stress dependent) and pyknotropic (void ratio dependent) elastic model
 [Bathytropic Elasticity](./bathytropic-elasticity.md) | Bathytropic (depth dependent) elastic model
 [Bingham](./bingham.md) | Elasto-viscoplastic model with a yield stress and a plastic viscosity (Bingham fluid)
+[Concrete](./concrete.md) | Elastoplastic model for concrete and grout (Schädlich & Schweiger, 2014): hardening and softening in compression, tension softening (cracking), crack band regularisation
 [Matsuoka Nakai](./matsuoka_nakai.md) | Linear elastic - perfectly plastic model with Matsuoka-Nakai yield and failure criterion
 [Mohr-Coulomb](./mohr_coulomb.md) | Linear elastic - perfectly plastic model with Mohr-Coulomb yield and failure criterion available in two different implementations 
 **Advanced constitutive models** | 

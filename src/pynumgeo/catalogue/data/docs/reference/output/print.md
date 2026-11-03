@@ -8,6 +8,8 @@ This option is used to write variables to the print output files. It must be use
     On Ubuntu, the default limit for simultaneously open files is set to 1024. To accommodate this, numgeo restricts the number of open files to 300 per output type (node, element, or integration point). If the number of files per output type exceeds this limit, only the first 300 files will remain open during the simulation, while additional files will be closed after each write operation and reopened when needed. This behavior may negatively affect simulation performance. The same functionality is applied across platforms, including both Windows and Linux.
 
 
+---
+
 ## Node output
 
 ```numgeo 
@@ -16,12 +18,13 @@ This option is used to write variables to the print output files. It must be use
 <variable 1>, ..., <variable n>
 ```
 
-The available output variables are the same as for `*Output, field` (see [*Output, field](./field.md))  with
-the addition of
+The following nodal variables are available (definitions as for [*Output, field](./field.md#node-output)): `U`, `UR`, `V`, `A`, `Pw`, `Pa`, `TEMP`, `DTEMP`, `TEMP_RATE`, `RFL`, `RF`, `RM`, `RPW`, `RPA`, `Contact`, `Contact_sdv` and `Con_f`, with the addition of
 
 -   `COORDS`:
 
     The coordinates of the node in reference configuration.
+
+Variables of the integration points (e.g. `S`, `E`, `void` or state variables) are not available in the node print output; use the [element](#element-output) or [integration point](#integration-point-output) print output instead.
 
 The reaction forces `RF` and moments `RM` are the forces and moments transmitted to the supports (opposite sign of the reactions acting on the model), see [*Output, field](./field.md#node-output). For temperature, `RFL` is the heat rate supplied to the solid by prescribed-temperature conditions and is positive into the solid.
 
@@ -41,6 +44,8 @@ The nodal temperature variables `TEMP`, `DTEMP`, `TEMP_RATE` and `RFL` use the s
 TEMP, RFL
 ```
 
+---
+
 ## Element output
 
 This option is used to write element variables (stored at the element centroid) to the print output files. It must be used as a sub-keyword of the `*Output` keyword. Set `<set name>` equal to the element set name
@@ -52,12 +57,15 @@ for which the output should be defined. In the subsequent line, the output varia
 <variable 1>, ..., <variable n>
 ```
 
-The available output variables are the same as for `*Output, field` (see [*Output, field](./field.md)) with
-the addition of
+The element print output contains the mean value of the integration points of the element. The following variables are available: `S`, `E`, `void` and the element and state variables of the element type and material model (e.g. `TEMP_IP`, `HFL1`, `Sat`, the stress resultants of beam and shell elements or the state variables listed for the material), with the addition of
 
 -   `COORDS`/`COORDS_UPD`:
 
     The coordinate of the centroid in reference or current configuration.
+
+The variables `Mat`, `Sets`, `Phantom-elasticity`, `Phantom-viscosity` and `shell-axes` are not available in the element print output.
+
+---
 
 ## Integration point output
 
@@ -69,11 +77,7 @@ the addition of
 
 This option is used to write element variables (stored at integration points) to the print output files. It must be used as a sub-keyword of the `*Output` keyword. Set `<set name>` equal to the element set name for which the output should be defined. In the subsequent line, the output variables are defined.
 
-The following variables are currently available:
-
--   `COORDS_IGP`/`COORDS_IGP_UPD`:
-
-    The coordinates of the integration points in reference or current configuration.
+For every integration point the coordinates `x1`, `x2`, `x3` in the reference configuration are written, followed by the requested variables. The following variables are currently available:
 
 -   `S`:
 
@@ -119,15 +123,13 @@ The following variables are currently available:
 
     Part of the stress components (requested by the keyword 'S') contributed by the "phantom elasticity" model. Single (scalar) components $\sigma^{ph}_{ij}$ for $i,j = \{1,2,3\}$ \[F/A\]. Only for materials where "\*Phantom elasticity' was defined.
 
--   `Sets`:
+Depending on the applied element type and material model, the label `SVARS` can be replaced by the name of the demanded output variable solemnly available for this specific element type/material model. Possible output variables for different material models can be found here [*Material](../material/index.md). For user-defined materials (`*Mechanical = user`) the state variable number has to be specified directly, e.g. `sdv1` or `sdv20`.
 
-    Write the defined element sets (name + elements) to the output file. The set name equals the output name. The elements of the associated element set are given the (integer) value 1, all other elements are given the (integer) value 0.
+!!! note "State variables after a model change of the material"
 
--   `Mat`:
+    The element and integration point files have one header for the whole analysis. A requested state variable has a column if a material of the element has it in any step: the material at the start of the analysis or a material assigned with [`*Model change, material`](../model-change/material.md). While the current material does not have the variable, its column contains 0. The rows of a file therefore have the same number of columns in all steps.
 
-    Write the material names and the associated element set as cell data to the output file. The material name is assigned to the output name. The elements of the associated element set are given the (integer) value 1, all other elements are given the (integer) value 0
-
-Depending on the applied element type and material model, the label `SVARS` can be replaced by the name of the demanded output variable solemnly available for this specific element type/material model. Possible output variables for different material models can be found here [*Material](../material/index.md). If the `<type>` is `user`, the state variable number has to be directly specified, e.g. `SDV1` or `SDV20`.
+---
 
 ## Output, user {#sec_user_print}
 
@@ -151,7 +153,7 @@ Depending on the variables, the corresponding user routine will be automatically
 
     The stress of the integration points. In this case, the user defined initial stress field file (see [here](../user/index.md)) is generated.
 
--   `SDV`: The statev with the number [xx]. In this case, the user defined initial state field file (see [here](../user/index.md)) is generated. For instance, `SDV1` is typically the internal void ratio of the constitutive model. For the HCA models (see [here](../material/index.md)), `SDV100` is the strain amplitude. Please contact the developers if you need a specific state variable number for your output.
+-   `statev<n>`: The state variable with the number n, e.g. `statev1`. In this case, the user defined initial state field file (see [here](../user/index.md)) is generated. For instance, `statev1` is typically the internal void ratio of the constitutive model. For the HCA models (see [here](../material/index.md)), `statev100` is the strain amplitude. Please contact the developers if you need a specific state variable number for your output.
 
 Nodal snapshots use the internal node index for rows and the requested variable order for columns. `U`, `V` and `A` occupy two columns in 2D or three in 3D; each thermal variable occupies one column. Unselected rows are zero. If overlapping sets specify different layouts, the later set replaces the row. Each write replaces the snapshot with the latest selected increment.
 

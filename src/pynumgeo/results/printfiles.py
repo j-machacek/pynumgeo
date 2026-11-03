@@ -11,6 +11,9 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Reader for numgeo's print output (``*Output, print``), ``<job>-print-out/<SET>_<kind>_<n>.dat``.
 

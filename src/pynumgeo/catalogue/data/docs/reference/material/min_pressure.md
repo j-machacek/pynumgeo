@@ -14,10 +14,7 @@ materials:
 
 | **Model** | **Reference** |
 |---|---|
-| Hypoplasticity + Intergranular Strain | [Hypoplasticity + IGS](./mechanical/hypoplasticity_igs.md) |
-| Hypoplasticity + Intergranular Strain Anisotropy | [Hypoplasticity + ISA](./mechanical/hypoplasticity_isa.md) |
+| Hypoplasticity + Intergranular Strain (model Hypoplasticity only; Hypo-IGS uses its optional parameter `min_pressure`) | [Hypoplasticity + IGS](./mechanical/hypoplasticity_igs.md) |
 | Sanisand | [Sanisand](./mechanical/sanisand.md) |
-| Modified Cam Clay | [Modified Cam Clay](./mechanical/modified-cam-clay.md) |
-| Anisotropic Viscous ISA | [AVISA](./mechanical/avisa.md) |
 | High Cycle Accumulation model for sand (coupled with Hypoplasticity + Intergranular Strain or Sanisand) | [HCA-Sand](./mechanical/hca-sand.md) |
 | High Cycle Accumulation model for clay | [HCA-Clay](./mechanical/hca-clay.md) |

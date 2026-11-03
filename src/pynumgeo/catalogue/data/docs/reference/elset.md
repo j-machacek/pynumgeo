@@ -1,11 +1,11 @@
 # Elset - Element set definition
 
 ```numgeo 
-*Elset, name = <element set name> [, generate]
+*Elset, elset = <element set name> [, generate]
 <subsequent lines> 
 ``` 
 
-This option assigns elements to an element set and makes this set accessible by using its name. The sub-keyword ``name`` is mandatory, whereas ``generate`` is optional. The entries to the ``<subsequent lines>`` depend on the occurrence of ``generate``:
+This option assigns elements to an element set and makes this set accessible by using its name. The sub-keyword ``elset`` is mandatory, whereas ``generate`` is optional. The entries to the ``<subsequent lines>`` depend on the occurrence of ``generate``:
 
 * If ``generate`` is omitted, the ``<subsequent lines>`` take the following form: 
 	
@@ -14,7 +14,7 @@ This option assigns elements to an element set and makes this set accessible by 
 	...
     ```
 
-	Enter a list of elements ``<element label i>`` to be assigned to the set. Up to 16 entries per line are allowed. Repeat this line as often as necessary.
+	Enter a list of elements ``<element label i>`` to be assigned to the set. Any number of entries per line is allowed, as long as the line does not exceed 256 characters. Repeat this line as often as necessary.
 	
 * If ``generate`` is active, the subsequent line takes the following form:
 	

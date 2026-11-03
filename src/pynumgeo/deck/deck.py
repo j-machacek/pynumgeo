@@ -11,6 +11,13 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 27.10.2026, J. Machacek - Comments above amplitudes, materials, sections, steps and *End input; data tokens of
+#                           amplitudes read as numbers
+# 03.11.2026, J. Machacek - Section.from_file and Deck.assign_from_file (*Assign material, from-file) (with help of
+#                           Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """The semantic model of a numgeo input deck.
 
@@ -44,10 +51,11 @@ Example (a one-element beam, benchmark ``beam-slender-1elem``):
 
 from __future__ import annotations
 
+import os
 from collections.abc import Iterable, Sequence
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from pynumgeo.deck.keyword import Keyword, OptionInput, Token
 from pynumgeo.io.numbers import to_token
@@ -58,6 +66,15 @@ __all__ = ["Amplitude", "Deck", "Material", "Section", "Step"]
 
 def _key(name: str) -> str:
     return name.upper().replace(" ", "")
+
+
+def _opt_key(name: str | None) -> str | None:
+    return None if name is None else _key(name)
+
+
+def _file_key(name: str | None) -> str | None:
+    """File name as numgeo reads it: lower case, without blanks."""
+    return None if name is None else name.lower().replace(" ", "")
 
 
 class Amplitude(BaseModel):
@@ -163,24 +180,40 @@ class Material(BaseModel):
 
 
 class Section(BaseModel):
-    """Material assignment ``*Solid section, elset=..., material=...`` (``*Assign material`` is the same)."""
+    """Material assignment ``*Solid section, elset=..., material=...`` (``*Assign material`` is the same).
+
+    Exactly one of ``material`` and ``from_file`` is given. ``from_file`` is the name of a point file
+    (``x;y;z;material-name`` per line, see :mod:`pynumgeo.io.material_points`), written as
+    ``*Assign material, elset=<set>, from-file`` with the name in the following line: each element of the
+    set receives the material of the point nearest to its centroid (numgeo-src 60135dc,
+    ``src/input/read_solid_section_.f90``). numgeo reads the name in lower case and without blanks,
+    relative to the folder it is started in.
+    """
 
     model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
     elset: str
-    material: str
+    material: str | None = None
+    from_file: str | None = None
     keyword: str = "*SOLIDSECTION"
     amgcl_direct: bool = False
     source: str | None = Field(default=None, exclude=True, repr=False)
     #: ``**`` lines the writer puts above it (not part of comparisons)
     comment: str | None = Field(default=None, exclude=True, repr=False)
 
+    @model_validator(mode="after")
+    def _one_material_source(self) -> Section:
+        if (self.material is None) == (self.from_file is None):
+            raise ValueError("a material assignment needs either material= or from_file= (not both)")
+        return self
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Section):
             return NotImplemented
-        return (_key(self.elset), _key(self.material), self.amgcl_direct) == (
+        return (_key(self.elset), _opt_key(self.material), _file_key(self.from_file), self.amgcl_direct) == (
             _key(other.elset),
-            _key(other.material),
+            _opt_key(other.material),
+            _file_key(other.from_file),
             other.amgcl_direct,
         )
 
@@ -269,6 +302,17 @@ class Deck(BaseModel):
         self.sections.append(s)
         return s
 
+    def assign_from_file(self, elset: str, file: str | os.PathLike[str]) -> Section:
+        """Assign the materials of an element set from a point file (``*Assign material, elset=..., from-file``).
+
+        Each element of the set receives the material of the point of ``file`` nearest to its centroid. The
+        name is written as given; numgeo resolves it relative to the folder it is started in (the job
+        folder of :func:`pynumgeo.solver.run`, which copies only the files passed with ``files=``).
+        """
+        s = Section(elset=elset, from_file=os.fspath(file), keyword="*ASSIGNMATERIAL")
+        self.sections.append(s)
+        return s
+
     def material(self, name: str) -> Material:
         """Material by name (case-insensitive)."""
         for m in self.materials:
@@ -329,7 +373,9 @@ class Deck(BaseModel):
             "mesh": self.mesh.summary(),
             "amplitudes": [a.name for a in self.amplitudes],
             "materials": [{"name": m.name, "mechanical": _mech_name(m)} for m in self.materials],
-            "sections": [(s.elset, s.material) for s in self.sections],
+            "sections": [
+                (s.elset, s.material if s.from_file is None else f"from-file {s.from_file}") for s in self.sections
+            ],
             "model_keywords": [k.keyword for k in self.keywords],
             "steps": [
                 {"name": s.name, "procedure": s.procedure.keyword, "keywords": [k.keyword for k in s.items]}

@@ -1,6 +1,6 @@
 # Step
 ```numgeo 
-*Step, Name = <step name>, inc = <max inc>, [nlgeom, no cut back, maxiter, miniter, scale factor =< >]
+*Step, Name = <step name>, inc = <max inc>, [nlgeom, no cut back, maxiter = <max iterations>, miniter = <min iterations>, scale factor =< >]
 <*Procedure>
 .
 .
@@ -38,18 +38,18 @@ nlgeom
 no cut back
 ``` 
 
-    Optional keyword to restrict the time increment to be reduced in case of bad or no convergence. This option is not permitted for u-T solid elements, which require converged mechanical and thermal fields. Note that the solution is accepted after the maximum number of allowed iterations, independent of the error.
+    Optional keyword to prevent the analysis from stopping in case of bad or no convergence. The time increment is still reduced, but not below the minimum time increment $\Delta t_{min}$. This option is not permitted for u-T solid elements, which require converged mechanical and thermal fields. Once the minimum time increment is reached, the solution is accepted after the maximum number of allowed iterations, independent of the error; in a [`Reduction`](./reduction.md) step it is accepted after the maximum number of iterations directly. A failed material update or a NaN in an element contribution at the minimum time increment still stops the analysis.
 
 -   
 ```numgeo 
-maxiter
+maxiter = <max iterations>
 ``` 
 
     Optional keyword to set the maximum number of iterations before the iteration process breaks and a new try with adjusted time increment is started. The default value is 24.
 
 -   
 ```numgeo 
-miniter
+miniter = <min iterations>
 ``` 
 
     Optional keyword to set the minimum number of iterations before convergence is allowed to be achieved and the next increment starts. The default value is 1.

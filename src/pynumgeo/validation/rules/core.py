@@ -11,6 +11,10 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 03.11.2026, J. Machacek - NG-REF-001 for *Assign material, from-file (with help of Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Core rules: mesh, names, references, materials, steps.
 
@@ -255,7 +259,8 @@ def duplicate_steps(ctx: Context) -> Iterator[Finding]:
     "NG-REF-001",
     "error",
     "material assignments must refer to existing element sets and materials",
-    source="src/input/read_solid_section_.f90:93-154; src/input/read_input.f90:539-546",
+    source="src/input/read_solid_section_.f90:133-137,182-185,229-232 (numgeo-src 7052b69); "
+    "src/input/read_input.f90:539-546",
 )
 def section_refs(ctx: Context) -> Iterator[Finding]:
     d = ctx.deck
@@ -264,7 +269,8 @@ def section_refs(ctx: Context) -> Iterator[Finding]:
     for i, s in enumerate(d.sections):
         if _key(s.elset) not in elsets:
             yield (f"element set {s.elset!r} is not defined", f"sections[{i}]")
-        if _key(s.material) not in mats:
+        # from-file: the materials of the file are checked by NG-MAT-131/132
+        if s.material is not None and _key(s.material) not in mats:
             yield (f"material {s.material!r} is not defined", f"sections[{i}]")
 
 

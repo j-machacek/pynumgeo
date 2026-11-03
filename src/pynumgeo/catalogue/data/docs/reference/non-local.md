@@ -1,7 +1,7 @@
 # Non-local
 
 ```numgeo 
-*Non-local, elset = <set name, local-len = <local length>, statev = <local length> [, time] [, frequency =<>]
+*Non-local, elset = <set name>, local-len = <local length>, statev = <state variable number> [, time] [, frequency =<>]
 <list of total time at which a non-local smoothing is performed, separated by comma> 
 ``` 
 

@@ -26,7 +26,7 @@ Similar to the u-p elements, these elements are implemented for simulating the r
 ``u4u4``          | 2D            | rectangle      | 4              | linear                    | 4             | (1)          
 ``u4u4-red``          | 2D            | rectangle      | 4              | linear                    | 1             |  (2)          
 ``u8u8``          | 2D            | rectangle      | 8              | quadratic                    | 9             | (1)          
-``u8u8-red``          | 2D            | rectangle      | 8              | quadratic                    | 1             |  (2)      
+``u8u8-red``          | 2D            | rectangle      | 8              | quadratic                    | 4             |  (2)      
 
 ## Axisymmetric Elements
 
@@ -35,7 +35,7 @@ Similar to the u-p elements, these elements are implemented for simulating the r
 ``u4u4-ax``          | axisym            | rectangle      | 4              | linear                    | 4             | (1)          
 ``u4u4-ax-red``          | axisym            | rectangle      | 4              | linear                    | 1             |  (2)          
 ``u8u8-ax``          | axisym            | rectangle      | 8              | quadratic                    | 9             | (1)          
-``u8u8-ax-red``          | axisym            | rectangle      | 8              | quadratic                    | 1             |  (2)     
+``u8u8-ax-red``          | axisym            | rectangle      | 8              | quadratic                    | 4             |  (2)     
 
 ## 3D Elements
 

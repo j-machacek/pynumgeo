@@ -4,11 +4,11 @@
 *Fluid interaction, Name=<name>, Mechanical=<>, [no separation]
 <Normal contact model properties>
 ```
-This option defines a fluid interaction for contact analyses with elements having a water displacement degree of freedom, e.g. `U8U8` elements. The command is followed by two mandatory keywords and one optional keyword:
+This option defines a fluid interaction for contact analyses with elements having a water displacement degree of freedom, e.g. `U8U8` elements. The command is followed by one mandatory keyword (`Name`) and two optional keywords:
 
 - `Name=<>` of the (solid) interaction to which this fluid interaction belongs. The interaction has to be defined beforehand. This parameter is mandatory. Currently, a surface interaction for the fluid alone is not allowed.
 
-- `Mechanical = <>`Set this parameter equal to the mechanical model chose to describe the contact behaviour of the fluid. The following mechanical models are available:
+- `Mechanical = <>`Set this parameter equal to the mechanical model chose to describe the contact behaviour of the fluid (default: `Penalty`). The following mechanical models are available:
 
     |Model     |Contact tension possible         | Over-closure relation   
     |--------- |-------------------------------- | ----------------------- --

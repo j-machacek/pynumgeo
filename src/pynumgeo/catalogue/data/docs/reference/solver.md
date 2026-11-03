@@ -451,32 +451,32 @@ The LIS library gives access to more than 20 different iterative solvers and 10 
 
 ## External solver
 
-Use this option to interface external solvers to numgeo. For the external solver, an additional executable is required. This executable has to be placed in the same directory as the numgeo executable.
+Use this option to interface external solvers to numgeo. For the external solver, an additional executable is required. This executable has to be placed in the working directory of the simulation, or `exe` has to contain the path to it.
 
 ```numgeo 
-*Solver, external, exe=$executable name$ [mpi=<n processors> omp=<n threads> oneAPI arg=$....$]
+*Solver, external, exe=$executable name$ [, mpi=<n processors>] [, omp=<n threads>] [, oneapi] [, arg=$....$]
 ``` 
 The (sub)keywords are as follows:
 
 - `external`: tells numgeo to use an external executable to solve the linear system.
 
-- `exe=$executable name$`: specify the name of the external executable including file ending.
+- `exe=$executable name$`: specify the name of the external executable including file ending. numgeo converts the name to lower case; on Linux, the name of the executable (and its path, if given) must therefore be lower case.
 
 - `[mpi=<n processors>]`: specify the number of processors to be used. Notice that:
 
-    - for `mpi=1`, the use of mpi is disabled and the external executable is launched using `./executable name`. This is the default.
+    - without `mpi`, the use of mpi is disabled and the external executable is launched using `./executable name`. This is the default. `mpi=1` is not accepted; omit the option instead.
 
-    - for `mpi=n` (with n $>$ 1), the executable is launched using `mpirun -n executable name`
+    - for `mpi=n` (with n $>$ 1), the executable is launched using `mpiexec -n n executable name`. A different launcher (for example `mpirun`) can be set with the environment variable `MPI_LAUNCHER`. On Windows, `mpiexec -localonly` is used when MS-MPI is installed (environment variable `MSMPI_BIN`) and Intel MPI is not (`I_MPI_ROOT`).
 
 - `[omp=<n threads>]`: specify the number of (omp) threads to be used. Notice that:
 
-    - for `[omp=1]`, the use of omp is disabled. This is the default.
+    - for `[omp=1]`, the external program is started with one thread. This is the default.
 
-    - for `[omp=n]` (with n $>$ 1), the executable is launched using `export OMP_NUM_THREADS=n`
+    - the environment variables `OMP_NUM_THREADS` and `MKL_NUM_THREADS` are set to `n` before the executable is launched (`export` on Linux, `set` on Windows), also for the default `n = 1`.
 
 - `[oneAPI]`: if present, the oneAPI environment will be initialised before launching the external program
 
-- `[arg=$....$]`: additional arguments that will be passed to the external program. These values are solver/program dependent.
+- `[arg=$....$]`: additional arguments that will be passed to the external program. These values are solver/program dependent. They are converted to lower case as well.
 
 **Example 1:** Use the AMGCL library to solve the system of equations. For this, an external program `numgeo-amgcl.exe` is called. Only openMP threading with 16 threads is used. As additional options we use a `Ruiz` scaling of the matrix. The outputname of the simulation was set to `sim-example-1`. The numgeo reads:
 
@@ -485,7 +485,7 @@ The (sub)keywords are as follows:
 which produces the following command line call
 
 ```shell
-set OMP_NUM_THREADS=16
+set OMP_NUM_THREADS=16 && set MKL_NUM_THREADS=16
 .\numgeo-amgcl.exe -f sim-example-1 -s ruiz -nomp 16
 ```
 

@@ -24,8 +24,8 @@ of an element or element set. Use one of the following
     Use this option to assign an elevation-dependent initial stress
     field to all members of a given element set. When a geostatic stress
     is prescribed for a particular element set, the stress in the
-    vertical direction $h$ (assumed to be the $z$-direction in 3-D and
-    axisymmetric models and the $y$-direction in 2-D models) is assumed
+    vertical direction $h$ (assumed to be the $z$-direction in 3-D models and
+    the $y$-direction in 2-D and axisymmetric models) is assumed
     to vary piecewise linearly with this vertical coordinate. The
     command line takes the following form:
 
@@ -33,7 +33,9 @@ of an element or element set. Use one of the following
 
     `<element set name>, h_1, sigma_0(h_1), h_2, sigma_0(h_2), K_{x,0}, K_{y,0}`
 
-    $K_{x,0}$ and $K_{y,0}$ are the lateral stress coefficients.
+    $K_{x,0}$ and $K_{y,0}$ are the lateral stress coefficients. In 3-D models they give
+    $\sigma_{xx,0}=K_{x,0}\,\sigma_0$ and $\sigma_{yy,0}=K_{y,0}\,\sigma_0$. In 2-D and axisymmetric models the
+    first coefficient gives $\sigma_{xx,0}$ and the second the out-of-plane stress $\sigma_{zz,0}$.
 
 -   `Full`
 

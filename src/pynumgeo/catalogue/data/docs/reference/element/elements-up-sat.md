@@ -81,16 +81,16 @@ In coupled poromechanics problems, finite elements sometimes exhibit pressure os
 
 **Element label**   | **Dim.** | **Shape** | **Nodes** | **Order** | **nIP\*** | **Remarks**  
 ---|---|---|---|---|---|---
-``u3p3-sat-mini``        | 2D            | triangle       | 3              | linear                    | 1             | (1), (5)          
+``u3p3-sat-mini``        | 2D            | triangle       | 3              | linear                    | 3             | (1), (5)          
 ``u4p4-sat-mini``        | 2D            | rectangle      | 4              | linear                    | 4             | (1), (5)           
 ``u3p3-sat-stab``        | 2D            | triangle       | 3              | linear                    | 1             | (1), (7)          
-``u4p4-sat-stab``        | 2D            | rectangle      | 4              | linear                    | 1             | (3), (7)          
+``u4p4-sat-stab``        | 2D            | rectangle      | 4              | linear                    | 4             | (1), (7)          
 
 ### Axisymmetric Elements  
 
 **Element label**   | **Dim.** | **Shape** | **Nodes** | **Order** | **nIP\*** | **Remarks**  
 ---|---|---|---|---|---|---       
-``u3p3-sat-mini-ax``     | axisym.       | triangle       | 3              | linear                    | 1             | (1), (5)          
+``u3p3-sat-mini-ax``     | axisym.       | triangle       | 3              | linear                    | 3             | (1), (5)          
 ``u4p4-sat-mini-ax``     | axisym.       | rectangle      | 4              | linear                    | 4             | (1), (5)          
 ``u3p3-sat-stab-ax``     | axisym.       | triangle       | 3              | linear                    | 1             | (1), (7)          
 ``u4p4-sat-stab-ax-red`` | axisym.       | rectangle      | 4              | linear                    | 1             | (3), (7), (8)
@@ -115,5 +115,7 @@ In coupled poromechanics problems, finite elements sometimes exhibit pressure os
 (8) | This element uses a selective augmented (or standard) integration rule for quadratic terms of the FPL stabilisation equation
 
 Notice that these elements require the definition of a two-phase material (``*Material,..., Phases=2``), as described in [*Material](../material/index.md).
+
+The solid grains of these elements are compressible with a fixed bulk modulus $K^s = 1.5 \cdot 10^{7}$ in the stress unit of the model (15 GPa if stresses are given in kPa). The bulk modulus of the pore water is defined with [`*Bulk modulus`](../material/bulk_modulus.md).
 
 ---

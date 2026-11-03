@@ -12,9 +12,9 @@ This option defines additional and optional contact interaction definitions. It 
     <img src="./assets/clearance.png" width=90%/><br>
     </p>
 
-- The `Check Disp` option defines the fraction of the displacement magnitude of the contact nodes at which a update of the node-to-node connectivity is performed. The value defined is the fraction of the characteristic contact length (length of element edge) and is by default 0.05.
+- The `Check Disp` option defines the fraction of the displacement magnitude of the contact nodes at which a update of the node-to-node connectivity is performed. The value defined is the fraction of the characteristic contact length (length of element edge) and is by default 0.0001.
 
-- `Check Dist` defines the maximum contact point distance for which contact quantities are still computed based on the fraction of the characteristic contact length. This factor is by default $2.5$. If the user encounters contacts that are not computed (identifiable e.g. by zero contact distance) even if they should have to be, an increase of `Check Dist` can be a possible solution. Likewise, if the user encounters that nodes have contact stress which should not, reducing the value of `Check Dist` (or changing the contact conditions) may help.
+- `Check Dist` defines the maximum contact point distance for which contact quantities are still computed based on the fraction of the characteristic contact length. This factor is by default $3$. If the user encounters contacts that are not computed (identifiable e.g. by zero contact distance) even if they should have to be, an increase of `Check Dist` can be a possible solution. Likewise, if the user encounters that nodes have contact stress which should not, reducing the value of `Check Dist` (or changing the contact conditions) may help.
 
 - With the `Reduction` keyword interface properties are included in [strength-reduction analyses](../step/reduction.md) for the determination of the Factor of Safety $FoS$. If activated, the friction coefficient, dilatation angle and adhesion are obtained by
 

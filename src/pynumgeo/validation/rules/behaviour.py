@@ -11,6 +11,13 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 27.10.2026, J. Machacek - Fluctuation blocks of *Initial conditions checked per element set
+# 30.10.2026, J. Machacek - *Model change, friction (NG-CONT-125, numgeo-src 60fca8b5)
+# 03.11.2026, J. Machacek - Point files of *Assign material, from-file (NG-MAT-130 to NG-MAT-132) (with help of
+#                           Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Rules on numgeo's behaviour in particular cases: input that numgeo rejects, ignores, clamps or reads
 differently than the text suggests. Every rule names the solver source it mirrors (``source``).
@@ -32,12 +39,21 @@ import hashlib
 import math
 import re
 from collections.abc import Iterable, Iterator
+from pathlib import Path
 
 import numpy as np
 
 from pynumgeo import catalogue as _cat
-from pynumgeo.deck.deck import Deck, Material, Step
+from pynumgeo.deck.deck import Deck, Material, Section, Step
 from pynumgeo.deck.keyword import Keyword, Token
+from pynumgeo.io.lexer import _delete_blanks, _drop_trailing_comma, upper_ascii
+from pynumgeo.io.material_points import (
+    MaterialAssignment,
+    MaterialPoints,
+    MaterialPointsError,
+    assign_materials,
+    read_material_points,
+)
 from pynumgeo.validation.engine import Context, Finding, rule
 from pynumgeo.validation.rules.keywords import (
     display,
@@ -3645,5 +3661,154 @@ def statev_without_index(ctx: Context) -> Iterator[Finding]:
             yield (
                 f"{display(ctx.catalogue, kw.keyword)}: state variable {r[1]} of {spec.name.lower()} has no "
                 "state-variable index in numgeo (the name cannot be resolved)",
+                loc,
+            )
+
+
+# ----------------------------------------------------------------------------- material assignment from file
+_LOWER = str.maketrans("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")
+
+
+def _point_file_name(name: str) -> str:
+    """Name of the point file numgeo opens: the line without blanks, lower case (read_solid_section_.f90:150)."""
+    return _drop_trailing_comma(_delete_blanks(name)).translate(_LOWER)
+
+
+class _FromFile:
+    """Point file and assignment of one ``*Assign material, from-file`` (shared by NG-MAT-130 to 132)."""
+
+    def __init__(self, ctx: Context, s: Section) -> None:
+        self.name = _point_file_name(s.from_file or "")
+        p = Path(self.name)
+        self.path = p if p.is_absolute() else (ctx.workdir if ctx.workdir is not None else Path.cwd()) / p
+        self.points: MaterialPoints | None = None
+        self.error: str | None = None
+        self.assignment: MaterialAssignment | None = None
+        self.unknown: str | None = None  # why the assignment is not known
+        if not self.path.is_file():
+            hint = "" if self.name == s.from_file else f" (given as {s.from_file!r})"
+            self.error = (
+                f"the file {self.name!r}{hint} does not exist: {self.path}. numgeo reads the name in lower case and "
+                "without blanks, relative to the folder it is started in (validate(..., workdir=...))"
+            )
+            return
+        try:
+            self.points = read_material_points(self.path)
+        except MaterialPointsError as e:
+            self.error = str(e)
+            return
+        except OSError as e:
+            self.error = f"the file {self.path} cannot be read: {e}"
+            return
+        mesh = ctx.deck.mesh
+        try:
+            mesh.elset(s.elset)
+        except KeyError:
+            self.unknown = f"element set {s.elset} is not defined"
+            return
+        if _elset_members(ctx.deck, s.elset) is None:
+            self.unknown = f"the members of element set {s.elset} are evaluated by numgeo"
+            return
+        order = mesh.elset(s.elset).members.tolist()
+        rows: dict[int, tuple[int, int]] = {}
+        for ib, b in enumerate(mesh.blocks):
+            for ir, lab in enumerate(b.labels.tolist()):
+                rows.setdefault(int(lab), (ib, ir))
+        elements = []
+        for lab in order:
+            if int(lab) not in rows:
+                self.unknown = f"element {lab} of set {s.elset} is not defined"
+                return
+            ib, ir = rows[int(lab)]
+            elements.append((int(lab), mesh.blocks[ib].connectivity[ir]))
+        # mdb%ndim: 3 if one element type is three-dimensional (read_input.f90:152, scanning_for_numbers_.f90:217)
+        ndim = 2
+        for b in mesh.blocks:
+            try:
+                ndim = max(ndim, ctx.catalogue.element_type(b.type).ndim)
+            except KeyError:
+                continue
+        try:
+            self.assignment = assign_materials(self.points, mesh.node_labels, mesh.coords, elements, ndim)
+        except KeyError as e:
+            self.unknown = str(e).strip("\"'")
+
+
+def _from_file(ctx: Context) -> Iterator[tuple[int, Section, _FromFile]]:
+    for i, s in enumerate(ctx.deck.sections):
+        if s.from_file is None:
+            continue
+        key = f"from-file:{i}"
+        if key not in ctx.memo:
+            ctx.memo[key] = _FromFile(ctx, s)
+        yield i, s, ctx.memo[key]
+
+
+def _undefined(ctx: Context, f: _FromFile) -> list[str]:
+    """Material names of the point file without a *Material (file order)."""
+    defined = {upper_ascii(m.name.replace(" ", "")) for m in ctx.deck.materials}
+    return [n for n in (f.points.names if f.points is not None else ()) if n not in defined]
+
+
+@rule(
+    "NG-MAT-130",
+    "error",
+    "*Assign material, from-file needs a point file numgeo can read",
+    source="src/input/read_solid_section_.f90:143-157,338-483,767-770 (numgeo-src 60135dc)",
+)
+def from_file_points(ctx: Context) -> Iterator[Finding]:
+    for i, s, f in _from_file(ctx):
+        if f.error is not None:
+            yield (f"material assignment of {s.elset} from file: {f.error}", s.source or f"sections[{i}]")
+
+
+@rule(
+    "NG-MAT-131",
+    "error",
+    "materials of a point file assigned to elements must be defined",
+    source="src/input/read_solid_section_.f90:618-640 (numgeo-src 60135dc)",
+)
+def from_file_undefined_used(ctx: Context) -> Iterator[Finding]:
+    for i, s, f in _from_file(ctx):
+        if f.assignment is None:
+            continue
+        counts: dict[str, int] = {}
+        for n in f.assignment.materials:
+            counts[n] = counts.get(n, 0) + 1
+        used = [n for n in _undefined(ctx, f) if n in counts]
+        if used:
+            yield (
+                f"material assignment of {s.elset} from {f.name!r}: "
+                f"{', '.join(f'{n} ({counts[n]} element(s))' for n in used)} assigned to elements of the set but "
+                "not defined (*Material, name=...); numgeo stops",
+                s.source or f"sections[{i}]",
+            )
+
+
+@rule(
+    "NG-MAT-132",
+    "warning",
+    "undefined materials of a point file are not assigned to any element",
+    source="src/input/read_solid_section_.f90:618-647 (numgeo-src 60135dc)",
+)
+def from_file_undefined_unused(ctx: Context) -> Iterator[Finding]:
+    for i, s, f in _from_file(ctx):
+        undefined = _undefined(ctx, f)
+        if not undefined:
+            continue
+        loc = s.source or f"sections[{i}]"
+        if f.assignment is None:
+            yield (
+                f"material assignment of {s.elset} from {f.name!r}: {', '.join(undefined)} not defined "
+                f"(*Material, name=...); numgeo stops if one of them is assigned to an element (not checked: "
+                f"{f.unknown})",
+                loc,
+            )
+            continue
+        unused = [n for n in undefined if n not in f.assignment.used_names()]
+        if unused:
+            yield (
+                f"material assignment of {s.elset} from {f.name!r}: {', '.join(unused)} of the file not defined "
+                "(*Material, name=...); not assigned to any element of the set (numgeo warns)",
                 loc,
             )

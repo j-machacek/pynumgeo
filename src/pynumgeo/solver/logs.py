@@ -11,6 +11,10 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 27.10.2026, J. Machacek - Console lines without any message word are skipped before the patterns are searched
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Parsers for numgeo's report files (``.log``, ``.sta``, ``.msg``) and console output.
 

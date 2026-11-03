@@ -36,9 +36,9 @@ Optional mechanical parameters can be used to enable locally undrained condition
 
 * `bulk_water, Kw`: Bulk modulus of pore water for locally undrained simulations (and only for those). By default, $K^w=0$ F/A. To activate locally undrained conditions, $K^w>0$ must be set by the user.
 
-* `projection_dev, value`: activate projection of inadmissible stress states onto the Matsuoka-Nakai failure surface defined by a cut-off friction angle $\varphi^{cut}$. By default, `value=-1` (no projection). For `0 <= value <= 5`, the cut-off friction angle is determined automatically by numgeo; for `value>5`, $\varphi^{cut}=$ `value°` is used. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
+* `projection_dev, value`: activate projection of inadmissible stress states onto the Matsuoka-Nakai failure surface defined by a cut-off friction angle $\varphi^{cut}$. By default, `value=0` (no projection). For `value=1` or `value=2`, the cut-off friction angle is determined automatically by numgeo (two variants with different lower bounds of $\varphi^{cut}$); for `value>=5`, $\varphi^{cut}=$ `value°` is used. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
 
-* `projection_iso, value`: activate projection of inadmissible stress states onto a pseudo primary loading surface. By default, `value=-1` (no projection). For `value=1`, the projection is activated. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
+* `projection_iso, value`: activate projection of inadmissible stress states onto a pseudo primary loading surface. By default, `value=0` (no projection). For `value=1`, the projection is activated. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
 
 * `min_pressure, value`: Minimum mean effective stress in kPa (compression = positive). The default is `value=0.01` kPa.
 

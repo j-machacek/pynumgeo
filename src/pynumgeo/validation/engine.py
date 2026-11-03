@@ -11,6 +11,10 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 03.11.2026, J. Machacek - Context.workdir and Context.memo (with help of Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Rule engine of the validator.
 
@@ -26,7 +30,8 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
-from typing import Union
+from pathlib import Path
+from typing import Any, Union
 
 from pynumgeo import catalogue as _cat
 from pynumgeo.deck.deck import Deck
@@ -64,11 +69,18 @@ class BuildProfile:
 
 @dataclass
 class Context:
-    """What a rule sees: the deck, the catalogue and the build profile."""
+    """What a rule sees: the deck, the catalogue, the build profile and the folder numgeo is started in.
+
+    ``workdir`` resolves the relative file names of the deck (``*Assign material, from-file``); ``None``
+    is the current working directory. ``memo`` keeps results that several rules share (e.g. a point file
+    read once).
+    """
 
     deck: Deck
     catalogue: _cat.Catalogue
     profile: BuildProfile = field(default_factory=BuildProfile)
+    workdir: Path | None = None
+    memo: dict[str, Any] = field(default_factory=dict, repr=False, compare=False)
 
 
 @dataclass(frozen=True)

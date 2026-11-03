@@ -11,6 +11,11 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 03.11.2026, J. Machacek - validate: files the input refers to are looked up in its folder (with help of
+#                           Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Command line: ``pynumgeo validate|run|info|roundtrip|catalogue``.
 
@@ -63,7 +68,9 @@ def _cmd_validate(a: argparse.Namespace) -> int:
     res = parse(a.input)
     profile = BuildProfile.public_build() if a.profile == "public" else BuildProfile.full()
     order = {"error": 0, "warning": 1, "info": 2}
-    issues = sorted(res.issues + validate(res.deck, profile=profile), key=lambda i: order.get(i.severity, 3))
+    # files of the input (*Assign material, from-file) are looked up next to it, where numgeo is usually started
+    found = validate(res.deck, profile=profile, workdir=Path(a.input).parent)
+    issues = sorted(res.issues + found, key=lambda i: order.get(i.severity, 3))
     errors = sum(i.severity == "error" for i in issues)
     if a.json:
         _print(_report(input=a.input, errors=errors, issues=[i.as_dict() for i in issues]), True)

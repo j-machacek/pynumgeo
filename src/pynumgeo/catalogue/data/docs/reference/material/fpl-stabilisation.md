@@ -32,7 +32,7 @@ $$
 
 - $k$ the representative hydraulic conductivity [@truty2001] $k = \frac{p^w_{,i}}{\parallel p^w_{,i}\parallel} \frac{k^{wf} K_{ij}^{ref}}{\mu^{wf}} \frac{p^w_{,j}}{\parallel p^w_{,j}\parallel}.$
 
-- $\alpha^{FPL}$ controls the amount of numerical diffusion and is typically in the range of $0 \leq \alpha^{FPL} \leq 1$. If the keyword `*FPL-stabilisation` is not defined, a default value of $\alpha^{FPL}=0.5$ is used.
+- $\alpha^{FPL}$ controls the amount of numerical diffusion and is typically in the range of $0 \leq \alpha^{FPL} \leq 1$. If the keyword `*FPL-stabilisation` is not defined, a default value of $\alpha^{FPL}=0.1$ is used.
 
 ---
 

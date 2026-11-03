@@ -11,6 +11,11 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 30.10.2026, J. Machacek - Option FRICTION of *Model change
+# 02.11.2026, J. Machacek - *Integration point of the field output takes no options (with help of Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Catalogue-driven checks of every generic keyword of a deck.
 
@@ -632,6 +637,8 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
     ("output-print", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:1966-2054"),
     ("output-print", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:2061-2112"),
     ("output-print", "*INTEGRATIONPOINT"): _Policy("exact", "error", "src/input/read_step_.f90:2115-2168"),
+    # field card (numgeo-src working tree of 02.11.2026): no options, the field output covers all elements
+    ("output-field", "*INTEGRATIONPOINT"): _Policy("exact", "error", "src/input/read_step_.f90:1931-1937"),
     ("output-user", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:2217-2270"),
     ("output-user", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:2272-2325"),
     ("procedure", "*DYNAMIC"): _Policy("exact", "warning", "src/input/read_step_.f90:570-573"),
@@ -695,9 +702,9 @@ def _option_findings(ctx: Context, severity: str) -> Iterator[Finding]:
         for k, v in opts:
             if _recognised(k, v, names, pol.match) is None:
                 what = "numgeo stops" if severity == "error" else "numgeo ignores it"
+                known = f"known: {', '.join(n.lower() for n in names)}" if names else "it takes no options"
                 yield (
-                    f"{s.where}: unknown option {_token(k, v).lower()!r} of {name} ({what}; known: "
-                    f"{', '.join(n.lower() for n in names)}; {pol.source})",
+                    f"{s.where}: unknown option {_token(k, v).lower()!r} of {name} ({what}; {known}; {pol.source})",
                     s.loc,
                 )
 

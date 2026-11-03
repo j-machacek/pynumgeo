@@ -37,14 +37,14 @@ The material parameters for `Hardening-Soil-MN-Bricks` are the 14 parameters of 
 | 10 |    $K_0^{nc}$   |   –  | At-rest earth pressure coefficient for normally consolidated conditions.                                                                                                                                |
 | 11 |      $R_f$      |   –  | Failure ratio controlling the stress level at which the secant stiffness definition reaches the failure envelope (typical range: $0.8$–$0.95$).                                                         |
 | 12 |   $E_i^{ref}$   |  F/A | Initial tangent stiffness in triaxial loading at $p = p_{ref}$. If not available, a common approximation is $E_i^{ref} \approx 2E_{50}^{ref}/(2 - R_f)$.                                                |
-| 13 |     $\alpha$    |   –  | Cap shape parameter (controls steepness of the cap in $p$–$q$ space). Set to `0` to let numgeo determine $\alpha$ automatically from $E_{oed}^{ref}$ and $K_0^{nc}$.                                |
-| 14 |     $H_{pp}$    |  F/A | Hardening parameter relating plastic volumetric strain to the evolution of pre-consolidation stress. Set to `0` to let numgeo determine $H_{pp}$ automatically from $E_{oed}^{ref}$ and $K_0^{nc}$. |
+| 13 |     $\alpha$    |   –  | Cap shape parameter (controls steepness of the cap in $p$–$q$ space). Set $\alpha$ and $H_{pp}$ both to `0` to let numgeo determine them automatically from $E_{oed}^{ref}$ and $K_0^{nc}$.                                |
+| 14 |     $H_{pp}$    |  F/A | Hardening parameter relating plastic volumetric strain to the evolution of pre-consolidation stress. Set $\alpha$ and $H_{pp}$ both to `0` to let numgeo determine them automatically from $E_{oed}^{ref}$ and $K_0^{nc}$. |
 | 15 |  $\gamma_{0.7}$ |   –  | Shear strain at which the small-strain secant shear modulus has decayed to $72.2\%$ of $G_0^{ref}$ (Hardin–Drnevich threshold strain).                                                                 |
 | 16 |     $G_0^{ref}$ |  F/A | Small-strain reference shear modulus at $p = p_{ref}$, valid immediately after a strain reversal.                                                                                                      |
 
 !!! note "Automatic determination of cap parameters"
 
-    As for the base model, if $\alpha = 0$ and/or $H_{pp} = 0$, numgeo determines the missing parameter(s) such that the model reproduces the target oedometric stiffness $E_{oed}^{ref}$ and the target $K_0^{nc}$ under oedometric loading at the reference stress level. This optimisation always targets the fully-degraded (base-model) response, independently of $\gamma_{0.7}$ and $G_0^{ref}$.
+    As for the base model, if both $\alpha = 0$ and $H_{pp} = 0$ are given, numgeo determines both parameters such that the model reproduces the target oedometric stiffness $E_{oed}^{ref}$ and the target $K_0^{nc}$ under oedometric loading at the reference stress level. This optimisation always targets the fully-degraded (base-model) response, independently of $\gamma_{0.7}$ and $G_0^{ref}$.
 
 !!! warning "Parameter validity"
 
@@ -67,12 +67,12 @@ The example below reproduces the glacial till parameters used in Fig. 6 of Cudny
 * `Void_Ratio`: void ratio (only meaningful if an initial value was prescribed at the beginning of an analysis)
 * `Strain-Dev-Pl`: Accumulated plastic deviatoric strain.
 * `Stress-Precon`: Pre-consolidation stress (cap hardening variable).
-* `Stiffness-Ratio-Gm`: Current small-strain stiffness ratio $G_m=\min\left(G_{ref,t}/G_{ur}^{ref}\right)$ over the loading history ($1 \le G_m \le G_0^{ref}/G_{ur}^{ref}$); $G_m=1$ indicates a fully degraded (base-model) response.
-* `Active-Bricks`: Number of currently active (dragged) bricks, $0$–$10$; a diagnostic measure of how far the current strain state is from the last reversal.
+* `Stress-P`: Mean effective stress $p$.
+* `Stress-Q`: Deviatoric stress $q$.
 
 !!! note "Internal state variables"
 
-    Beyond the five output quantities above, this model requires at least 73 state variable slots per integration point to track the internal BRICK state (man and brick strain history); numgeo allocates these automatically. The additional slots are internal bookkeeping and are not exposed as named output channels.
+    Beyond the five output quantities above, this model requires at least 73 state variable slots per integration point to track the internal BRICK state (man and brick strain history); numgeo allocates these automatically. The additional slots are internal bookkeeping (including the current small-strain stiffness ratio and the number of active bricks) and are not available as output.
 
 ---
 

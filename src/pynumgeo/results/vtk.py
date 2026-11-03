@@ -11,8 +11,14 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 02.11.2026, J. Machacek - Dataset Integration points in the module documentation (with help of Claude Opus 5.5)
+# 03.11.2026, J. Machacek - Appended data compressed with zlib (*Output, field, vtk, binary-zlib) (with help of
+#                           Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
-"""Readers for numgeo's VTK field output (``*Output, field, vtk, ascii|binary``), standard library only.
+"""Readers for numgeo's VTK field output (``*Output, field, vtk, ascii|binary|binary-zlib``), standard library only.
 
 File chain (``src/output/VTK_write_results_.f90``, ``src/output/VTK_type.f90``):
 
@@ -21,8 +27,10 @@ File chain (``src/output/VTK_write_results_.f90``, ``src/output/VTK_type.f90``):
   list-directed output (``VTK_type.f90:1405``, ``VTK_write_results_.f90:147-157``);
 * ``.vtm`` (``vtkMultiBlockDataSet``): block ``Model elements`` with the datasets ``1D elements``,
   ``2D elements``, ``3D elements``; with ``EMBEDDED`` output a block ``Embedded interaction regions``
-  (``VTK_write_results_.f90:1135-1191``). File names are relative to the ``.vtm``;
-* ``.vtu`` (``UnstructuredGrid``, one ``Piece``), ASCII or raw appended binary.
+  (``VTK_write_results_.f90:1135-1191``); with ``*Integration point`` in the field output the dataset
+  ``Integration points`` (one vertex cell per integration point, see
+  :attr:`pynumgeo.results.Frame.integration_points`). File names are relative to the ``.vtm``;
+* ``.vtu`` (``UnstructuredGrid``, one ``Piece``), ASCII or raw appended binary, uncompressed or zlib-compressed.
 
 Encodings as numgeo writes them:
 
@@ -33,7 +41,12 @@ Encodings as numgeo writes them:
   ``byte_order="LittleEndian"``, every array ``format="appended"``; after ``<AppendedData encoding="raw">``
   and ``_`` each block is an 8-byte length followed by the raw data. The reader honours ``header_type``
   (``UInt32`` is the VTK default when absent) and ``byte_order`` as declared in the file.
-  Inline ``binary``/base64 arrays and compressed files are not written by numgeo and are rejected.
+* BINARY-ZLIB (numgeo-src 7052b69, ``VTK_type.f90:1143-1144``, ``VTK_AppendedData_type_.f90:380-462``): the
+  same with ``compressor="vtkZLibDataCompressor"``; each block starts with the header ``[number of blocks,
+  block size, size of the last block (0: full), compressed size of every block]`` (``header_type``
+  integers), followed by the zlib streams of the blocks (1 MiB uncompressed each). The values are those of
+  BINARY, bit for bit. Other compressors, inline ``binary``/base64 arrays are not written by numgeo and are
+  rejected.
 
 Arrays: ``PointData`` holds ``NodeLabel`` (``Int32``, node labels of the input), ``CellData``
 ``ElementLabel`` and ``TopologicalDimension`` (``VTK_write_results_.f90:1009-1075``). Names are stored
@@ -75,6 +88,7 @@ from __future__ import annotations
 import itertools
 import re
 import xml.etree.ElementTree as ET
+import zlib
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -113,6 +127,8 @@ _VTK_TYPES: dict[str, str] = {
     "Float64": "f8",
 }
 _HEADER_TYPES: dict[str, str] = {"UInt32": "u4", "UInt64": "u8"}
+#: The only compressor numgeo writes (``*Output, field, vtk, binary-zlib``).
+_ZLIB = "vtkZLibDataCompressor"
 
 
 @dataclass(frozen=True, eq=False)
@@ -339,23 +355,24 @@ def read_vtu(path: str | Path, *, name: str | None = None, block: tuple[str, ...
         block: enclosing block names to record (from the ``.vtm``).
 
     Raises:
-        ValueError: for anything numgeo does not write (several pieces, compression, base64, unknown
-            types) or inconsistent sizes.
+        ValueError: for anything numgeo does not write (several pieces, compressors other than zlib, base64,
+            unknown types) or inconsistent sizes.
     """
     p = Path(path)
     raw = p.read_bytes()
     root, appended = _split_appended(raw, p)
     if root.tag != "VTKFile" or root.get("type") != "UnstructuredGrid":
         raise ValueError(f"{p}: not a VTK UnstructuredGrid file")
-    if root.get("compressor"):
-        raise ValueError(f"{p}: compressed VTK files are not supported (numgeo writes none)")
+    compressor = root.get("compressor")
+    if compressor not in (None, "", _ZLIB):
+        raise ValueError(f"{p}: compressor {compressor!r} is not supported (numgeo writes {_ZLIB} only)")
     order = root.get("byte_order", "LittleEndian")
     if order not in ("LittleEndian", "BigEndian"):
         raise ValueError(f"{p}: unknown byte_order {order!r}")
     header = root.get("header_type", "UInt32")
     if header not in _HEADER_TYPES:
         raise ValueError(f"{p}: unknown header_type {header!r}")
-    ctx = _Context(p, appended, "<" if order == "LittleEndian" else ">", _HEADER_TYPES[header])
+    ctx = _Context(p, appended, "<" if order == "LittleEndian" else ">", _HEADER_TYPES[header], compressor == _ZLIB)
 
     grid = root.find("UnstructuredGrid")
     pieces = [] if grid is None else grid.findall("Piece")
@@ -394,6 +411,7 @@ class _Context:
     appended: bytes | None
     byte_order: str
     header_code: str
+    zlib: bool = False
 
 
 def _split_appended(raw: bytes, path: Path) -> tuple[ET.Element, bytes | None]:
@@ -455,11 +473,45 @@ def _read_appended(el: ET.Element, ctx: _Context, code: str, name: str, where: s
     start = offset + hdt.itemsize
     if offset < 0 or start > len(ctx.appended):
         raise ValueError(f"{ctx.path}: {where} array {name!r}: offset {offset} outside the appended data")
+    dt = np.dtype(ctx.byte_order + code)
+    if ctx.zlib:
+        raw = _inflate(ctx, offset, hdt, f"{where} array {name!r}")
+        if len(raw) % dt.itemsize:
+            raise ValueError(f"{ctx.path}: {where} array {name!r}: {len(raw)} bytes is not a multiple of {dt}")
+        return np.frombuffer(raw, dtype=dt).astype(np.dtype(code))
     nbytes = int(np.frombuffer(ctx.appended, dtype=hdt, count=1, offset=offset)[0])
     if start + nbytes > len(ctx.appended):
         raise ValueError(f"{ctx.path}: {where} array {name!r}: block of {nbytes} bytes is truncated")
-    dt = np.dtype(ctx.byte_order + code)
     if nbytes % dt.itemsize:
         raise ValueError(f"{ctx.path}: {where} array {name!r}: {nbytes} bytes is not a multiple of {dt}")
     data = np.frombuffer(ctx.appended, dtype=dt, count=nbytes // dt.itemsize, offset=start)
     return data.astype(np.dtype(code))
+
+
+def _inflate(ctx: _Context, offset: int, hdt: np.dtype[Any], what: str) -> bytes:
+    """Uncompressed bytes of a vtkZLibDataCompressor block at ``offset`` of the appended data."""
+    assert ctx.appended is not None
+    data = ctx.appended
+    if offset + 3 * hdt.itemsize > len(data):
+        raise ValueError(f"{ctx.path}: {what}: compression header at {offset} is truncated")
+    nblocks, block, last = (int(v) for v in np.frombuffer(data, dtype=hdt, count=3, offset=offset))
+    pos = offset + (3 + nblocks) * hdt.itemsize
+    if pos > len(data) or (nblocks and block <= 0):
+        raise ValueError(f"{ctx.path}: {what}: compression header at {offset} is truncated or invalid")
+    sizes = np.frombuffer(data, dtype=hdt, count=nblocks, offset=offset + 3 * hdt.itemsize).tolist()
+    out = []
+    for i, size in enumerate(sizes):
+        if pos + size > len(data):
+            raise ValueError(f"{ctx.path}: {what}: compressed block {i + 1} of {nblocks} is truncated")
+        try:
+            chunk = zlib.decompress(data[pos : pos + size])
+        except zlib.error as exc:
+            raise ValueError(f"{ctx.path}: {what}: block {i + 1} of {nblocks}: {exc}") from None
+        expected = last if i == nblocks - 1 and last else block
+        if len(chunk) != expected:
+            raise ValueError(
+                f"{ctx.path}: {what}: block {i + 1} of {nblocks} has {len(chunk)} bytes, the header says {expected}"
+            )
+        out.append(chunk)
+        pos += size
+    return b"".join(out)

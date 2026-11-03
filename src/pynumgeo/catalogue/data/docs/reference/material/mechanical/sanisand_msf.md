@@ -61,18 +61,14 @@ Minimum mean effective stress in kPa (compression = positive). The default is 0.
 Tolerance for stress error of the explicit integration scheme, default is $1\cdot 10^{-4}$.
 * `minimum_dh`
 Minimum subincrement size for the integration scheme, default is $10^{-6}$.
-* `allow_cutback`
-Controlling if the constitutive model is allowed to request a ''global cutback'' from numgeo: 0 = not allowed (default), 1 = allowed.
 * `drift_maxiter`
 Maximum number of iterations for drift correction (only for the OpenSees drift correction, ignored otherwise). The default is 50.
 * `tol_yield`
 Tolerance for yield surface. Default is $10^{-7}$.
 * `tangent_stiffness`
-When the contribution of the constitutive model $J=\dfrac{\partial \sigma}{\partial \varepsilon}$ to the element stiffness is computed. 1 = tangent stiffness (evaluated at the end of the increment for the updated stress state), else = "incremental" stiffness (evaluated at the end of each subincrement, a weighted average is returned to the element, default).
+When the contribution of the constitutive model $J=\dfrac{\partial \sigma}{\partial \varepsilon}$ to the element stiffness is computed. 1 = tangent stiffness (evaluated at the end of the increment for the updated stress state, default), else = "incremental" stiffness (evaluated at the end of each subincrement, a weighted average is returned to the element).
 * `jacobi`
-How $J=\dfrac{\partial \sigma}{\partial \varepsilon}$ is evaluated:  1 = elastic Jacobian (default), 2 = elasto-plastic Jacobian.
-* `maximum_strain`
-Maximum strain $\Delta \varepsilon^{sub}$ for subincrement size in explicit integration, default is $\Delta \varepsilon^{sub} = 5 \cdot 10^{-7}$. This option is only relevant for the Forward Euler (FE) integration.
+How $J=\dfrac{\partial \sigma}{\partial \varepsilon}$ is evaluated:  1 = elastic Jacobian, 2 = elasto-plastic Jacobian (default).
 * `maximum_voidratio, maximum_voidratio`
 Maximum and minimum allowed void ratios $e^{max}$ and $e^{min}$, respectively (off per default). If active (for any value larger than zero), $e=min(e,e^{max})$ and/or $e=max(e,e^{min})$ is/are enforced.
 * `bulk_water, 0.0` - Bulk modulus of pore water $K^w$ for locally undrained simulations $tr(\dot{\boldsymbol{\varepsilon}})=0$. For any value of $K^w > 0$ the rate of pore water pressure is calculated as follows $\dot{p}^w = - K^w tr(\dot{\boldsymbol{\varepsilon}}) (1+e)/e$. The constitutive behaviour is governed by the effective stress $\boldsymbol{\sigma} = \boldsymbol{\sigma}^{tot}-p^w \boldsymbol{\delta}$, where $\boldsymbol{\sigma}^{tot}$ is the total stress and $\boldsymbol{\delta}$ is the Kronecker delta.

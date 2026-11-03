@@ -21,7 +21,7 @@ Heat flux and film exchange on u-T solids are defined using [`HFi` under `*Dload
 
     - using a user defined amplitude defined prior to the step definition using `<option> = Amplitude = <amplitude name>`
 
-    - user-defined load using `<option> = user`. The user has to supply the `user_load.o` file (see [user loads](../user/load.md)). The definition of a `<Load magnitude>` is not required in this case. 
+    - user-defined load using `<option> = user`. The user has to supply the library `user_load.so` (Linux) or `user_load.dll` (Windows), or a script `user_load.sh` (Linux) or `user_load.bat` (Windows) that builds it, in the working directory (see [user loads](../user/load.md)). The definition of a `<Load magnitude>` is not required in this case. 
 
     - `side=1` or `side=2` may be added to the option (`*Dsload, instant, side=2`): in a model with an [embedded shell](../embedded-regions/interaction-surface-plate.md) (`host=split`) the load then acts on the host elements cut by the shell only if they belong to that side of the shell (1: side of face 1, the + side; 2: the opposite side, face 2). Elements which are not cut receive the load in any case. See [Faces of elements cut by an embedded shell](#faces-of-elements-cut-by-an-embedded-shell).
         
@@ -117,7 +117,7 @@ Four families of ground springs are available, chosen via `<spring type>`:
 
     There is no `spring-ground-n`/`-T` for beam or 3D solid elements, and no `spring-ground-x`/`-Y`/`-Z` for 2D solid elements. Assigning a spring to a surface of an incompatible element type aborts with an error at assembly. More springs will be available in the future.
 
-All four families additionally support the [relative displacement (installation) formulation](#relative-displacement-installation-formulation) described below, and — like every `Dsload` — the `<option>` mechanism described at the top of this page (`instant`, `ramp`, `Amplitude=...`, `user`; the last requires the `user_load.o` file, see [user loads](../user/load.md)), except where noted for tabular springs.
+All four families additionally support the [relative displacement (installation) formulation](#relative-displacement-installation-formulation) described below, and — like every `Dsload` — the `<option>` mechanism described at the top of this page (`instant`, `ramp`, `Amplitude=...`, `user`; the last requires the library `user_load.so` or `user_load.dll`, see [user loads](../user/load.md)), except where noted for tabular springs.
 
 ------
 

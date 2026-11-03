@@ -11,6 +11,10 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 27.10.2026, J. Machacek - Comments above *Node, element blocks, sets and surfaces
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """The mesh of a deck: nodes, element blocks, node and element sets, surfaces (numpy based).
 

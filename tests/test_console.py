@@ -11,6 +11,9 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 27.10.2026, J. Machacek - Initial version
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Console output: the word filter of :func:`pynumgeo.solver.logs.parse_console` skips only lines that no
 pattern reads, and a long console of a material routine is read quickly."""

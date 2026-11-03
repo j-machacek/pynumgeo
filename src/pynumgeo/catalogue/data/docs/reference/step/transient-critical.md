@@ -1,5 +1,5 @@
 ```numgeo 
-*Transient-critial
+*Transient-critical
 <Delta t_0>, <t_step>, <f_t_min>, <Delta t_max>
 ```
 This procedure is used to consider a meaningful minimum time increment based on the critical time increment $\Delta t_{\text{crit}}$ for unsaturated flow and consolidation analysis within the time-stepping of a transient analysis. A typical case is an infiltration of an initially dry or partially saturated material, where a wetting front with non-constant wetting liquid velocity propagates through the model, or a consolidation analysis, where saturated flow takes place. A critical time increment must not be undercut, to avoid spurious, non-physical oscillations in the pore water pressure evolution, which may lead to convergence difficulties, especially when hydro-mechanically coupled material behaviour is considered. More details on the computation of $\Delta t_{\text{crit}}$ within the analysis are provided in the [Theory Manual](../../theory/solution-method/critical-time-step.md). Analogously to the normal transient procedure, the unsaturated transient procedure also takes place in physical time. Note that inertia effects are not accounted for.

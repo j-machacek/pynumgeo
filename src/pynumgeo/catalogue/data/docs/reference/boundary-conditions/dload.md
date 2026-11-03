@@ -15,7 +15,7 @@ This option defines a distributed load acting on the faces or in the volume of t
 
     - using a user defined amplitude defined prior to the step definition using `<option> = Amplitude = <amplitude name>`
 
-    - user-defined `<option> = user`. The user has to supply the `user_load.o` file (see [user loads](../user/load.md))
+    - user-defined `<option> = user`. The user has to supply the library `user_load.so` (Linux) or `user_load.dll` (Windows), or a script `user_load.sh` (Linux) or `user_load.bat` (Windows) that builds it, in the working directory (see [user loads](../user/load.md))
 
     - `side=1` or `side=2` may be added to the option (`*Dload, instant, side=2`): in a model with an [embedded shell](../embedded-regions/interaction-surface-plate.md) (`host=split`) the load then acts on the host elements cut by the shell only if they belong to that side of the shell (1: side of face 1, the + side; 2: the opposite side, face 2). Elements which are not cut receive the load in any case. See [Faces of elements cut by an embedded shell](#faces-of-elements-cut-by-an-embedded-shell).
 

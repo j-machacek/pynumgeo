@@ -5,7 +5,7 @@ The extension of the well known Sanisand model[@dafalias2004] to incorporate eff
 ```numgeo 
 *Mechanical = Sanisand-F
 p_atm (F/A), e_0 (-), lambda_c (-), xi (-), M_c (-), M_e  (-), m (-),  G_0 (-) 
-nu (-), h_0 (-), c_h (-), n_b (-), A_0 (-), n^d (-), z_max (-), c_z (-)
+nu (-), c_h (-), n_b (-), A_0 (-), n^d (-), h_1 (-), h_2 (-), c_0 (-)
 eA (-), r (-)
 ```
 The material parameters of Sanisand-F are given in the following.  
@@ -16,10 +16,13 @@ The material parameters of Sanisand-F are given in the following.
 * $M_c$ and  $M_e$ are the critical stress ratios for compression and extension, respectively. They can be calculated using the critical friction angle.
 *  $m$ defines the elastic range of the model. Conventionally, it is chosen to 0.05.
 * $G_0$ and $\nu$ are the elastic parameters of the model. 
-* $h_0$ and $c_h$ are obtained from the fitting of monotonic triaxial tests. They have no physical meaning.
+* $c_h$ is obtained from the fitting of monotonic triaxial tests. It has no physical meaning.
 * $n_b$ influences the peak in the $q$-$\varepsilon_1$ plot. Again, it has no physical meaning.
 * $A_0$  and $n^d$ influence the dilatancy. They also have no physical meaning.
-* $z_{\max}$  and $c_z$ are the parameters influencing the cyclic mobility effect. They are obtained by fitting of cyclic triaxial test data. 
+* $h_1$ and $h_2$ are constants of the plastic modulus; $h_1$ replaces $h_0$ of Sanisand and $h_2$ accounts for the fabric.
+* $c_0$ controls the evolution of the fabric.
+* $e_A$ is the constant of the dilatancy state line.
+* $r$ is the limit of the fabric intensity, usually 1.
 
 ## Optional Parameters
 
@@ -38,14 +41,12 @@ Minimum mean effective stress in kPa (compression = positive). The default is 0.
 Tolerance for stress error of the explicit integration scheme, default is $1\cdot 10^{-4}$.
 * `minimum_dh`
 Minimum subincrement size for the integration scheme, default is $10^{-6}$.
-* `allow_cutback`
-Controlling if the constitutive model is allowed to request a ''global cutback'' from numgeo: 0 = not allowed (default), 1 = allowed.
 * `drift_correction`
-Method for drift correction: 0 = map yield surface by adjusting alpha (default), 1 = projection along deviatoric plane, else = drift correction based on Sloan et al. (2001)[^3].
+Method for drift correction: 0 = map yield surface by adjusting alpha, 1 = projection along deviatoric plane, else = drift correction based on Sloan et al. (2001)[^3] (default: 2).
 * `drift_maxiter`
 Maximum number of iterations for drift correction (only for the OpenSees drift correction, ignored otherwise). The default is 50.
 * `tol_yield`
-Tolerance for yield surface. Default is $10^{-7}$.
+Tolerance for yield surface. Default is $10^{-9}$.
 * `tangent_stiffness`
 When the contribution of the constitutive model $J=\dfrac{\partial \sigma}{\partial \varepsilon}$ to the element stiffness is computed. 1 = tangent stiffness (evaluated at the end of the increment for the updated stress state), else = "incremental" stiffness (evaluated at the end of each subincrement, a weighted average is returned to the element, default).
 * `jacobi`

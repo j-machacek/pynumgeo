@@ -5,14 +5,14 @@ The numgeo keyword reads:
 
 ```numgeo 
 *Mechanical = Hypo-ISA-SF   
-** phi_c (degree or rad), h_s (F/A), n (-), e_c0 (-), e_d0 (-), e_i0 (-), alpha (-), beta (-)
+** phi_c (degree or rad), h_s (F/A), n (-), e_d0 (-), e_c0 (-), e_i0 (-), alpha (-), beta (-)
 ** m_R (-), R (-), beta_h0 (-), chi_0 (-), chi_max (-), eps_acc (-), c_z (-), beta_hmax (-)
 ** c_r (-), c_l (-), lambda_1 (-), lambda_2 (-) (-), c_mn (-), p_th (F/A), n_l (-), f_l (-)
 ``` 
 
 The material parameters of the Hypo-ISA-SF model are given in the following. Further information on the model constitutive equations are provided in [@tafili2024hypoplastic].
 
-* $\varphi_c$ (degree or rad) is the critical friction angle and has to be provided in radian.
+* $\varphi_c$ (degree or rad) is the critical friction angle and has to be provided in degree or in radian. Values larger than 1 are considered to be provided in degree.
 * $h_s$ (F/A) and $n$ (-) describe the decrease of the limiting void ratios $e_i$, $e_c$ and $e_d$ with increasing pressure during isotropic compression. The parameter $n$ has no unit.
 * The void ratios $e_{d0}$ (-), $e_{c0}$ (-) and $e_{i0}$ (-) correspond to the densest, the critical and the loosest state at pressure $p$ = 0 F/A. These parameters have no unit.
 * The material constant $\alpha$ describes the influence of density on the peak friction angle. This parameter has no unit.
@@ -42,8 +42,6 @@ Parameters of the SF extension
 
     Optional mechanical parameters can be used to enable locally undrained conditions, change some default settings or activate some stabilisation methods. Their use is optional.
 
-    * `phantom_E, E_ph` and `phantom_nu, nu_ph` are the parameters of the phantom elasticity. The Hypo-ISA implementation available from [soilmodels.com](https://soilmodels.com) uses a phantom linear elasticity overlying the constitutive-model response with $E_{ph}=20$ kPa and $\nu_{ph}=0.45$ (as of 22 May 2025). We have also included this in our implementation, but it is deactivated by default. If activated, the parameters must be specified in the input for transparency. We recommend leaving it deactivated ($E_{ph}=0$). Unlike the original implementation by W. Fuentes, phantom elasticity in the numgeo implementation is active only when the mean effective stress is equal to or below $p_{min,ph}$. For more information, see the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md).
-
     * `bulk_water, Kw`: Bulk modulus of pore water for locally undrained simulations (and only for those). Per default $K^w=0$ F/A. To activate locally undrained conditions, $K^w>0$ must be set by the user.
 
     * `projection_dev, value`: specifies the friction angle for the projection of stress states onto the Matsuoka-Nakai failure surface defined by a user defined friction angle $\varphi^{cut}$ in degree. Per default `value=-1` (no projection). For `value=0` the cut-off friction angle is automatically determined by numgeo and for `value=>0°`, $\varphi^{cut}=$ `value` is used. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
@@ -60,7 +58,6 @@ In addition to the (effective) stress, the hypoplastic constitutive model takes 
 * Void ratio: $e$, `void_ratio`. The prescription of the void ratio is mandatory, if the initialization is omitted or wrong values are prescribed the simulation will abort.
 * Intergranular strain: $\mathbf{h}$, `int_strain11`, `int_strain22`, `int_strain33`, `int_strain12`, `int_strain23`, `int_strain13`. Only in combination with the intergranular strain extension. Prescribing $\mathbf{h}_0$ is not mandatory, if omitted, $\mathbf{h}=\mathbf{0}$ is assumed. $h_{ii} = -R / \sqrt{3}$ for $i=\{x,y,z\}$ corresponds to an isotropically consolidated state.
 * Intergranular back strain: $\mathbf{c}$, `int_back_strain11`, `int_back_strain22`, `int_back_strain33`, `int_back_strain12`, `int_back_strain23`, `int_back_strain13`. Only in combination with the intergranular strain extension. $\mathbf{c}_0=\mathbf{h}_0/2$, however, prescribing $\mathbf{c}_0$ is not mandatory, if omitted, $\mathbf{c}=\mathbf{0}$ is assumed.
-* Relative density, `rel-density`. $D_r = \dfrac{e_c-e}{e_c-e_d}$. Note that $e_c$ and $e_d$ are pressure dependent (see the [Theory manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md)). The relative density can also be used to initialise the void ratio $e_0$.
 
 The state variables can be initialized in two different ways:
 
@@ -92,22 +89,6 @@ element_set_name, int_back_strain33, <value>
 * *statev(12)* = $c_{12}$ 
 * *statev(13)* = $c_{23}$ 
 * *statev(14)* = $c_{13}$
-* *statev(43)* = $D_{r}$
-
-The relative density can also be used to initialise the void ratio $e_0$. If $D_{r0}$ is provided by the user, e.g. by the following input command:
-
-```
-*Initial conditions, type = state variables
-element_set_name, rel-density, <value>
-```
-
-and no initial void ratio is specified, numgeo will calculate the initial void ratio according to the following equation
-
-$$
-e_0(p') = \left(  e_{c0} - D_{r0}(e_{c0}-e_{d0}) \right) \exp\left(\dfrac{-3p'}{h_s}\right)^n
-$$
-
-where $p'$ is the mean effective stress (compression is positive), $e_{c0}$ and $e_{d0}$ are the void ratios at the critical and densest state for $p'=0$ (material parameters).
 
 ---
 
@@ -121,6 +102,5 @@ The following additional output variables are available in the [*Output](../../o
 * Hypoplastic factors: `fz`, `fb`, `fd`, `fe`,
 * Mobilised friction angle: `phi_mob`
 * Semi-fluidised factors: `l_sf`, `se`, `pr`
-* Relative density: `rel-density`
 
 ---

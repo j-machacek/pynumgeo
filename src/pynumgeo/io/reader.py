@@ -11,6 +11,12 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 27.10.2026, J. Machacek - data_tokens, parse_fragment and include files given as texts (parse_text)
+# 03.11.2026, J. Machacek - *Assign material, from-file (NG-READ-SEC-004, NG-READ-SEC-005) (with help of
+#                           Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Read a numgeo input file into a :class:`~pynumgeo.deck.Deck`.
 
@@ -701,6 +707,11 @@ class _Reader:
         self.deck.materials.append(mat)
 
     def section(self, b: KeywordBlock) -> None:
+        # from-file (numgeo-src 60135dc, read_solid_section_.f90:94-157): the exact token FROM-FILE; the
+        # remaining options (after amgcl=) must be elset=<set> alone, the next line is the file name
+        if any(o.key == "FROM-FILE" for o in b.options):
+            self.section_from_file(b)
+            return
         elset = material = None
         amgcl = False
         for o in b.options:
@@ -719,6 +730,57 @@ class _Reader:
             self.issue("NG-READ-SEC-003", "error", "a material assignment has no data line (numgeo rejects it)", b)
         self.deck.sections.append(
             Section(elset=elset, material=material, keyword=b.keyword, amgcl_direct=amgcl, source=_loc(b))
+        )
+
+    def section_from_file(self, b: KeywordBlock) -> None:
+        elset = None
+        amgcl = False
+        ok = True
+        for o in b.options:
+            if o.key == "AMGCL":
+                amgcl = (o.value or "") == "DIRECT"
+            elif o.key == "FROM-FILE":
+                if o.value is not None:
+                    self.issue(
+                        "NG-READ-SEC-004",
+                        "error",
+                        "from-file takes no value; the file name is given in the line after the keyword",
+                        b,
+                    )
+                    ok = False
+            elif o.key == "ELSET" and o.value is not None and elset is None:
+                elset = o.value_cased
+            else:
+                self.issue(
+                    "NG-READ-SEC-004",
+                    "error",
+                    f"option {o.key_cased!r}: from-file takes elset=<set> as only further option (besides "
+                    "amgcl=direct); the material names are given in the file",
+                    b,
+                )
+                ok = False
+        if not elset:
+            self.issue("NG-READ-SEC-001", "error", f"{b.keyword} with from-file needs elset=", b)
+            ok = False
+        if len(b.data) != 1:
+            self.issue(
+                "NG-READ-SEC-005",
+                "error",
+                f"{b.keyword} with from-file needs exactly one data line, the name of the point file "
+                f"({len(b.data)} given)",
+                b,
+            )
+            ok = False
+        if not ok or elset is None:
+            return
+        self.deck.sections.append(
+            Section(
+                elset=elset,
+                from_file=b.data[0].cased,
+                keyword=b.keyword,
+                amgcl_direct=amgcl,
+                source=_loc(b),
+            )
         )
 
     def step(self, b: KeywordBlock) -> None:

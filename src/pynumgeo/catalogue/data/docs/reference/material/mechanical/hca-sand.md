@@ -114,7 +114,7 @@ A list of currently supported optional parameters is given below:
     strain points during the recording step in which case a new strain
     point is saved. This values seldom has to be changed, except in
     cases where the strain path consists of values which are either much
-    lower or larger than the default value of $8\cdot 10^{-5}$.
+    lower or larger than the default value of $8\cdot 10^{-6}$.
 
 -   `cos_rec`: Required cosine between two strain
     points during the recording step in which case a new strain point is
@@ -203,10 +203,11 @@ The HCA calculations can be performed using an adaptive strain amplitude
 definition by using
 
 ```numgeo
-*Adaptive strain ampl, <time =>, <frequency =>`
+*Adaptive strain ampl [, frequency = <value>] [, time = <value 1>, <value 2>, ...]
 ```
-either `<time = value 1, value 2, value 3, ...>` or
-`<frequency = value>` has to be given. `time` defines the times at which
+Both options are optional. Without options, the strain amplitude is updated in every increment
+of the HCA steps. If both options are given, `frequency` must be written before `time`, and the
+times take precedence over the frequency. `time` defines the times at which
 the strain amplitude is updated during the HCA steps. `frequency`
 ($\geq 1$) defines the frequency in terms of increments at which the
 strain amplitude is updated during the HCA steps. It is strongly

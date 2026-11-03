@@ -1,12 +1,12 @@
 # Nset - Node set definition
 
 ```numgeo 
-*Nset, name = <node set name> [, generate] 
+*Nset, nset = <node set name> [, generate] 
 <subsequent lines> 
 ``` 
 
 
-This option assigns nodes to a node set and makes this set accessible by using its name. The sub-keyword ``name`` is mandatory, whereas ``generate`` is optional. The entries to the ``<subsequent lines>`` depend on the occurrence of ``generate``:
+This option assigns nodes to a node set and makes this set accessible by using its name. The sub-keyword ``nset`` is mandatory, whereas ``generate`` is optional. The entries to the ``<subsequent lines>`` depend on the occurrence of ``generate``:
 
 * If ``generate`` is omitted, the ``<subsequent lines>`` take the following form: 
 	
@@ -14,7 +14,7 @@ This option assigns nodes to a node set and makes this set accessible by using i
     <node i>, ..., <node n> 
     ...
     ```
-    Enter a list of nodes ``<node i>v to be assigned to the set. Up to 16 entries per line are allowed. Repeat this line as often as necessary.
+    Enter a list of nodes ``<node i>v to be assigned to the set. Any number of entries per line is allowed, as long as the line does not exceed 256 characters. Repeat this line as often as necessary.
 	
 * If ``generate`` is active, the ``<subsequent lines>`` takes the following form:
 	
@@ -25,7 +25,7 @@ This option assigns nodes to a node set and makes this set accessible by using i
     where ``<first node>`` and ``<last node>`` are the first and the last node in the set to be generated. ``<increment>`` is the increment in node numbers between the nodes in the set. All parameters are mandatory.
 
 
-Note that only previously defined nodes can be assigned to a node set.
+Note that only previously defined nodes can be assigned to a node set. numgeo checks this only if it is started with the option `check-sets` (see [Running numgeo](../tutorial/running-numgeo.md)).
 
 Node sets can also be defined by their geometrical position rather than their label. This is done using:
 
@@ -50,9 +50,9 @@ Node sets can also be defined by their geometrical position rather than their la
 
     ```numgeo 
     *Nset, find, nset = <node set name>, cylinder
-    b1,b2, b3, r[, a1,a2, a3, h]
+    b1, b2, b3, r[, a1, a2, a3[, h]]
     ```
-    For 2D only the base coordinates and the radius have to be given (b1,b2, b3, r). For 3D the center axis  (a1,a2, a3)  and the height (h) have to the added. All nodes found within the area/volume are added to the node set. The 3D definition is illustrated below. 
+    For 2D only the base coordinates and the radius have to be given (b1, b2, b3, r; b3 is not used). For 3D the center axis (a1, a2, a3) has to be added; the height (h) is optional. Starting from the base point, nodes are searched in the direction of the axis up to the height h (without h, there is no limit). All nodes found within the area/volume are added to the node set. The 3D definition is illustrated below. 
     
     <p align="center">
       <img src="./assets/3d_cylinder_illustration.png" width=90%/><br>

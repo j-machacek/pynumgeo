@@ -28,7 +28,7 @@ All input is preceded by keywords, which all start with an asterisk (<span style
 
 !!! note "Upper vs lower case"
 
-    The **numgeo** input file is **case-insensitive** - use upper and lower cases as you wish.
+    The **numgeo** input file is **case-insensitive** - use upper and lower cases as you wish. Names of files and programs given in the input file are an exception: numgeo converts them to lower case (the name of an included input file keeps its case; the table file of the tabular springs of `*Dsload` is converted to upper case). On file systems that distinguish upper and lower case (Linux), use lower-case names for these files and place them in the working directory of the simulation.
 
 !!! note "Blanks and tab stops"
 
@@ -70,9 +70,9 @@ Boundary conditions (<span style="color:red;">*Boundary</span>, see [Boundary co
     <span style="color:red;">*Element, type = ...</span><br>
     e1, n1, n2, n3, ...<br>
     &hellip;<br>
-    <span style="color:red;">*Nset, name = ...</span><br>
+    <span style="color:red;">*Nset, nset = ...</span><br>
     &hellip;<br>
-    <span style="color:red;">*Elset, name = ...</span><br>
+    <span style="color:red;">*Elset, elset = ...</span><br>
     &hellip;<br>
     <span style="color:red;">*Solid Section, ...</span><br>
     &hellip;<br>
@@ -100,9 +100,9 @@ Boundary conditions (<span style="color:red;">*Boundary</span>, see [Boundary co
       <span style="color: red;">*Element, type = ...</span><br>
       e<sub>1</sub>, n<sub>1</sub>, n<sub>2</sub>, n<sub>3</sub>, ...<br>
       &vellip;<br>
-      <span style="color: red;">*Nset, name = ...</span><br>
+      <span style="color: red;">*Nset, nset = ...</span><br>
       &vellip;<br>
-      <span style="color: red;">*Elset, name = ...</span><br>
+      <span style="color: red;">*Elset, elset = ...</span><br>
       &vellip;<br>
       <span style="color: red;">*Solid section, ...</span><br>
       &vellip;<br>
@@ -128,12 +128,12 @@ Boundary conditions (<span style="color:red;">*Boundary</span>, see [Boundary co
   <div style="width: 60%;">
     <p>For models with different geometrical instances, a subdivision into parts is often beneficial.</p>
     
-    <p>A part definition is started using the <span style="color: red;">*Part</span> statement. Each part is assigned a name. Within the part definition section, nodes, elements, sets and solid sections can be defined. The part definition is closed using the <span style="color: red;">*End part</span> statement. The number of defined parts is not restricted.</p>
+    <p>A part definition is started using the <span style="color: red;">*Part</span> statement. Each part is assigned a name. Within the part definition section, nodes, elements, sets and solid sections can be defined. The nodes of every part have to be numbered consecutively from 1 in the order of their definition. The part definition is closed using the <span style="color: red;">*End part</span> statement. The number of defined parts is not restricted.</p>
     
     <p>Once parts have been defined, an assembly is defined using <span style="color: red;">*Assembly</span>. Again, the assembly is given a name. Within the assembly, instances are defined. Instances refer to the previously defined parts <span style="color: red;">Part = ...</span>. The nodes of an instance can be moved by definition of a vector x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub> in the line following the instance definition. They can also be rotated around the vector which is formed by the line connecting x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub> and x<sub>2</sub>, y<sub>2</sub>, z<sub>2</sub> by the angle &theta;. Each defined part has to be defined as an instance in the assembly.</p>
     <p>The assembly is finished using the <span style="color: red;">*End assembly</span> statement.</p>
     <p>Sets that have been defined in the part section can be used in the step definition if the name of the instance is added with a point before the set name, e.g. instance-1.set-1.</p>
-    <p>Note that no 'internal' set definition exists. Thus, every set defined in the assembly can be used in the step environment. Note in addition that it is prohibited to have the same set name twice even if they are defined in different parts.</p>
+    <p>Note that no 'internal' set definition exists. Thus, every set defined in the assembly can be used in the step environment. Note in addition that it is prohibited to have the same set name twice even if they are defined in different parts. If the same set name is used twice outside of parts or twice within the same part, numgeo only issues a warning and then uses the first set of that name (e.g. for loads).</p>
   </div>
 </div>
 

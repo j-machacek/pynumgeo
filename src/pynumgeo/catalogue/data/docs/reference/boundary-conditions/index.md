@@ -28,7 +28,7 @@ Boundary conditions specify the behavior of a problem’s solution on the bounda
 
     [:octicons-arrow-right-24: Dirichlet boundary conditions, can vary in time](./boundary.md)
 
-- :material-package-variant-closed-remove:{ .lg .middle } __*Flexible-Boundary__
+- :material-package-variant-closed-remove:{ .lg .middle } __*Boundary-Flexible__
 
     ---
 

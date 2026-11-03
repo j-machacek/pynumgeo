@@ -66,13 +66,13 @@ The Modified Cam Clay model requires 6 material parameters ($\nu$, $\kappa$, $\l
 
 A list of currently supported optional parameters is given below:
 
--   `integrator`: Numerical integrator:
+-   `integration`: Numerical integrator:
 
-    -   `integrator = 1`: Modified-Euler
+    -   `integration = 1`: Modified-Euler
 
-    -   `integrator = 2`: Explicit Euler with Richards extrapolation of Order 2
+    -   `integration = 2`: Explicit Euler with Richards extrapolation of Order 2
 
-    Per default, the Explicit Euler with Richards extrapolation method is used (`integrator = 1`).
+    Per default, the Modified-Euler method is used (`integration = 1`).
 
 -   `tol_stress`: Tolerance $T^\sigma$ for error $\epsilon^\sigma$ evaluated based on constitutive stress. The solution is accepted if $\epsilon^\sigma < T^\sigma$. Per default $T^\sigma = 10^{-4}$. Stress control can be deactivated by setting $T^\sigma=1$ (not recommended!).
 
@@ -85,7 +85,7 @@ A list of currently supported optional parameters is given below:
 
 -   `perturbation`: The perturbation factor $f^\theta$ used in the numerical differentiation to evaluate the
     material tangent stiffness $(\partial \boldsymbol{\sigma})/(\partial \boldsymbol{\varepsilon})$.
-    The perturbation is $\theta=\text{max}(||\dot{\varepsilon}||)f^\theta$, where $||\dot{\varepsilon}||$ is  the $L_2$ norm of the strain rate. The default value is $f^\Theta=10^{-7}$.
+    The perturbation is $\theta=\text{max}(||\dot{\varepsilon}||)f^\theta$, where $||\dot{\varepsilon}||$ is  the $L_2$ norm of the strain rate. The default value is $f^\Theta=10^{-6}$.
 
 -   `jacobi`: Method to evaluate the Jacobian:
 
@@ -132,7 +132,7 @@ The state variables can be initialized in two different ways:
 
     -   `statev(4)` = $p^w$
 
-    -   `statev(8)` = OCR
+    -   `statev(7)` = OCR
 
 !!! tip "Recommended initialisation method"
 

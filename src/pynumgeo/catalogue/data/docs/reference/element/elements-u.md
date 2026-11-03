@@ -37,10 +37,10 @@ The single phase solid elements (denoted by the extension ``solid``) are general
 
 |**Element label** | **Dim.** | **Shape** | **Nodes** | **Order** |**nIP\*** | **Remarks**|
 |---|---|---|---|---|---|---|
-|``u4-solid-3D``                 | 3D            | tetrahedron    | 4              | linear         | 1             | (1) |    
+|``u4-solid-3D``                 | 3D            | tetrahedron    | 4              | linear         | 4             | (1) |    
 |``u8-3D`` / ``u8-solid-3D``     | 3D            | brick          | 8              | linear         | 8             | (1) |              
 |``u8-solid-3D-red``             | 3D            | brick          | 8              | linear         | 1             | (2) |    
-|``u10-solid-3D``                | 3D            | tetrahedron    | 10             | linear         | 4             | (1) |        
+|``u10-solid-3D``                | 3D            | tetrahedron    | 10             | quadratic         | 4             | (1) |        
 |``u20`` / ``u20-solid``         | 3D            | brick          | 20             | quadratic      | 27            | (1), (3)     |     
 |``u20-red`` / ``u20-solid-red`` | 3D            | brick          | 20             | quadratic      | 8             | (3)  |             
 |``u27`` / ``u27-solid``         | 3D            | brick          | 27             | quadratic      | 27            | (1)    |           

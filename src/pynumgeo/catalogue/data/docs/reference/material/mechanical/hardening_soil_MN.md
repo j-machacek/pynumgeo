@@ -43,12 +43,12 @@ The material parameters for `Hardening-Soil-MN` are:
 | 10 |    $K_0^{nc}$   |   –  | At-rest earth pressure coefficient for normally consolidated conditions.                                                                                                                                |
 | 11 |      $R_f$      |   –  | Failure ratio controlling the stress level at which the secant stiffness definition reaches the failure envelope (typical range: $0.8$–$0.95$).                                                         |
 | 12 |   $E_i^{ref}$   |  F/A | Initial tangent stiffness in triaxial loading at $p = p_{ref}$. If not available, a common approximation is $E_i^{ref} \approx 2E_{50}^{ref}/(2 - R_f)$.                                                |
-| 13 |     $\alpha$    |   –  | Cap shape parameter (controls steepness of the cap in $p$–$q$ space). Set to `0` to let numgeo determine $\alpha$ automatically from $E_{oed}^{ref}$ and $K_0^{nc}$.                                |
-| 14 |     $H_{pp}$    |  F/A | Hardening parameter relating plastic volumetric strain to the evolution of pre-consolidation stress. Set to `0` to let numgeo determine $H_{pp}$ automatically from $E_{oed}^{ref}$ and $K_0^{nc}$. |
+| 13 |     $\alpha$    |   –  | Cap shape parameter (controls steepness of the cap in $p$–$q$ space). Set $\alpha$ and $H_{pp}$ both to `0` to let numgeo determine them automatically from $E_{oed}^{ref}$ and $K_0^{nc}$.                                |
+| 14 |     $H_{pp}$    |  F/A | Hardening parameter relating plastic volumetric strain to the evolution of pre-consolidation stress. Set $\alpha$ and $H_{pp}$ both to `0` to let numgeo determine them automatically from $E_{oed}^{ref}$ and $K_0^{nc}$. |
 
 !!! note "Automatic determination of cap parameters"
 
-    If $\alpha = 0$ and/or $H_{pp} = 0$, numgeo determines the missing parameter(s) such that the model reproduces the target oedometric stiffness $E_{oed}^{ref}$ and the target $K_0^{nc}$ under oedometric loading at the reference stress level.
+    If both $\alpha = 0$ and $H_{pp} = 0$ are given, numgeo determines both parameters such that the model reproduces the target oedometric stiffness $E_{oed}^{ref}$ and the target $K_0^{nc}$ under oedometric loading at the reference stress level.
 
 
 ### Example

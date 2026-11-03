@@ -68,8 +68,8 @@ loading or boundary conditions).
         following form:  
         
         `dx`  
-        `v1, v2, ..., v8,`  
-        `v9, ...`  
+        `<file name>`  
+        The values `v1, v2, ...` are read from the file `<file name>` in the calculation folder (comma separated, any number of values per line as long as the line does not exceed 256 characters). The file name must be in lower case.  
 
     -   `tabular`
         Choose the tabular definition to define the amplitude curve as a
@@ -82,8 +82,8 @@ loading or boundary conditions).
         `...`  
 
     -   `user`
-        The amplitude is defined in a user-defined file described [here](user/index.md). The user may specify as many
-        amplitude parameters in the input file as needed in the user
+        The amplitude is defined in a user-defined file described [here](user/index.md). The user may specify up to eight
+        amplitude parameters in one line following the keyword line; they are passed to the user
         file
 
     -   `lab-cyclic-stress-strain-control`
@@ -114,7 +114,7 @@ loading or boundary conditions).
         $p=\sigma_{ii}/3$). For a defined element set `<elset>` an
         updated horizontal stress $\sigma_{11}$ is calculated that
         enforces $\dot{p}=0$:    
-        $\sigma_{11} = \dfrac{2p^{target}-\sigma_{22,0}}{2}$
+        $\sigma_{11} = \dfrac{3p^{target}-\sigma_{22}}{2}$
 
         Example:  
         `*Amplitude, name = updated-s11, Type = lab-triaxial-constant-pressure`  

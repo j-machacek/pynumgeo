@@ -28,9 +28,9 @@ With this option, the reaction forces at the end of the current step are saved i
 ## Apply reaction forces
 
 ```numgeo 
-*Reaction force
+*Reaction force, <amplitude type>
 <node set name>, <Global direction>
 ```
 
-With this option, the reaction forces from a previous step are imposed to the specified set. A typical application is the release of a support: the support is omitted in the step, its reaction force of the previous step is applied instead and reduced to zero with a decreasing amplitude (e.g. `*Amplitude, name=Release, type=ramp` with `0.0, 1.0, 1.0, 0.0` and `*Reaction force, amplitude=Release`), see the release of the props in the tutorial [Geogrid-reinforced wall with a propped facing panel](../../tutorial/geosynthetics/propped-panel-wall.md#step-25-release-of-the-props). The entries of the `<subsequent lines>` are the name of the node set `<node set name>`, and the global direction `<Global direction {1,2,3}>` in case of reaction  forces of the solid phase or the global direction `<Global direction {w1,w2,w3}>`  in case of reaction forces of the fluid phase if elements discretising fluid displacement are used. Only if the reaction force was saved for a set and it's direction it can be used. The `<amplitude type>` is mandatory.
+With this option, the reaction forces from a previous step are imposed to the specified set. A typical application is the release of a support: the support is omitted in the step, its reaction force of the previous step is applied instead and reduced to zero with a decreasing amplitude (e.g. `*Amplitude, name=Release, type=ramp` with `0.0, 1.0, 1.0, 0.0` and `*Reaction force, amplitude=Release`), see the release of the props in the tutorial [Geogrid-reinforced wall with a propped facing panel](../../tutorial/geosynthetics/propped-panel-wall.md#step-25-release-of-the-props). The entries of the `<subsequent lines>` are the name of the node set `<node set name>`, and the global direction `<Global direction {1,2,3}>` in case of reaction  forces of the solid phase or the global direction `<Global direction {w1,w2,w3}>`  in case of reaction forces of the fluid phase if elements discretising fluid displacement are used. Only if the reaction force was saved for a set and it's direction it can be used. The `<amplitude type>` (`instant`, `ramp` or `amplitude = <amplitude name>`) is mandatory.
 

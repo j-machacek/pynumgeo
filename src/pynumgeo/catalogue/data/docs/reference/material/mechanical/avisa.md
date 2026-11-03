@@ -41,7 +41,7 @@ The material parameters of the AVISA model are given in the following.
 
 - $F^{ISA}$ is a switch that decides whether the ISA ($F^{ISA}=1$) model should be used or not $F^{ISA}=0$.
 
-- $\bar{K}^w$ is the bulk modulus of pore water for locally undrained simulations (and only for those). The parameter is not mandatory and zero per default.
+- $\bar{K}^w$ is the bulk modulus of pore water for locally undrained simulations (and only for those). The parameter must always be given; set $\bar{K}^w=0$ if no locally undrained simulation is performed.
 
 ## State variables {#state-variables-6 .unnumbered}
 

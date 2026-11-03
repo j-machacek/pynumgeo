@@ -58,7 +58,7 @@ end subroutine user_contact_properties
 
 -   `istep`: Step number
 
--   `node`: Global node label
+-   `node`: Number of the current contact point within its contact surface (for `IPS`: number of the integration point within its element face); this is not the global node label
 
 -   `slave`: True if current node is on the slave surface (always the
     first surface of a contact pair definition). False if current node

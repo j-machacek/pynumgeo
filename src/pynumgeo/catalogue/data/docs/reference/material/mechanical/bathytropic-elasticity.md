@@ -5,13 +5,13 @@ The **bathytropic elasticity** model is a depth-initialised, isotropic linear-el
 ## Input syntax
 
 ```numgeo
-*Mechanical = Bathytropic_Elasticity
+*Mechanical = bathytropic-elasticity
 v_s^0 (m/s), rho^0 (kg/m^3), epsilon_rho (kg/m^3), m (-), nu (-), z^ref (m)
 ```
 
 ### Material parameters
 
-The material parameters for `Bathytropic_Elasticity` are:
+The material parameters for `bathytropic-elasticity` are:
 
 | Index | Symbol | Unit | Description |
 | :---: | :---: | :---: | :--- |
@@ -57,7 +57,7 @@ $$
 
 ### Unit convention
 
-The current implementation has a fixed SI-based unit convention:
+The current implementation has a fixed SI-based unit convention, independent of the units used elsewhere in the model:
 
 * coordinates and $z^{ref}$ are entered in metres,
 * $v_s^0$ is entered in m/s,
@@ -68,12 +68,12 @@ The expressions `1+d` and $\ln(1+d)$ are implemented using the numerical depth i
 
 !!! warning "Density used for dynamic analyses"
 
-    The profile $\rho(d)$ is used only to derive the elastic stiffness. It does not change the mass density assigned through `*Density`. In a wave-propagation analysis, the prescribed mass density must be consistent with $\rho(d)$ if the numerical shear-wave speed is intended to equal the specified profile $v_s(d)$.
+    The profile $\rho(d)$ is used only to derive the elastic stiffness. It does not change the mass density assigned through `*Density`. In a wave-propagation analysis, the prescribed mass density must be consistent with $\rho(d)$ if the numerical shear-wave speed is intended to equal the specified profile $v_s(d)$. Note that `*Density` is given in the mass unit of the model, whereas $\rho^0$ and $\epsilon_\rho$ are always given in kg/m³: in a model in kN, m and kPa (mass in t), a density of 2000 kg/m³ corresponds to a `*Density` value of 2.0.
 
 ### Example
 
 ```numgeo
-*Mechanical = Bathytropic_Elasticity
+*Mechanical = bathytropic-elasticity
 ** v_s^0 [m/s], rho^0 [kg/m^3], epsilon_rho [kg/m^3], m [-], nu [-], z^ref [m]
 500., 2000., 50., 0.20, 0.25, 0.
 ```
@@ -89,8 +89,6 @@ The implementation requires one state variable:
 | 1 | `matvar(1)` | kPa | Young's modulus $E$ derived from the depth profile. |
 
 When `matvar(1)` is zero, the model calculates $E$ from the supplied coordinates and stores it in `matvar(1)`. On all later calls, the stored value is reused and coordinate changes no longer affect the stiffness.
-
-If no named state-variable alias is registered for this model, the stored modulus can be requested as `sdv1`.
 
 !!! warning "Meaning of initial depth"
 

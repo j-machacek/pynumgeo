@@ -11,6 +11,9 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 31.10.2026, J. Machacek - Initial version
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """*Mechanical = Concrete (numgeo-src working tree of 30./31.10.2026): catalogue entry, number of parameters, the
 optional parameter VISCOSITY, state variables, messages and the bundled reference page."""

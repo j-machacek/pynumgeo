@@ -35,7 +35,7 @@ The `*Material` keyword is used to indicate the start of a material definition.
 Phases = <number of active phases>
 ``` 
     
-    Set this parameter equal to the number of phases (e.g. solid, water and/or air) active in the current material. Note that the number of active phases affects some of the subsequent commands. This parameter is mandatory.
+    Set this parameter equal to the number of phases (e.g. solid, water and/or air) active in the current material. Note that the number of active phases affects some of the subsequent commands. This parameter is optional; if it is omitted, a single-phase material (`Phases = 1`) is assumed.
 
 The required sub-keywords depend on the selected element and material model. The principal definitions are:
 

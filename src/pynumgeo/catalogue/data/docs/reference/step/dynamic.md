@@ -20,7 +20,7 @@ amplitudes.
   - Use this parameter to choose the time integration method. Note the
     asterisk starting the keyword.
 
-    -   If `*Hilber-Hughes-Taylor` is chosen, the line may be extended by up to three parameters
+    -   If `*Hilber-Hughes-Taylor` is chosen, the line may be extended by one parameter (=<$\alpha$>) or by three parameters
         (=<$\alpha$>,<$\beta$>,<$\gamma$>), defining the Hilber-Hughes-Taylor parameters. The smaller
         the value of the parameter $\alpha$, the greater the numerical
         dissipation (note that $\alpha \leq 0$ holds). The following

@@ -8,7 +8,7 @@
 
 This option allows nodes and their coordinates to be defined. The meaning of the sub-keywords is as follows:
 
-* ``node label``: Node number, integer
+* ``node label``: Node number, integer. The nodes have to be numbered consecutively from 1 in the order of their definition (1, 2, 3, ... without gaps).
 * ``coordinate i``: Coordinates defining the node. The third coordinate is only required for 3D models.
 
 Consider the following example of four nodes $n_i$ in a two dimensional domain:

@@ -12,7 +12,7 @@ This keyword is used to define an interaction between two or more individual bod
 
 - `Name=<name>`: Set this parameter equal to the name of the interaction (can be chosen freely). This parameter is mandatory.
 
-- The optional `[user]` allows for user defined frictional contact properties (in case `*Friction` is used) which can vary with respect to coordinates, node label or time. No properties for the frictional contact model have to be defined in the input file in this case, but a user defined file for the contact properties have to given in accordance to the routine described [here](../user/index.md).
+- The optional `[user]` allows for user defined frictional contact properties (in case `*Friction` is used) which can vary with respect to coordinates or time. No properties for the frictional contact model have to be defined in the input file in this case, but a user defined file for the contact properties have to given in accordance to the routine described [here](../user/index.md).
 
 !!! info "Normal and tangential contact settings"
 
@@ -22,9 +22,9 @@ This keyword is used to define an interaction between two or more individual bod
 
 ## Normal contact settings
 
-The `*Interaction` command must be followed by the definition of the settings of the normal contact using the keyword `*Normal`. The command is followed by one mandatory keyword (`Mechanical`) and optional keywords:
+The `*Interaction` command is followed by the definition of the settings of the normal contact using the keyword `*Normal`. If `*Normal` is omitted, the `Penalty` model with the default settings described below is used. The command is followed by the keyword `Mechanical` and optional keywords:
 
-- `Mechanical=<>`: Set this parameter equal to the mechanical model to describe the normal contact constraint enforcement. The following normal contact models are available:
+- `Mechanical=<>`: Set this parameter equal to the mechanical model to describe the normal contact constraint enforcement (default: `Penalty`). The following normal contact models are available:
 
     |Model                |Contact tension possible         |Over-closure relation   
     |---------------------|---------------------------------|-----------------------
@@ -106,6 +106,8 @@ In order to activate frictional contact, the `*Friction` statement must be place
 | [Coulomb friction](#coulomb-friction)   | `Coulomb`              |           
 | [Mohr-Coulomb friction](#mohr-coulomb-friction)   | `MC` , `Mohr-Coulomb`             |
 
+The parameters of the Coulomb and Mohr-Coulomb friction can be changed at the beginning of a step with [`*Model change, friction`](../model-change/friction.md) (e.g. an interface that is frictionless, $\tan(\delta) = 0$, in the first steps).
+
 ---
 
 ### Coulomb friction
@@ -121,7 +123,7 @@ with the parameters:
 
 |Parameter           |                  |Unit    |Mandatory
 |------------------- |----------------- |-------|-----------
-|$\varepsilon_T$     |Penalty factor tangential  |F/A  |no
+|$\varepsilon_T$     |Penalty factor tangential  |F/L³  |no
 |$\tan(\delta)$      |Wall friction angle   |-           |yes
 |$c$                 |Adhesion              |F/A         |yes
 
@@ -154,7 +156,7 @@ with the parameters:
 
 |Parameter           |                  |Unit    |Mandatory
 |------------------- |----------------- |-------|-----------
-|$\varepsilon_T$     |Penalty factor tangential  |F/A  |no
+|$\varepsilon_T$     |Penalty factor tangential  |F/L³  |no
 |$\tan(\delta)$      |Wall friction angle   |-           |yes
 |$\tan(\vartheta)$   |Dilatancy angle       |-           |yes
 |$c$                 |Adhesion              |F/A         |yes
@@ -177,7 +179,7 @@ The keyword for frictional contact following the hypoplastic friction model as p
 
 ```numgeo
 d_s, κ, φ, ν, h_s, n, e_d0, e_c0, 
-f_ei0, α, β, m_T, m_R, R, β_R, χ
+f_ei0, α, β, m_T, m_R, R, β_R, χ, K^w
 ```
 
 with the parameters:
@@ -200,6 +202,7 @@ with the parameters:
 |$R$         |Intergranular strain radius                       |-
 |$\beta_R$   |Intergranular strain interpolation                |-
 |$\chi$      |Intergranular strain interpolation                |-
+|$\bar{K}^w$ |Bulk modulus of pore water (not used in the interface, e.g. 0) |F/A
 
 !!! note "Calculations of shear strain"
 

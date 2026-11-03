@@ -4,7 +4,7 @@
 *Material, ...
 ...
 *Hydraulic = <hydraulic model> [,Swr=residual water saturation]
-*<parameter 1>, ... , <parameter n>
+<parameter 1>, ... , <parameter n>
 [*Jacobian = <method>]
 [*Hydraulic iteration = Newton | Modified-Picard]
 ...
@@ -41,7 +41,7 @@ In addition to the selection of the constitutive model for the soil-water retent
 
     - `Analytical`: The analytical derivative of the respective constitutive model for the current suction $s$ is used. 
 
-    - `Smoothed`: The analytical derivation is smoothed by evaluating the Jacobian over 10 substeps. This is the default option. 
+    - `Smoothed`: The analytical derivation is smoothed by evaluating the Jacobian over at least 10 substeps (up to 25 for large changes of the degree of saturation). This is the default option. 
     
     - `Chord-Slope`: A chord-slope approximation of the Jacobian for the current values of $d (S^w)$ and $d(s)$ is used. 
 

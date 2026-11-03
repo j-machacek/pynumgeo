@@ -12,6 +12,11 @@ development of numgeo: new developments in the numgeo source code are taken over
 CI pipeline tests every change.
 
 License: BSD-3-Clause, see LICENSE.
+
+History
+26.10.2026, J. Machacek - Initial version
+29.10.2026, J. Machacek - Documentation built with Zensical; pre-releases from PyPI; link to the
+                          repository
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 

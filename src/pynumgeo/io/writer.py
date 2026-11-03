@@ -11,6 +11,11 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 26.10.2026, J. Machacek - Initial version
+# 27.10.2026, J. Machacek - Comments as ** lines, include files (write_texts), format_keyword and format_material
+# 03.11.2026, J. Machacek - *Assign material, from-file (with help of Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Write a :class:`~pynumgeo.deck.Deck` as a numgeo input file.
 
@@ -277,10 +282,20 @@ class _Writer:
 
     def section(self, s: Section) -> None:
         self.comment(s.comment)
-        opts = [f"elset={s.elset}", f"material={s.material}"]
+        if s.from_file is None:
+            opts = [f"elset={s.elset}", f"material={s.material}"]
+        else:
+            opts = [f"elset={s.elset}", "from-file"]
         if s.amgcl_direct:
             opts.append("amgcl=direct")
         self.line(", ".join([display_keyword(s.keyword), *opts]))
+        if s.from_file is not None:
+            # numgeo reads the whole next line as the file name (read_solid_section_.f90:143-150); a line
+            # starting with '*' is a keyword for numgeo, '**' starts a comment
+            name = s.from_file
+            if not name.strip() or name.lstrip().startswith("*") or "**" in name or "\n" in name or "\r" in name:
+                raise WriteError(f"material assignment of {s.elset}: file name {name!r} cannot be written")
+            self.line(name)
 
     def step(self, s: Step) -> None:
         self.comment(s.comment)

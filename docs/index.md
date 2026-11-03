@@ -12,6 +12,11 @@ development of numgeo: new developments in the numgeo source code are taken over
 CI pipeline tests every change.
 
 License: BSD-3-Clause, see LICENSE.
+
+History
+26.10.2026, J. Machacek - Initial version
+29.10.2026, J. Machacek - Pre-releases on PyPI
+03.11.2026, J. Machacek - 169 rules (*Assign material, from-file) (with help of Claude Opus 5.5)
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -42,7 +47,7 @@ frames = ng.open_results("job", "model").frames()
   relies on one ([concepts](concepts.md#the-reader-reads-like-numgeo)).
 - **A writer that writes safe, readable input**: normal case (`*Step, name=Load`), one canonical form
   per construct, byte-identical output for the same deck.
-- **A validator** with 165 rules, each with a stable id (`NG-<AREA>-<nnn>`) and the solver source it
+- **A validator** with 169 rules, each with a stable id (`NG-<AREA>-<nnn>`) and the solver source it
   mirrors.
 - **A runner** that judges a run from numgeo's `.log`, `.sta`, `.msg` and console output (numgeo's exit
   status is 0 also after an error) and classifies the solver's messages.

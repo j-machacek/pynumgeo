@@ -1,5 +1,5 @@
 {
- "docs_commit": "eceee9749a1f0e47ff9aeedd50131707c4d7290a",
+ "docs_commit": "f903d1a1b9a8180207038255875dcbb9e8f75b79",
  "excluded_entries": 16,
  "keywords": [
   {
@@ -379,11 +379,38 @@
   {
    "area": "model",
    "context": "model | part",
-   "data_lines": [],
+   "data_lines": [
+    {
+     "count_rule": "only with FROM-FILE: exactly one line, read whole (143); the end of the file or a line starting with '*' -> error (144-149); a further data line is an invalid input statement (read_input.f90:495-505)",
+     "description": "FROM-FILE only: the name of the point file, read in lower case and without blanks (150), relative to the folder numgeo is started in; it must exist (152-157)",
+     "fields": [
+      {
+       "default": null,
+       "name": "file",
+       "required": true,
+       "source": {
+        "anchor": "11cc9566e321dab9",
+        "file": "src/input/read_solid_section_.f90",
+        "line": 150,
+        "routine": "read_solid_section"
+       },
+       "type": "string",
+       "unit": null
+      }
+     ],
+     "repeat": "once (only with FROM-FILE)",
+     "source": {
+      "anchor": "4cc631ed31d2ec40",
+      "file": "src/input/read_solid_section_.f90",
+      "line": 143,
+      "routine": "read_solid_section"
+     }
+    }
+   ],
    "dispatch": {
     "anchor": "94601f5d83f4e297",
     "file": "src/input/read_input.f90",
-    "line": 404,
+    "line": 412,
     "routine": "read_input_file"
    },
    "display": "*Assign material",
@@ -391,7 +418,7 @@
    "handler": {
     "anchor": "4271ed2f88187f8a",
     "file": "src/input/read_solid_section_.f90",
-    "line": 39,
+    "line": 44,
     "routine": "read_solid_section"
    },
    "keyword": "*ASSIGNMATERIAL",
@@ -401,25 +428,25 @@
     "*SOLIDSECTION",
     "*SOLIDSECTION,"
    ],
-   "notes": "No data line. An Abaqus-style data line ',' becomes an empty line after preprocessing and is then rejected as invalid statement (read_input.f90:488-497). A third option (e.g. Abaqus CONTROLS=) corrupts the parse. Counted by substring in scanning (lines 115-116). Elements without material -> stop in complete_database (database.f90:512-520).",
+   "notes": "No data line, except the file name with FROM-FILE. An Abaqus-style data line ',' becomes an empty line after preprocessing and is then rejected as invalid statement (read_input.f90:495-505). A third option (e.g. Abaqus CONTROLS=) corrupts the parse. Counted by substring in scanning (scanning_for_numbers_.f90:115-116). Elements without material -> stop in complete_database (database.f90:517-525). FROM-FILE (numgeo-src 60135dc, 29.10.2026): the materials are assigned after the whole input file has been read, in the order of the assignments (read_input.f90:557-563; assign_material_from_file, read_solid_section_.f90:282-881); *Initial conditions, type=state variables and *Modify resolve the state variable per material of the elements (resolve_state_variable_indices). Line numbers of read_solid_section_.f90, read_input.f90 and database.f90 refer to numgeo-src 7052b69.",
    "options": [
     {
      "default": false,
      "default_source": {
-      "anchor": "43333bec0282bafc",
+      "anchor": "d9653b406f1719fa",
       "file": "src/database/database.f90",
-      "line": 179,
+      "line": 182,
       "routine": "section_ty"
      },
      "doc": "docs/reference/assign_material.md",
      "match": "substring 'AMGCL=' anywhere in the option string; value must be exactly DIRECT; option removed before ELSET/MATERIAL parsing",
      "name": "AMGCL",
-     "notes": "other value -> error (77-81)",
+     "notes": "other value -> error (84-87); allowed together with FROM-FILE",
      "required": false,
      "source": {
       "anchor": "411ca4fbfa078593",
       "file": "src/input/read_solid_section_.f90",
-      "line": 64,
+      "line": 71,
       "routine": "read_solid_section"
      },
      "value_type": "enum",
@@ -431,14 +458,14 @@
      "default": null,
      "default_source": null,
      "doc": "docs/reference/assign_material.md",
-     "match": "positional: after AMGCL removal exactly two options remain; if the SECOND contains 'ELSET' it is the elset (first = material), elif the second contains 'MATERIAL' it is the material (first = elset); keys are not verified",
+     "match": "without FROM-FILE: positional: after AMGCL removal exactly two options remain; if the SECOND contains 'ELSET' it is the elset (first = material), elif the second contains 'MATERIAL' it is the material (first = elset); keys are not verified. With FROM-FILE: the only remaining option, starting with 'ELSET=' (117-122)",
      "name": "ELSET",
-     "notes": "Elset must already exist (error 104-107/151-154). Inside a *PART the LAST elset with that name is used (93-99, 140-146). Pitfall: ELSET first and a material name containing 'ELSET' selects the wrong branch.",
+     "notes": "Elset must already exist (error 182-185/229-232; FROM-FILE 133-137). Inside a *PART the LAST elset with that name is used (171-179, 218-226; FROM-FILE 125-132). Pitfall: ELSET first and a material name containing 'ELSET' selects the wrong branch.",
      "required": true,
      "source": {
       "anchor": "ed8b449080bca252",
       "file": "src/input/read_solid_section_.f90",
-      "line": 88,
+      "line": 166,
       "routine": "read_solid_section"
      },
      "value_type": "name",
@@ -450,16 +477,40 @@
      "doc": "docs/reference/assign_material.md",
      "match": "see ELSET",
      "name": "MATERIAL",
-     "notes": "May be defined later; resolved after reading (read_input.f90:539-546, unknown -> error).",
-     "required": true,
+     "notes": "Required unless FROM-FILE is given; together with FROM-FILE -> error (117-122). May be defined later; resolved after reading (read_input.f90:565-570, unknown -> error).",
+     "required": false,
      "source": {
       "anchor": "62e07790df23ecf2",
       "file": "src/input/read_solid_section_.f90",
-      "line": 129,
+      "line": 207,
       "routine": "read_solid_section"
      },
      "value_type": "name",
      "values": []
+    },
+    {
+     "default": false,
+     "default_source": {
+      "anchor": "ec8816ed5bd8cd06",
+      "file": "src/database/database.f90",
+      "line": 183,
+      "routine": "section_ty"
+     },
+     "doc": "docs/reference/assign_material.md#materials-from-a-point-file",
+     "match": "only if the option text contains 'FROM-FILE' (94): the text is split at the commas and the token equal to FROM-FILE sets the option (100-101); FROM-FILE=<value> -> error (102-106); the other tokens remain",
+     "name": "FROM-FILE",
+     "notes": "numgeo-src 60135dc (29.10.2026). Instead of MATERIAL: each element of the set receives the material of the point of a file nearest to its centroid (mean of its node coordinates; x, y in 2D); equidistant points (difference below 1e-9 x the diagonal of the bounding box of the points): the point given first. Besides ELSET only AMGCL=DIRECT is allowed (117-122). The next line is the file name (data line). File: one point per line, x;y;z;material-name separated by semicolons (a closing semicolon is allowed), an optional header line (none of its first three fields a number), blank lines skipped, CRLF and a UTF-8 BOM accepted; numbers with a decimal point only; the first invalid line stops numgeo. Names compared with *Material in upper case without blanks: a name assigned to an element must be defined (error), undefined names assigned to no element give a warning (618-647). Summary per material in the .log. pynumgeo: Section.from_file, checks NG-MAT-130 to NG-MAT-132.",
+     "required": false,
+     "source": {
+      "anchor": "753c2a0be1aea4fc",
+      "file": "src/input/read_solid_section_.f90",
+      "line": 94,
+      "routine": "read_solid_section"
+     },
+     "value_type": "flag",
+     "values": [
+      "FROM-FILE"
+     ]
     }
    ],
    "parent": null,
@@ -5926,6 +5977,61 @@
   },
   {
    "area": "output",
+   "context": "output-field",
+   "data_lines": [
+    {
+     "count_rule": "one line; error if the line contains '*' (report%error, 1940-1943); tokens = parse_string_to_array(line, ','), upper case (preprocessing), no blanks; IP, SF, MAT, SETS, EMBEDDED, SHELL-AXES, CONTACT, CONTACT_SDV, CONTACT_DIAGNOSTIC, DELTA-T, DELTA-PW, F, STRAIN-HENCKY, PHANTOM-ELASTICITY, PHANTOM-VISCOSITY -> error (1949-1959)",
+     "description": "exactly ONE line with the output variables, comma separated: S, E, VOID, element variables, state variables of the materials",
+     "fields": [
+      {
+       "default": null,
+       "name": "variables",
+       "required": true,
+       "source": {
+        "anchor": "3034f6639fd0b5f8",
+        "file": "src/input/read_step_.f90",
+        "line": 1945,
+        "routine": "read_step"
+       },
+       "type": "string list",
+       "unit": null
+      }
+     ],
+     "repeat": "once per sub-keyword",
+     "source": {
+      "anchor": "cfba839ca43966c2",
+      "file": "src/input/read_step_.f90",
+      "line": 1939,
+      "routine": "read_step"
+     }
+    }
+   ],
+   "dispatch": {
+    "anchor": "aa7fe61bbd980a3e",
+    "file": "src/input/read_step_.f90",
+    "line": 1917,
+    "routine": "read_step"
+   },
+   "display": "*Integration point",
+   "doc": "docs/reference/output/field.md#integration-point-output",
+   "handler": {
+    "anchor": "aa7fe61bbd980a3e",
+    "file": "src/input/read_step_.f90",
+    "line": 1917,
+    "routine": "read_step"
+   },
+   "keyword": "*INTEGRATIONPOINT",
+   "match_forms": [
+    "*INTEGRATIONPOINT",
+    "*INTEGRATIONPOINT,"
+   ],
+   "notes": "numgeo-src working tree of 02.11.2026 (after 7052b69). Values at the integration points of all active elements, VTK only: dataset <job>-out/<job>-ip-<istep>-<counter>.vtu, block 'Integration points' of the .vtm (src/output/VTK_write_results_.f90:278, 1387). No options: any option -> error (1931-1937). S and E for continuum elements only; zero where an element lacks a variable; warning in the first frame of a step if no active element has a variable (src/output/VTK_write_integration_points_.f90). Taken over by following steps without *Output, field. GiD: warning, not written (src/output/output.f90).",
+   "options": [],
+   "parent": "*OUTPUT,FIELD",
+   "public_version_restricted": false
+  },
+  {
+   "area": "output",
    "context": "output-print",
    "data_lines": [
     {
@@ -5974,7 +6080,7 @@
     "*INTEGRATIONPOINT",
     "*INTEGRATIONPOINT,"
    ],
-   "notes": "only valid under *Output, print; one file per element: <ELSET>_ip_<member>.dat (print_type.f90:219)",
+   "notes": "valid under *Output, print (this entry, ELSET required) and, without options, under *Output, field (output-field entry); one file per element: <ELSET>_ip_<member>.dat (print_type.f90:219)",
    "options": [
     {
      "default": null,
@@ -7574,7 +7680,7 @@
     "*NODE",
     "*NODE,"
    ],
-   "notes": "Card dispatch: text up to and including the first comma compared exactly (1839-1843); any other line ends the *OUTPUT block (backspace, 1903-1905). Each card appends one output_set_ty and one entry of field%area_weighted (1845-1865). '*Integration point' is NOT accepted in field output.",
+   "notes": "Card dispatch: text up to and including the first comma compared exactly (1839-1843); any other line ends the *OUTPUT block (backspace, 1903-1905). Each card appends one output_set_ty and one entry of field%area_weighted (1845-1865). '*Integration point' (without options) is accepted in field output since the numgeo-src working tree of 02.11.2026 (see the output-field entry of *INTEGRATIONPOINT).",
    "options": [
     {
      "default": null,
@@ -8998,7 +9104,7 @@
       "routine": "read_step"
      },
      "doc": "docs/reference/output/field.md",
-     "match": "FIELD only: substring 'ASCII'; precedence ASCII > BINARY > HDF5",
+     "match": "FIELD only: substring 'ASCII'; precedence ASCII > BINARY-ZLIB > BINARY > HDF5",
      "name": "ASCII",
      "notes": "default ASCII with warning when no data type is given (1798-1802); 'both' branch 1792 unreachable",
      "required": false,
@@ -9017,7 +9123,26 @@
      "default": null,
      "default_source": null,
      "doc": "docs/reference/output/field.md",
-     "match": "FIELD only: substring 'BINARY'",
+     "match": "FIELD only: substring 'BINARY-ZLIB'; tested after ASCII, before BINARY",
+     "name": "BINARY-ZLIB",
+     "notes": "numgeo-src 7052b69 (02.11.2026); line numbers of this option refer to 7052b69. VTK: binary appended data compressed with zlib (compressor=\"vtkZLibDataCompressor\", header_type UInt64, blocks of 1 MiB compressed independently; VTK_type.f90:1143-1144, VTK_AppendedData_type_.f90:380-462), same values as BINARY. GiD: warning, written as BINARY (1785-1788). As format and type, taken from the first step with field output for the whole run (output.f90:103-111, 124).",
+     "required": false,
+     "source": {
+      "anchor": "11eae47c4bb926c2",
+      "file": "src/input/read_step_.f90",
+      "line": 1783,
+      "routine": "read_step"
+     },
+     "value_type": "flag",
+     "values": [
+      "BINARY-ZLIB"
+     ]
+    },
+    {
+     "default": null,
+     "default_source": null,
+     "doc": "docs/reference/output/field.md",
+     "match": "FIELD only: substring 'BINARY' (BINARY-ZLIB is tested before)",
      "name": "BINARY",
      "notes": "VTK: raw appended data; GiD: binary .post.res",
      "required": false,
@@ -51441,11 +51566,11 @@
   },
   "output": {
    "counts": {
-    "keywords": 9,
-    "options": 19,
+    "keywords": 10,
+    "options": 20,
     "output_types": 4,
-    "output_variables": 42,
-    "result_files": 23
+    "output_variables": 44,
+    "result_files": 25
    },
    "output_types": [
     {
@@ -51457,7 +51582,9 @@
       "embedded": "<job>-out/<job>-embedded-beam-<idef>-<istep>-<counter>.vtu (515-516), <job>-embedded-surface-<idef>-<istep>-<counter>.vtu (VTK_write_embedded_surfaces_.f90:120-121), <job>-embedded-plate-<ipl>-<istep>-<counter>.vtu (1508-1509) — only if EMBEDDED is requested",
       "frame": "<job>-out/<job>-all-results-<istep>-<counter>.vtm (VTK_write_results_.f90:147-150)",
       "initial_mesh": "<job>-out/<job>_Mesh.vtu (VTK_type.f90:1112; VTK_write_initial_mesh_.f90:40) — only if step 1 has VTK field output (main.f90:255); not referenced by the .pvd",
-      "job": "<job> = settings%filename_out: command-line out=<name> or the input file name without .inp (src/input/read_command_prompt_.f90:102,165)"
+      "integration_points": "<job>-out/<job>-ip-<istep>-<counter>.vtu (VTK_write_results_.f90:278), block 'Integration points' of the .vtm (1387) — only if the field output of the step has *Integration point or IP in an *Element output list (IP: numgeo-src 7052b69, VTK_write_results_.f90:262 there)",
+      "job": "<job> = settings%filename_out: command-line out=<name> or the input file name without .inp (src/input/read_command_prompt_.f90:102,165)",
+      "sections": "<job>-out/<job>-sections-<istep>-<counter>.vtu (numgeo-src 7052b69, VTK_write_results_.f90:217-218), dataset 'Section forces' of the .vtm (1374) — only if SF is in an *Element output list of the step and the model has active beam or truss elements"
      },
      "format_details": {
       "always_written_arrays": "PointData: NodeLabel Int32 (original node labels, 1009-1029), Displacement if U requested; CellData: ElementLabel Int32 (1034-1053), TopologicalDimension Int32 (1058-1075), EmbeddedRegion Int32 only in embedded beam datasets (1080-1097).",
@@ -51468,15 +51595,16 @@
       "pvd": "ASCII XML <VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">; one <DataSet timestep=\"T\" part=\"0\" file=\"<job>-out/<vtm>\"/> per frame, T = total time cdb%time (cdb%time0 for iinc==0), list-directed real format (compiler dependent) (VTK_type.f90:1405-1406, VTK_write_results_.f90:151-157; strings_.f90:157-167). The file is rewritten and valid after every frame.",
       "vtm": "ASCII XML vtkMultiBlockDataSet version 1.0: Block 0 name='Model elements' with DataSet name='<d>D elements' file=<basename>; Block 'Embedded interaction regions' with sub-blocks 'Embedded region <i>' (DataSets 'Beam', 'Interaction surface') and 'Embedded plate <i>' (VTK_write_results_.f90:1135-1191). File paths are basenames relative to <job>-out/.",
       "vtu_ascii": "UnstructuredGrid version 0.1 LittleEndian; one Piece; Points Float64 3 components written with g14.6 (6 significant digits; z=0 in 2D) (VTK_write_points_.f90:64-76); Cells: connectivity Int32 0-based, offsets Int32, types UInt8 (I0) (VTK_write_cells_.f90:96-116); real DataArrays Float64 g14.6 except TEMP/DTEMP/TEMP_RATE/RFL with es25.16e3 (16 decimals) (VTK_write_DataArray_.f90:107-113); every Float64 header carries RangeMin/RangeMax (123-128); Int32 arrays written with g14.6 (integer I14); UInt8 set arrays with ComponentName<i> attributes (221-224, 403-426). Values are separated by blanks; Fortran drops the 'E' for 3-digit exponents (e.g. 0.123457-100).",
-      "vtu_binary": "same XML with header_type=\"UInt64\", every DataArray format=\"appended\" offset=..; after </UnstructuredGrid> '  <AppendedData encoding=\"raw\">' + LF + '_' followed by the blocks in offset order, each = UInt64 byte count + raw little-endian data (Float64 / Int32 / UInt8) (VTK_type.f90:1125-1137,1159-1164; VTK_AppendedData_type_.f90:139-175; VTK_write_DataArray_.f90:246-398). Offsets advance by 8+nbytes. No compression, no base64."
+      "vtu_binary": "same XML with header_type=\"UInt64\", every DataArray format=\"appended\" offset=..; after </UnstructuredGrid> '  <AppendedData encoding=\"raw\">' + LF + '_' followed by the blocks in offset order, each = UInt64 byte count + raw little-endian data (Float64 / Int32 / UInt8) (VTK_type.f90:1125-1137,1159-1164; VTK_AppendedData_type_.f90:139-175; VTK_write_DataArray_.f90:246-398). Offsets advance by 8+nbytes. No compression, no base64.",
+      "vtu_binary_zlib": "numgeo-src 7052b69, *Output, field, vtk, binary-zlib: as vtu_binary with compressor=\"vtkZLibDataCompressor\" on the VTKFile element (VTK_type.f90:1143-1144). Each appended block: UInt64 header [number of blocks, block size 1048576, size of the last block (0 if full), compressed size of every block] followed by the zlib streams of the blocks; the next offset advances by the header plus the compressed sizes (VTK_AppendedData_type_.f90:380-462, write_AppendedData 207-211). Values identical to BINARY."
      },
-     "input_form": "*Output, field, vtk, ascii|binary [, flush]  + *Node output / *Element output cards",
+     "input_form": "*Output, field, vtk, ascii|binary|binary-zlib [, flush]  + *Node output / *Element output cards",
      "options": {
       "flush": "no effect",
       "format": "VTK|GID (no default, see *OUTPUT)",
       "frequency": "1 (500 in explicit steps)",
       "node card option": "UNWEIGHTED (default area/volume/length weighted nodal average)",
-      "type": "ASCII (default) | BINARY | HDF5 (fails)"
+      "type": "ASCII (default) | BINARY | BINARY-ZLIB (numgeo-src 7052b69: BINARY with zlib) | HDF5 (fails)"
      },
      "source": {
       "anchor": "961f6b079b06b195",
@@ -52563,6 +52691,49 @@
       "routine": "get_matvar_index"
      },
      "unit": "material specific"
+    },
+    {
+     "accepted_by": {
+      "field_vtk_element": "dataset 'Section forces' (<job>-sections-<istep>-<counter>.vtu): five equally spaced stations per beam/truss element with points of their own, VTK_LINE cells between them; point data Station (Int32), Axis2, Axis3 (3 comp.), N (tension positive), Qy, Qz, Mx, My, Mz (Float64); cell data ElementLabel, MaterialID (VTK_write_sections_.f90:30-35)"
+     },
+     "aliases": [],
+     "components": [
+      "N",
+      "Qy",
+      "Qz",
+      "Mx",
+      "My",
+      "Mz"
+     ],
+     "key": "SF",
+     "location": "dataset",
+     "notes": "numgeo-src 7052b69 (02.11.2026). VTK only, *Element output only: skipped in node lists (879) and as cell data (1033). All active beam and truss elements, embedded ones included; trusses give N only; with tension-only or a tensile strength the station values are limited to the range of the integration point values. A step with an *Output, field of its own writes the dataset only if its list contains SF. Not available under *Integration point (error, read_step_.f90:1949-1959 of the working tree of 02.11.2026). ParaView filter 'numgeo Diagram' (tools/paraview).",
+     "requires": "active beam or truss elements (otherwise no dataset)",
+     "source": {
+      "anchor": "171bf9d980a2e354",
+      "file": "src/output/VTK_write_results_.f90",
+      "line": 208,
+      "routine": "write_section_dataset"
+     },
+     "unit": "force (N, Qy, Qz), moment (Mx, My, Mz)"
+    },
+    {
+     "accepted_by": {
+      "field_vtk_element": "dataset 'Integration points' (<job>-ip-<istep>-<counter>.vtu) with the variables of all *Element output lists of the step at the integration points, as listed under *Integration point (point data IntegrationPoint, Stress, Strain, Void ratio, element and state variables in lower case; cell data ElementLabel, MaterialID)"
+     },
+     "aliases": [],
+     "components": [],
+     "key": "IP",
+     "location": "dataset",
+     "notes": "numgeo-src 7052b69 (02.11.2026): shortcut for the field card *Integration point (working tree of 02.11.2026, see the output-field entry of *INTEGRATIONPOINT). VTK only, *Element output only: skipped in node lists (879) and as cell data (1033). Variables of the list without values at the integration points (IP, SF, MAT, SETS, EMBEDDED, SHELL-AXES, CONTACT*, DELTA-T, DELTA-PW, F, STRAIN-HENCKY, PHANTOM-*) are skipped in the dataset (VTK_write_integration_points_.f90 of the working tree).",
+     "requires": "-",
+     "source": {
+      "anchor": "9b17459474711948",
+      "file": "src/output/VTK_write_results_.f90",
+      "line": 262,
+      "routine": "write_ip_dataset"
+     },
+     "unit": "-"
     }
    ],
    "result_files": [
@@ -52827,6 +52998,30 @@
       "file": "src/solver/solver.f90",
       "line": 436,
       "routine": "(external solver interface)"
+     }
+    },
+    {
+     "format": "VTK XML UnstructuredGrid: 5 stations per beam/truss element, VTK_LINE cells; N, Qy, Qz, Mx, My, Mz",
+     "name_pattern": "<job>-out/<job>-sections-<istep>-<counter>.vtu",
+     "notes": "numgeo-src 7052b69: only with SF in an *Element output list; dataset 'Section forces' of the .vtm",
+     "reader_needed": true,
+     "writer": {
+      "anchor": "a1ac9bba846f1f47",
+      "file": "src/output/VTK_write_sections_.f90",
+      "line": 35,
+      "routine": "VTK_write_sections"
+     }
+    },
+    {
+     "format": "VTK XML UnstructuredGrid: one point and one vertex cell per integration point",
+     "name_pattern": "<job>-out/<job>-ip-<istep>-<counter>.vtu",
+     "notes": "numgeo-src 7052b69 (IP) and working tree of 02.11.2026 (*Integration point): dataset 'Integration points' of the .vtm; read by pynumgeo.results.Frame.integration_points",
+     "reader_needed": true,
+     "writer": {
+      "anchor": "b918e538cfd6abdc",
+      "file": "src/output/VTK_write_integration_points_.f90",
+      "line": 36,
+      "routine": "VTK_write_integration_points"
      }
     }
    ]

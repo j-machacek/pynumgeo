@@ -35,14 +35,13 @@ The material parameters of the hypoplastic model with intergranular strain are g
 * $R$ is the radius of intergranular strain. This parameter has no unit.
 * $\beta_R$ and $\chi$ describe the evolution of the intergranular strain tensor along a strain path, i.e. the reduction of the shear modulus with increasing shear strain. These parameters have no unit.
 * $m_R$ and $m_T$ govern the increase of the stiffness due to changes of the direction of the strain path by $180^\circ$ ($m_R$) or $90^\circ$ ($m_T$), respectively. These parameters have no unit. An often applied assumption is: $m_T = m_R/2$.
-* $\bar{K}^w$ is the bulk modulus of pore water for locally undrained simulations (and only for those). The parameter is not mandatory and zero per default.
+* $\bar{K}^w$ is the bulk modulus of pore water for locally undrained simulations (and only for those). The parameter must always be given; set $\bar{K}^w=0$ if no locally undrained simulation is performed.
 
 ### State variables
 In addition to the (effective) stress, the hypoplastic constitutive model takes additional state variables. Performing simulations with this model requires the prescription of those. The following state variables are contained in the model:
 
 * Void ratio: $e$, ``void_ratio``. The prescription of the void ratio is mandatory, if the initialization is omitted or wrong values are prescribed the simulation will abort.
 * Intergranular strain: $R_{ij}$, ``int_strain11``, ``int_strain22``, ``int_strain33``, ``int_strain12``, ``int_strain23``, ``int_strain13``. Only in combination with the intergranular strain extension. Prescribing $R_0$ is not mandatory, if omitted, $R_{ij}$ is assumed. $R_{ii} = R_0 / \sqrt{3}$ corresponds to an isotropically consolidated state.
-* Relative density $D_{r0}: `rel-density`
 
 The state variables can be initialized in two different ways:
 
@@ -110,9 +109,9 @@ Optional mechanical parameters can be used to enable locally undrained condition
 
 * `bulk_water, Kw`: Bulk modulus of pore water for locally undrained simulations (and only for those). Per default $K^w=0$ F/A. To activate locally undrained conditions, $K^w>0$ must be set by the user.
 
-* `projection_dev, value`: activate projection of inadmissible stress states onto the Matsuoka-Nakai failure surface defined by a cut-off friction angle $\varphi^{cut}$. By default, `value=-1` (no projection). For `0 <= value <= 5`, the cut-off friction angle is determined automatically by numgeo; for `value>5`, $\varphi^{cut}=$ `value°` is used. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
+* `projection_dev, value`: activate projection of inadmissible stress states onto the Matsuoka-Nakai failure surface defined by a cut-off friction angle $\varphi^{cut}$. By default, `value=0` (no projection). For `value=1` or `value=2`, the cut-off friction angle is determined automatically by numgeo (two variants with different lower bounds of $\varphi^{cut}$); for `value>=5`, $\varphi^{cut}=$ `value°` is used. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
 
-* `projection_iso, value`: activate projection of inadmissible stress states onto a pseudo primary loading surface. By default, `value=-1` (no projection). For `value=1`, the projection is activated. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
+* `projection_iso, value`: activate projection of inadmissible stress states onto a pseudo primary loading surface. By default, `value=0` (no projection). For `value=1`, the projection is activated. Consultation of the [Theory Manual](../../../theory/constitutive-models/mechanical-models/hypo-isa.md) is strongly advised before use.
 
 * `min_pressure, value`: Minimum mean effective stress in kPa (compression = positive). The default is `value=0.01` kPa.
 

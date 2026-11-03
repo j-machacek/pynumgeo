@@ -6,7 +6,7 @@ The pynumgeo source code is written by Jan Machacek. In addition, the package sh
 numgeo, in src/pynumgeo/catalogue/data/:
 
   * docs/reference/  - the keyword reference pages of the numgeo documentation
-                       (numgeo documentation commit eceee974);
+                       (numgeo documentation commit f903d1a1);
   * catalogue.json,
     messages.json    - keyword, option and message tables derived from the numgeo source code
                        (numgeo source commit 834564ed).

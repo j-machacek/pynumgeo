@@ -39,7 +39,7 @@ Temperature (`tt`) is not supported by `*UBoundary`. Use [`*Boundary`](boundary.
     | `w3`               |Water displacement in x3-direction  | 
 
 
-- `<value>` = set this parameter equal to the value to be prescribed to the boundary condition. Notice that this value is interpreted as a reference value, which is multiplied with the value defined in the user subroutine. It is recommended to set this value to 1.0 and define the desired value directly in the user subroutine.
+- `<value>` = a value has to be given, but it is not used: the value of the boundary condition is defined entirely in the user subroutine. It is recommended to set this value to 1.0.
 
 
 <div class="grid cards" markdown>
@@ -47,7 +47,7 @@ Temperature (`tt`) is not supported by `*UBoundary`. Use [`*Boundary`](boundary.
 
     ---
 
-    * Boundary conditions can only be applied to degrees of freedom that are actually defined for the chosen element type. For example, in single-phase solid elements of type `u-solid`, you can prescribe a boundary condition for the horizontal displacement `u1`, but attempting to prescribe a boundary condition for `pw` would raise an error, since `pw` is not an active degree of freedom for these elements.
+    * Boundary conditions can only be applied to degrees of freedom that are actually defined for the chosen element type. For example, in single-phase solid elements of type `u-solid`, you can prescribe a boundary condition for the horizontal displacement `u1`, but not for `pw`, since `pw` is not an active degree of freedom for these elements. Make sure that the selected degree of freedom is active at all nodes of the node set.
 
     * Boundary conditions defined using this command **can vary in time** but are active at all nodes of the assigned node set. 
 

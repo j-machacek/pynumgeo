@@ -11,6 +11,10 @@
 # CI pipeline tests every change.
 #
 # License: BSD-3-Clause, see LICENSE.
+#
+# History
+# 27.10.2026, J. Machacek - Initial version
+# 03.11.2026, J. Machacek - Sections with *Assign material, from-file (with help of Claude Opus 5.5)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Differences between two decks as numgeo reads them, for people and tests.
 
@@ -35,7 +39,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from pynumgeo.deck.deck import Deck
+from pynumgeo.deck.deck import Deck, Section
 from pynumgeo.deck.keyword import Keyword, Token
 from pynumgeo.io.numbers import is_number, parse_real
 
@@ -158,10 +162,11 @@ def diff(a: Deck, b: Deck, *, rtol: float = 0.0) -> list[str]:
                 out.append(f"material {ma.name}: options {ma.extra_options} != {mb.extra_options}")
             _keywords(ma.properties, mb.properties, f"material {ma.name}", rtol, out)
     if a.sections != b.sections:
-        out.append(
-            f"assignments {[(s.elset, s.material, s.amgcl_direct) for s in a.sections]} != "
-            f"{[(s.elset, s.material, s.amgcl_direct) for s in b.sections]}"
-        )
+
+        def what(s: Section) -> tuple[str, str | None, bool]:
+            return (s.elset, s.material if s.from_file is None else f"from-file {s.from_file}", s.amgcl_direct)
+
+        out.append(f"assignments {[what(s) for s in a.sections]} != {[what(s) for s in b.sections]}")
     _keywords(a.keywords, b.keywords, "model", rtol, out)
     if [s.name.upper() for s in a.steps] != [s.name.upper() for s in b.steps]:
         out.append(f"steps {[s.name for s in a.steps]} != {[s.name for s in b.steps]}")

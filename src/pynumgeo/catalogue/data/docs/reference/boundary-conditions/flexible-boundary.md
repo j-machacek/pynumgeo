@@ -58,7 +58,7 @@ The `*Boundary-Flexible` command has the following keywords:
 
     ---
 
-    * Boundary conditions can only be applied to degrees of freedom that are actually defined for the chosen element type. For example, in single-phase solid elements of type `u-solid`, you can prescribe a boundary condition for the horizontal displacement `u1`, but attempting to prescribe a boundary condition for `pw` would raise an error, since `pw` is not an active degree of freedom for these elements.
+    * Boundary conditions can only be applied to degrees of freedom that are actually defined for the chosen element type. For example, in single-phase solid elements of type `u-solid`, you can prescribe a boundary condition for the horizontal displacement `u1`, but not for `pw`, since `pw` is not an active degree of freedom for these elements. Make sure that the selected degree of freedom is active at all nodes of the node set.
 
     * Boundary conditions defined using this command **can vary in time and space** but are active at all nodes of the assigned node set. 
 

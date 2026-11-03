@@ -12,6 +12,8 @@ Specify the initial values of arbitrary state variables (needed by more advanced
 * [User](#user) - to initialise the state variables using a user defined subroutine
 * [Fluctuation](#fluctuation) - to define a spatially varying field of initial values
 
+The element set may contain elements with different materials, e.g. materials assigned from a point file; see [Element sets with different materials](#element-sets-with-different-materials).
+
 !!! warning ""
 
     The element set `<element set name>` must have been previously used to define a solid section (or used in the `*Assign material` keyword).
@@ -38,7 +40,7 @@ layer-1, void_ratio, 0.9
 
 ## Spatial data
 
-Use this option to specify the initial `<value>`s of an arbitrary state variable `<state variable name>` for all integration points of element set `<element set name>` by means of comma separated spatial data. The data consists of a set of spatial positions and associated initial values. Assignment of the given spatial data to the integration points is performed by means of a nearest neighbour search. 
+Use this option to specify the initial `<value>`s of an arbitrary state variable `<state variable name>` for all integration points of element set `<element set name>` by means of comma separated spatial data. The data consists of a set of spatial positions and associated initial values. Assignment of the given spatial data to the integration points is performed by means of a nearest neighbour search: each integration point receives the value of the spatial point nearest to it (coordinates of the integration point in the initial configuration). 
 
 The command line takes the following form:
 
@@ -49,7 +51,7 @@ The command line takes the following form:
 
 The following options are available:
 
-- `x-data`, `y-data` or `z-data` (only for 3D simulations)
+- `x-data`, `y-data` or `z-data` (`z-data` only for 3D simulations)
 
     The spatial location of the initial values only depends on one coordinate, `x`, `y` or `z`. Only this coordinate will be considered in the nearest neighbour search, e.g. by specifying `y-data`, only the y-coordinate of the integrations points will be used to identify the nearest point from the data given in the text file. The text file is expected to be formatted as follows:
 
@@ -127,7 +129,7 @@ Use this option to specify the use of a user-defined subroutine to define the in
 Example:
 
 ```
-*Initial Conditions, Type = state variables, default
+*Initial conditions, type=state variables, user
 layer-1
 ```
 
@@ -169,3 +171,16 @@ The influence of different values of `<correlation length>` in x- and y-directio
 *Initial Conditions, Type = state variables, fluctuation
 layer-1, void_ratio, 0.9, 0.6, 1, 10
 ```
+
+---
+
+## Element sets with different materials
+
+The elements of an element set can have different materials, for instance if the materials are assigned from a point file with [`*Assign material, from-file`](../assign_material.md#materials-from-a-point-file) or if a subset was afterwards assigned another material. The position of a state variable in the state-variable array generally differs between constitutive models (e.g. `eps_pl_dev` is the 3rd state variable of Mohr-Coulomb-2 and the 7th of Mohr-Coulomb-3). numgeo therefore looks up `<state variable name>` for the material of each element after the whole input file has been read. The input is the same as for an element set with one material. The options `default`, `*-data` and `fluctuation` and the keyword `*Modify` act as follows:
+
+* The value is set at the integration points of all elements whose material has a state variable `<state variable name>`.
+* The elements whose material has no such state variable (e.g. a linear elastic material) keep their state variables. numgeo names these materials in a warning in the log file (*... is not defined for the material(s) ... of its elements. It is set only for the elements with the material(s) ...*).
+* If none of the materials of the elements of the set has the state variable, numgeo stops with an error message.
+* One statement sets the same value (`default`, `*Modify`) or the same field (`*-data`, `fluctuation`) for all materials of the set. With `fluctuation`, one correlated field is generated over all elements that have the state variable. Values that depend on the material are set with the option [user](#user), whose subroutine receives the name of the material of each element, or with separate element sets.
+
+The look-up adds one array access per element to the initialisation.

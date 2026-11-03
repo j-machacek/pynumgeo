@@ -51,7 +51,7 @@ This command is used to prescribe boundary conditions on nodes or node sets. It 
 
     ---
 
-    * Boundary conditions can only be applied to degrees of freedom that are actually defined for the chosen element type. For example, in single-phase solid elements of type `u-solid`, you can prescribe a boundary condition for the horizontal displacement `u1`, but attempting to prescribe a boundary condition for `pw` would raise an error, since `pw` is not an active degree of freedom for these elements.
+    * Boundary conditions can only be applied to degrees of freedom that are actually defined for the chosen element type. For example, in single-phase solid elements of type `u-solid`, you can prescribe a boundary condition for the horizontal displacement `u1`, but a boundary condition for `pw` has no effect at these nodes, since `pw` is not an active degree of freedom for these elements: it is ignored and a warning is issued.
 
     * Boundary conditions defined using this command **can vary in time** but are active at all nodes of the assigned node set. 
 
@@ -84,7 +84,7 @@ Use `tt` to prescribe the absolute temperature $T$ at the independent temperatur
 hot_nodes, tt, 303.15
 ```
 
-The default boundary type prescribes the total temperature. The options `type=velocity`, `type=acceleration`, `type=increment`, `type=hydrostatic` and `type=moving-hydrostatic` are not available for `tt`. Temperature constraints through `*UBoundary`, `*Flexible-Boundary` or `*Equation` are not supported.
+The default boundary type prescribes the total temperature. The options `type=velocity`, `type=acceleration`, `type=increment`, `type=hydrostatic` and `type=moving-hydrostatic` are not available for `tt`. Temperature constraints through `*UBoundary`, `*Boundary-Flexible` or `*Equation` are not supported.
 
 An assigned [amplitude](../amplitude.md) multiplies the **absolute** reference temperature. For example, a prescribed change from 300 K to 310 K can be defined with a reference value of 310 K and a tabular amplitude increasing from $300/310$ to 1. A zero amplitude would prescribe zero kelvin and is invalid. The temperature before the first increment is defined separately with [`*Initial conditions, Type=temperature`](../initial-conditions/temperature.md).
 
@@ -128,7 +128,7 @@ They can be repeated as often as needed.
 
 ## 4. Increment
 
-For `type=increment`, the increment (i.e. the change) of the selected `dof` relative to its original value at the start of the step. The command takes the flowing form:  
+For `type=increment`, the value prescribes the change of the selected `dof` in every time increment of the step; the changes accumulate over the increments. With the value 0 the `dof` keeps its value from the end of the previous step. The command takes the flowing form:  
 
 ```
 *Boundary

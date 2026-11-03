@@ -13,7 +13,7 @@ The numgeo keyword reads:
 
 The material parameters of the Hypo-IGS-SF model are given in the following. Further information on the model constitutive equations are provided in [@tafili2026biocem].
 
-* $\varphi_c$ (degree or rad) is the critical friction angle and has to be provided in radian.
+* $\varphi_c$ (degree or rad) is the critical friction angle and has to be provided in degree or in radian. Values larger than 1 are considered to be provided in degree.
 * $h_s$ (F/A) and $n$ (-) describe the decrease of the limiting void ratios $e_i$, $e_c$ and $e_d$ with increasing pressure during isotropic compression. The parameter $n$ has no unit.
 * The void ratios $e_{d0}$ (-), $e_{c0}$ (-) and $e_{i0}$ (-) correspond to the densest, the critical and the loosest state at pressure $p$ = 0 F/A. These parameters have no unit.
 * The material constant $\alpha$ describes the influence of density on the peak friction angle. This parameter has no unit.

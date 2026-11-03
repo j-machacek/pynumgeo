@@ -1,7 +1,7 @@
 # Cavitation:
 
 ```numgeo 
-*Cavitation, ...
+*Cavitation
 <vapour pressure> [, <bulk modulus of gas>]
 ``` 
 
