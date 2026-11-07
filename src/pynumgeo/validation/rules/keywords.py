@@ -16,6 +16,8 @@
 # 26.10.2026, J. Machacek - Initial version
 # 30.10.2026, J. Machacek - Option FRICTION of *Model change
 # 02.11.2026, J. Machacek - *Integration point of the field output takes no options (with help of Claude Opus 5.5)
+# 07.11.2026, J. Machacek - Line numbers of read_interaction_.f90 and read_model_change_.f90 (uncommitted
+#                           numgeo-src of 06.11.2026)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Catalogue-driven checks of every generic keyword of a deck.
 
@@ -467,7 +469,7 @@ def _src(d: object) -> str:
     "error",
     "sub-keywords that numgeo reads at one position only must stand there",
     source="src/input/read_material_.f90:285-287,416,715-729,794-807; src/input/read_step_.f90:546-561,"
-    "586-622,1820-1837; src/input/read_equation_.f90:77-92; src/input/read_interaction_.f90:180-330",
+    "586-622,1820-1837; src/input/read_equation_.f90:77-92; src/input/read_interaction_.f90:186-336",
 )
 def placement(ctx: Context) -> Iterator[Finding]:
     cat = ctx.catalogue
@@ -548,7 +550,7 @@ class _Policy:
 
 
 _LOAD_OPTIONS = ("INSTANT", "RAMP", "AMPLITUDE")
-# Substrings read_normal_contact_setting recognises (src/input/read_interaction_.f90:425-512).
+# Substrings read_normal_contact_setting recognises (src/input/read_interaction_.f90:494-581).
 _NORMAL_WORDS = (
     "NAME",
     "NORMAL",
@@ -604,7 +606,7 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
     ("step", "*MODELCHANGE"): _Policy(
         "substring",
         "warning",
-        "src/input/read_model_change_.f90:82,136,221,333-338",
+        "src/input/read_model_change_.f90:85,139,232,344-349",
         ("MATERIAL", "FRICTION", "REMOVE", "ADD"),
     ),
     ("step", "*EQUATION"): _Policy("substring", "warning", "src/input/read_equation_.f90:46-120"),
@@ -622,15 +624,15 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
     ("step", "*NODALDYNAMICFORCE"): _Policy("ignored", "warning", "src/input/read_dynforce_.f90:41-75"),
     ("step", "*RESET"): _Policy("ignored", "warning", "src/input/read_step_.f90:2929-2950"),
     ("model", "*INTERACTION"): _Policy(
-        "substring", "error", "src/input/read_interaction_.f90:425-529", names=_NORMAL_WORDS
+        "substring", "error", "src/input/read_interaction_.f90:494-598", names=_NORMAL_WORDS
     ),
     ("model", "*CONTACTPAIR"): _Policy(
         "substring", "error", "src/input/read_contact_pairing_.f90:80-198", names=_PAIR_WORDS
     ),
     ("interaction", "*NORMAL"): _Policy(
-        "substring", "error", "src/input/read_interaction_.f90:425-529", names=_NORMAL_WORDS
+        "substring", "error", "src/input/read_interaction_.f90:494-598", names=_NORMAL_WORDS
     ),
-    ("interaction", "*FRICTION"): _Policy("substring", "error", "src/input/read_interaction_.f90:314-319"),
+    ("interaction", "*FRICTION"): _Policy("substring", "error", "src/input/read_interaction_.f90:320-325"),
     ("output-field", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:3700-3780"),
     ("output-field", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:3791-3860"),
     # print and user cards: nset=/elset= are required options of the catalogue (NG-KW-012)

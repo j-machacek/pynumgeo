@@ -18,6 +18,8 @@
 # 30.10.2026, J. Machacek - *Model change, friction (NG-CONT-125, numgeo-src 60fca8b5)
 # 03.11.2026, J. Machacek - Point files of *Assign material, from-file (NG-MAT-130 to NG-MAT-132) (with help of
 #                           Claude Opus 5.5)
+# 07.11.2026, J. Machacek - Mohr-Coulomb friction with softening: NG-CONT-110, NG-CONT-125, NG-CONT-126 and
+#                           NG-CONT-127 (uncommitted numgeo-src of 06.11.2026)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Rules on numgeo's behaviour in particular cases: input that numgeo rejects, ignores, clamps or reads
 differently than the text suggests. Every rule names the solver source it mirrors (``source``).
@@ -2951,7 +2953,7 @@ _NORMAL_VALUE_OPTIONS = ("STIFFNESS_FACTOR", "VISCOUS")
     "NG-CONT-105",
     "warning",
     "normal options belong on *Normal only",
-    source="src/input/read_interaction_.f90:187,223,554-568",
+    source="src/input/read_interaction_.f90:193,229,623-637",
 )
 def normal_options_twice(ctx: Context) -> Iterator[Finding]:
     # TODO: drop when numgeo is fixed.
@@ -2970,7 +2972,7 @@ def normal_options_twice(ctx: Context) -> Iterator[Finding]:
     "NG-CONT-106",
     "warning",
     "*Normal without mechanical= resets the normal model to penalty",
-    source="src/input/read_interaction_.f90:534-539 (read_normal_contact_setting)",
+    source="src/input/read_interaction_.f90:603-608 (read_normal_contact_setting)",
 )
 def normal_reset(ctx: Context) -> Iterator[Finding]:
     for kw in _interactions(ctx.deck):
@@ -3026,7 +3028,7 @@ _OPTIONS_WORDS = ("CLEARANCE", "CHECKDISP", "CHECKDIST", "REDUCTION")
     "NG-CONT-107",
     "error",
     "interaction names must not contain *Interaction option words",
-    source="src/input/read_interaction_.f90:425-512 (read_normal_contact_setting)",
+    source="src/input/read_interaction_.f90:494-581 (read_normal_contact_setting)",
 )
 def interaction_names(ctx: Context) -> Iterator[Finding]:
     for kw, v, hit in _names_with(_interactions(ctx.deck), "NAME", _INTERACTION_WORDS):
@@ -3066,14 +3068,16 @@ def options_names(ctx: Context) -> Iterator[Finding]:
         )
 
 
-_COULOMB = {"COULOMB": (2, 3), "MC": (3, 4), "MOHR-COULOMB": (3, 4)}
+_COULOMB = {"COULOMB": (2, 3), "MC": (3, 4, 5, 6), "MOHR-COULOMB": (3, 4, 5, 6)}
+_MOHR_COULOMB = ("MC", "MOHR-COULOMB")
 
 
 @rule(
     "NG-CONT-110",
     "error",
     "friction models need their number of properties",
-    source="src/contacts/contact_models.f90:342-355 (contact_selection)",
+    source="src/contacts/contact_models.f90:342-355 (contact_selection); src/input/read_interaction_.f90:404-425 "
+    "(read_interaction, Mohr-Coulomb, uncommitted numgeo-src of 06.11.2026)",
 )
 def friction_count(ctx: Context) -> Iterator[Finding]:
     models = {_key(str(m["name"])): m for m in ctx.catalogue.section("interactions", "contact_models")}
@@ -3086,11 +3090,74 @@ def friction_count(ctx: Context) -> Iterator[Finding]:
         if allowed is None and model in models and isinstance(models[model].get("nprops"), int):
             allowed = (int(models[model]["nprops"]),)
         if allowed is not None and n not in allowed:
+            needs = (
+                "3 or 4 values ([eps_T,] tan(delta), tan(theta), c), with softening 5 or 6 values ([eps_T,] "
+                "tan(delta), tan(theta), c, tan(delta_r), u_r)"
+                if model in _MOHR_COULOMB
+                else f"{' or '.join(map(str, allowed))} values"
+            )
             yield (
-                f"interaction {kw.option('NAME')}: friction model {model.lower()} needs "
-                f"{' or '.join(map(str, allowed))} values, {n} given",
+                f"interaction {kw.option('NAME')}: friction model {model.lower()} needs {needs}, {n} given",
                 _loc(fr, "model *Friction"),
             )
+
+
+def _mc_softening(fr: Keyword) -> bool:
+    """Mohr-Coulomb friction with softening: 5 or 6 values in the data line (read_interaction_.f90:408-416)."""
+    return _friction_model(fr) in _MOHR_COULOMB and len(_flat(fr.data)) in (5, 6)
+
+
+def _mc_softening_findings(values: list[Token], where: str) -> Iterator[str]:
+    """Parameters of Mohr-Coulomb friction with softening ``[eps_T,] tan(delta), tan(theta), c, tan(delta_r), u_r``
+    as numgeo checks them (check_mc_softening_parameters, read_interaction_.f90:441-467)."""
+    off = len(values) - 5
+    mu, psi, mu_r, u_r = (_num(values[off + i]) for i in (0, 1, 3, 4))
+    if u_r is not None and u_r <= 0.0:
+        yield (
+            f"{where}: the plastic slip u_r up to the residual friction (last value, {values[off + 4]}) must be "
+            "positive"
+        )
+    if mu is not None and mu_r is not None and (mu_r < 0.0 or mu_r > mu):
+        yield (
+            f"{where}: the residual friction tan(delta_r) ({values[off + 3]}) must lie between 0 and the peak "
+            f"friction tan(delta) ({values[off]})"
+        )
+    if psi is not None and psi < 0.0:
+        yield f"{where}: the dilatancy tan(theta) ({values[off + 1]}) must not be negative"
+
+
+@rule(
+    "NG-CONT-126",
+    "error",
+    "Mohr-Coulomb friction with softening needs 0 <= tan(delta_r) <= tan(delta), tan(theta) >= 0 and u_r > 0",
+    source="src/input/read_interaction_.f90:413-416,441-467 (read_interaction, check_mc_softening_parameters); "
+    "src/input/read_model_change_.f90:204-211 (read_model_change); uncommitted numgeo-src of 06.11.2026",
+)
+def mc_softening_parameters(ctx: Context) -> Iterator[Finding]:
+    deck = ctx.deck
+    softening: dict[str, Keyword] = {}
+    for kw in _interactions(deck):
+        fr = _friction(kw)
+        if fr is None or _has_word(kw, "USER") or not _mc_softening(fr):
+            continue
+        name = str(kw.option("NAME"))
+        softening[_key(name)] = fr
+        where = f"interaction {name}: Mohr-Coulomb friction with softening"
+        for text in _mc_softening_findings(_flat(fr.data), where):
+            yield text, _loc(fr, "model *Friction")
+    if not softening:
+        return
+    # *Model change, friction of an interaction with softening: same number of values (else NG-CONT-125)
+    for st, kw in _friction_changes(deck):
+        for r in kw.data:
+            fr = softening.get(_key(str(r[0]))) if r else None
+            if fr is None or len(r) - 1 != len(_flat(fr.data)):
+                continue
+            where = (
+                f"step {st.name}: *Model change, friction of interaction {r[0]}, Mohr-Coulomb friction with softening"
+            )
+            for text in _mc_softening_findings(list(r[1:]), where):
+                yield text, _sloc(st, kw)
 
 
 def _surface_types(ctx: Context, surface: str) -> set[str]:
@@ -3352,7 +3419,7 @@ def _friction_publicity(ctx: Context) -> Iterator[tuple[Keyword, str, bool | Non
     "NG-CONT-121",
     "warning",
     "non-public friction models run only in non-public builds",
-    source="src/tools/global_settings_.f90:27; src/input/read_interaction_.f90:349-353",
+    source="src/tools/global_settings_.f90:27; src/input/read_interaction_.f90:355-359",
 )
 def friction_nonpublic(ctx: Context) -> Iterator[Finding]:
     if ctx.profile.public:
@@ -3370,7 +3437,7 @@ def friction_nonpublic(ctx: Context) -> Iterator[Finding]:
     "NG-CONT-122",
     "error",
     "non-public friction models are rejected by public builds",
-    source="src/input/read_interaction_.f90:349-353 (read_interaction)",
+    source="src/input/read_interaction_.f90:355-359 (read_interaction)",
 )
 def friction_public_build(ctx: Context) -> Iterator[Finding]:
     if not ctx.profile.public:
@@ -3405,7 +3472,7 @@ def segment_mortar_3d(ctx: Context) -> Iterator[Finding]:
     "NG-CONT-124",
     "error",
     "friction models must exist in numgeo's contact library",
-    source="src/input/read_interaction_.f90:341-347 (read_interaction)",
+    source="src/input/read_interaction_.f90:347-353 (read_interaction)",
 )
 def friction_unknown(ctx: Context) -> Iterator[Finding]:
     models = {_key(str(m["name"])) for m in ctx.catalogue.section("interactions", "contact_models")}
@@ -3438,7 +3505,8 @@ def _friction_changes(deck: Deck) -> Iterator[tuple[Step, Keyword]]:
     "NG-CONT-125",
     "error",
     "*Model change, friction needs an interaction with Coulomb or Mohr-Coulomb friction and its parameters",
-    source="src/input/read_model_change_.f90:136-217 (read_model_change, numgeo-src 60fca8b5)",
+    source="src/input/read_model_change_.f90:139-228 (read_model_change, numgeo-src 60fca8b5; lines of the uncommitted "
+    "numgeo-src of 06.11.2026)",
 )
 def friction_change(ctx: Context) -> Iterator[Finding]:
     deck = ctx.deck
@@ -3496,7 +3564,9 @@ def friction_change(ctx: Context) -> Iterator[Finding]:
                 )
                 continue
             entry = library.get(model)
-            if entry is not None and len(values) == int(entry["nprops"]):
+            # with softening, tan(delta_r) and u_r follow the parameters of the library (read_model_change_.f90:204-215)
+            full = int(entry["nprops"]) + (2 if _mc_softening(fr) else 0) if entry is not None else 0
+            if entry is not None and len(values) == full:
                 a, b = _num(new[0]), _num(values[0])
                 if a is None or b is None or abs(a - b) > 1.0e-12 * max(abs(a), abs(b)):
                     yield (
@@ -3504,6 +3574,93 @@ def friction_change(ctx: Context) -> Iterator[Finding]:
                         f"changed; give the value of its *Friction ({values[0]})",
                         _sloc(st, kw),
                     )
+
+
+def _surface_node_set(deck: Deck, name: str) -> set[int] | None:
+    """Nodes of a surface (faces of element-based surfaces after numgeo's face tables), ``None`` if they cannot be
+    resolved from the deck (unknown surface or set, set queries, element types without a face table)."""
+    from pynumgeo.mesh.topology import face_connectivity
+
+    try:
+        s = deck.mesh.surface(name)
+    except KeyError:
+        return None
+    if s.type == "node":
+        return _surface_nodes(deck, s.rows)
+    nodes: set[int] = set()
+    for r in s.rows:
+        if len(r) < 2:
+            return None
+        members = _elset_members(deck, r[0])
+        if members is None:
+            return None
+        for b in deck.mesh.blocks:
+            mask = np.isin(b.labels, list(members))
+            if not mask.any():
+                continue
+            try:
+                nodes |= set(face_connectivity(b.type, b.connectivity[mask], r[1]).ravel().tolist())
+            except (KeyError, ValueError):
+                return None
+    return nodes
+
+
+@rule(
+    "NG-CONT-127",
+    "warning",
+    "merged IPS contact pairs need Mohr-Coulomb friction all with or all without softening",
+    source="src/contacts/contact_.f90:1400-1412,1479-1494 (merged_master_faces, compatible_interactions, "
+    "uncommitted numgeo-src of 06.11.2026)",
+)
+def merged_pairs_softening(ctx: Context) -> Iterator[Finding]:
+    deck = ctx.deck
+    friction = {_key(str(kw.option("NAME"))): _friction(kw) for kw in _interactions(deck) if not _has_word(kw, "USER")}
+    if not any(fr is not None and _mc_softening(fr) for fr in friction.values()):
+        return
+    # IPS pairs in the order of the deck: (keyword, slave, master, interaction, slave nodes)
+    pairs: list[tuple[Keyword, str, str, str, set[int]]] = []
+    for kw in _model_kws(deck, "*CONTACTPAIR"):
+        if "DISCRETISATION=IPS" not in _opt_text(kw):
+            continue
+        interaction = str(kw.option("INTERACTION"))
+        for r in kw.data:
+            if len(r) < 2:
+                continue
+            nodes = _surface_node_set(deck, str(r[0]))
+            if nodes is None:
+                return  # the slave surfaces cannot be resolved: the merged pairs are not known
+            pairs.append((kw, str(r[0]), str(r[1]), interaction, nodes))
+    # contact pairs whose slave surfaces share nodes are merged into the first of them (also via a third pair)
+    group = list(range(len(pairs)))
+
+    def root(i: int) -> int:
+        while group[i] != i:
+            i = group[i]
+        return i
+
+    for i in range(len(pairs)):
+        for j in range(i + 1, len(pairs)):
+            if pairs[i][4] & pairs[j][4]:
+                ri, rj = root(i), root(j)
+                group[max(ri, rj)] = min(ri, rj)
+    for j in range(len(pairs)):
+        first = root(j)
+        if first == j:
+            continue
+        a, b = friction.get(_key(pairs[first][3])), friction.get(_key(pairs[j][3]))
+        if a is None or b is None or _friction_model(a) not in _MOHR_COULOMB or _friction_model(b) not in _MOHR_COULOMB:
+            continue
+        if _mc_softening(a) != _mc_softening(b):
+            kw, slave, master, interaction, _ = pairs[j]
+            with_, without = (pairs[first][3], interaction) if _mc_softening(a) else (interaction, pairs[first][3])
+            yield (
+                f"IPS contact pair {slave}, {master} (interaction {interaction}) shares slave nodes with the pair "
+                f"{pairs[first][1]}, {pairs[first][2]} (interaction {pairs[first][3]}) and is merged into it: "
+                f"Mohr-Coulomb friction with softening in {with_}, without in {without}; numgeo uses the interaction "
+                f"{pairs[first][3]} also on the master faces of this pair (merged pairs: all with softening or all "
+                "without)",
+                _loc(kw, "model *Contact pair"),
+            )
 
 
 # ============================================================================= output

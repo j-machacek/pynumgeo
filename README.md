@@ -22,6 +22,7 @@ History
 31.10.2026, J. Machacek - Version 2026.2.0.dev4 with the Concrete model
 03.11.2026, J. Machacek - Version 2026.2.0.dev5 with *Assign material, from-file, binary-zlib, SF and IP
                           and *Integration point in the field output (with help of Claude Opus 5.5)
+07.11.2026, J. Machacek - Version 2026.2.0.dev6 with the softening of the Mohr-Coulomb friction
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -65,8 +66,8 @@ The [documentation](https://j-machacek.github.io/pynumgeo/) is built with [Zensi
 from `docs/` (`pip install -e ".[docs]"`, then `zensical serve`); `docs/llms.txt` is a one-page summary for
 agents.
 
-pynumgeo `2026.2.0.dev5` is a pre-release (hence `pip install --pre`) built against the numgeo developer
-source `834564ed` (`numgeo2026-v2`), with `*Model change, friction` of `60fca8b5`, the Concrete model (`*Mechanical = Concrete`) of the numgeo developer source of 31.10.2026, `*Assign material, from-file` of `60135dc`, the VTK output `binary-zlib`, `SF` and `IP` of `7052b69` and the field output `*Integration point` of the numgeo developer source of 02.11.2026; `2026.2.0` will be released together with numgeo2026-v2. Every input file it writes starts with a header that names the
+pynumgeo `2026.2.0.dev6` is a pre-release (hence `pip install --pre`) built against the numgeo developer
+source `834564ed` (`numgeo2026-v2`), with `*Model change, friction` of `60fca8b5`, the Concrete model (`*Mechanical = Concrete`) of the numgeo developer source of 31.10.2026, `*Assign material, from-file` of `60135dc`, the VTK output `binary-zlib`, `SF` and `IP` of `7052b69` and the field output `*Integration point` of the numgeo developer source of 02.11.2026 and the softening of the Mohr-Coulomb friction (`*Friction, model=Mohr-Coulomb` and `*Model change, friction` with tan(δ_r), u_r) of the numgeo developer source of 06.11.2026; `2026.2.0` will be released together with numgeo2026-v2. Every input file it writes starts with a header that names the
 pynumgeo version, its author and the numgeo build it was written for.
 
 Author: Jan Machacek. Licence: BSD-3-Clause (`LICENSE`). The numgeo reference texts bundled with the

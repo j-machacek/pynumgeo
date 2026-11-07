@@ -149,7 +149,7 @@ The keyword for frictional contact following the Mohr-Coulomb's friction model t
 
 ```numgeo
 *Friction, model=Mohr-Coulomb, [stiffness_factor=<>]
-[ε_T,] tan(δ), tan(ϑ), c
+[ε_T,] tan(δ), tan(ϑ), c [, tan(δ_r), u_r]
 ```
 
 with the parameters:
@@ -157,9 +157,13 @@ with the parameters:
 |Parameter           |                  |Unit    |Mandatory
 |------------------- |----------------- |-------|-----------
 |$\varepsilon_T$     |Penalty factor tangential  |F/L³  |no
-|$\tan(\delta)$      |Wall friction angle   |-           |yes
-|$\tan(\vartheta)$   |Dilatancy angle       |-           |yes
+|$\tan(\delta)$      |Wall friction angle (peak value with softening)  |-           |yes
+|$\tan(\vartheta)$   |Dilatancy angle (peak value with softening)      |-           |yes
 |$c$                 |Adhesion              |F/A         |yes
+|$\tan(\delta_r)$    |Residual wall friction angle ([softening](#softening-of-friction-and-dilatancy))  |-           |no
+|$u_r$               |Plastic slip up to the residual state ([softening](#softening-of-friction-and-dilatancy)) |L           |no
+
+The data line has 3 or 4 values, with softening 5 or 6 values; any other number of values is an error.
 
 !!! note "Tangential penalty factor"
 
@@ -170,6 +174,36 @@ with the parameters:
     $$
 
     $G^{mat}$ is being determined automatically by numgeo and is calculated based on the constitutive Jacobian $\textbf{J}$ of the adjacent element. The scaling factor $s_T$ has a default value of 1 and can be modified by the user using `[stiffness_factor=<>]`. In general, it is recommended not to define the $\varepsilon_T$ directly.
+
+#### Softening of friction and dilatancy
+
+!!! note "Release information"
+
+    The softening of the Mohr-Coulomb friction is part of the [upcoming release](../../release/release_notes_upcoming.md).
+
+If $\tan(\delta_r)$ and $u_r$ are given, the friction and the dilatancy depend on the accumulated plastic slip $\kappa$ and decrease linearly from the peak values to the residual state:
+
+$$
+\tan\delta(\kappa) = \tan(\delta_r) + \left(\tan(\delta) - \tan(\delta_r)\right) h(\kappa), \qquad \tan\vartheta(\kappa) = \tan(\vartheta)\, h(\kappa), \qquad h(\kappa) = \max\left(0,\; 1 - \frac{\kappa}{u_r}\right)
+$$
+
+The interface is elastic up to the peak shear stress $\tan(\delta)\, t_N + c$. After the plastic slip $u_r$ it behaves as Coulomb friction with $\tan(\delta_r)$ without dilatancy: the plastic normal displacement (dilation) stops at $\tan(\vartheta)\, u_r / 2$. Under a constant normal stress the shear stress drops from the peak to the residual value. Where the surrounding bodies restrain the dilation, the normal stress increases up to the residual state and stays constant after it (the increase acts through the normal penalty factor, in series with the stiffness of the surrounding bodies). The parameters must satisfy $0 \le \tan(\delta_r) \le \tan(\delta)$, $\tan(\vartheta) \ge 0$ and $u_r > 0$.
+
+* The plastic slip is accumulated in both directions of sliding; the peak is not recovered when the sliding is reversed.
+* [`*Model change, friction`](../model-change/friction.md) of the interaction resets the plastic slip to zero, e.g. for an interface that is frictionless in the first steps and rough from a later step on (the slip in the frictionless steps does not count). The dilation reached up to the change is kept.
+* If the friction capacity decreases with the plastic slip faster than the tangential penalty factor allows, $\varepsilon_T + \varepsilon_N \tan(\delta) \tan(\vartheta) < \left(\tan(\delta) - \tan(\delta_r)\right) t_N / u_r$, the softening cannot be followed at a contact point: the friction drops to the residual value within one increment, and a warning is written to the log file (once per analysis). A larger $u_r$ or $\varepsilon_T$ avoids this.
+* Not available with user-defined contact properties ([`*Interaction, user`](#interaction)). In [merged contact pairs](contact-pair.md#several-contact-pairs-on-one-slave-surface) with `discretisation=IPS`, all interactions must be defined with softening or all without.
+* The return mapping is described in the [Theory Manual](../../theory/contacts/contact-tangential.md#softening-of-friction-and-dilatancy), the verification in the [benchmark](../../benchmark/contacts/mc-softening.md).
+
+*Example:* peak friction $\tan(\delta) = 0.9325$ with $\tan(\vartheta) = 0.2309$, residual friction $\tan(\delta_r) = 0.6414$ after a plastic slip of 5 mm (units kN and m):
+
+```numgeo
+*Interaction, name=grout-soil
+*Normal, mechanical=penalty
+1.0e6
+*Friction, model=Mohr-Coulomb
+1.0e6, 0.9325, 0.2309, 0.0, 0.6414, 0.005
+```
 
 ---
 

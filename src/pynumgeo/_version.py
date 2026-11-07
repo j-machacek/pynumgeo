@@ -19,6 +19,7 @@
 # 31.10.2026, J. Machacek - Version 2026.2.0.dev4
 # 03.11.2026, J. Machacek - Version 2026.2.0.dev5; reference pages of the numgeo documentation f903d1a1
 #                           (with help of Claude Opus 5.5)
+# 07.11.2026, J. Machacek - Version 2026.2.0.dev6
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Version of pynumgeo and of the numgeo source it was derived from.
 
@@ -26,7 +27,7 @@ pynumgeo follows the numgeo version: numgeo ``numgeo2026-v2`` corresponds to pyn
 (``.devN`` until it is released together with numgeo).
 """
 
-__version__ = "2026.2.0.dev5"
+__version__ = "2026.2.0.dev6"
 
 #: numgeo version string this pynumgeo was derived from (console banner of the solver).
 NUMGEO_VERSION = "numgeo2026-v2"

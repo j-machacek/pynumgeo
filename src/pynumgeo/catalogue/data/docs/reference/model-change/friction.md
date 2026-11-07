@@ -23,6 +23,7 @@ Each data line names an interaction and gives the new parameters of its friction
     |---|---|
     | `Coulomb` | `[ε_T,] tan(δ), c` |
     | `Mohr-Coulomb` | `[ε_T,] tan(δ), tan(ϑ), c` |
+    | `Mohr-Coulomb` with [softening](../contacts/interaction.md#softening-of-friction-and-dilatancy) | `[ε_T,] tan(δ), tan(ϑ), c, tan(δ_r), u_r` |
 
     The tangential penalty factor $\varepsilon_T$ is given if, and only if, it is given in the `*Friction` definition, and with the same value: it cannot be changed (otherwise it is calculated from the material stiffness, as before the change). The two surfaces of a contact use the smaller of their tangential penalty factors, so that a larger value would not act.
 
@@ -34,6 +35,7 @@ Each data line names an interaction and gives the new parameters of its friction
 * The change is instantaneous at the beginning of the step (no ramp). The contact state is kept: status (open or closed), normal and tangential contact stresses, state variables of the interaction. The friction law continues from the converged tangential stress with the new parameters:
     * increased friction: the contact sticks until the shear stress reaches the new capacity;
     * decreased friction below the current shear stress: the shear stress is returned to the new capacity in the first increment of the step, the surfaces slip. The resulting change of the contact forces is applied in a single increment; a large decrease can be split over several steps.
+* Mohr-Coulomb friction with [softening](../contacts/interaction.md#softening-of-friction-and-dilatancy): the accumulated plastic slip is reset to zero at the change, so that the friction starts again from the peak values $\tan(\delta)$ and $\tan(\vartheta)$ (the slip before the change, e.g. in frictionless steps, does not count). The dilation reached before the change is kept. This also holds for a change that repeats the current parameters.
 * Frictionless contact up to the change: define the interaction with `*Friction, model=Coulomb` and $\tan\delta = 0$, $c = 0$. With these parameters the Coulomb model gives the tractions and the tangent of frictionless contact (no shear stress, no tangential stiffness).
 * Available for the friction models `Coulomb` and `Mohr-Coulomb` (all discretisations). The interaction has to be defined before the first step. Not available for the hypoplastic friction model and for interactions with user-defined contact properties ([`*Interaction, user`](../contacts/interaction.md)).
 * In a [strength-reduction](../step/reduction.md) step with the option `Reduction` of [`*Contact options`](../contacts/contact-options.md), the parameters valid in that step are reduced.

@@ -5039,7 +5039,7 @@
    "context": "interaction sub-keyword",
    "data_lines": [
     {
-     "count_rule": "no count check at read time; runtime: size == nprops, or nprops-1 for COULOMB/MC/MOHR-COULOMB (contact_models.f90:342-355)",
+     "count_rule": "MC/MOHR-COULOMB: 3 or 4 values, with softening 5 or 6 values (tan(delta_r), u_r follow), any other number -> error at read time (read_interaction_.f90:404-425, uncommitted numgeo-src of 06.11.2026); other models: no count check at read time; runtime: size == nprops, or nprops-1 for COULOMB (contact_models.f90:342-355)",
      "description": "friction model properties, concatenated over all following lines",
      "fields": [
       {
@@ -5049,7 +5049,7 @@
        "source": {
         "anchor": "f92a56989afca00e",
         "file": "src/input/read_interaction_.f90",
-        "line": 374,
+        "line": 380,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -5060,7 +5060,7 @@
      "source": {
       "anchor": "ac0b52a2ae6ef999",
       "file": "src/input/read_interaction_.f90",
-      "line": 361,
+      "line": 367,
       "routine": "read_interaction"
      }
     }
@@ -5068,7 +5068,7 @@
    "dispatch": {
     "anchor": "033dda0f598d6590",
     "file": "src/input/read_interaction_.f90",
-    "line": 197,
+    "line": 203,
     "routine": "read_interaction"
    },
    "display": "*Friction",
@@ -5076,14 +5076,14 @@
    "handler": {
     "anchor": "14fe9e565a02df10",
     "file": "src/input/read_interaction_.f90",
-    "line": 310,
+    "line": 316,
     "routine": "read_interaction"
    },
    "keyword": "*FRICTION",
    "match_forms": [
     "token containing '*FRICTION' on a line following *INTERACTION / *NORMAL"
    ],
-   "notes": "public_version=.false. in this build (global_settings_.f90:27); in public builds models with public=.false. are rejected (349-353). With *INTERACTION,...,USER the reader returns immediately after the *FRICTION line (357): no property lines are read (user_contact_properties supplies them).",
+   "notes": "public_version=.false. in this build (global_settings_.f90:27); in public builds models with public=.false. are rejected (355-359). With *INTERACTION,...,USER the reader returns immediately after the *FRICTION line (363): no property lines are read (user_contact_properties supplies them). Mohr-Coulomb with softening (uncommitted numgeo-src of 06.11.2026): 5 or 6 values set mc_softening and are checked by check_mc_softening_parameters: u_r > 0, 0 <= tan(delta_r) <= tan(delta), tan(theta) >= 0, else error (read_interaction_.f90:413-416,441-467); not with *INTERACTION,...,USER (no property lines are read). Line numbers of read_interaction_.f90 refer to the uncommitted numgeo-src of 06.11.2026.",
    "options": [
     {
      "default": null,
@@ -5091,12 +5091,12 @@
      "doc": "docs/reference/contacts/interaction.md",
      "match": "substring 'MODEL'; value after first '=' looked up exactly in lib%contact_model%name",
      "name": "MODEL",
-     "notes": "Any library name passes the read check (341-347); normal-only names fail later. 'MECHANICAL=' is NOT accepted here (unknown option error, 315-320).",
+     "notes": "Any library name passes the read check (347-353); normal-only names fail later. 'MECHANICAL=' is NOT accepted here (unknown option error, 321-326).",
      "required": true,
      "source": {
       "anchor": "c2022134e878b9a2",
       "file": "src/input/read_interaction_.f90",
-      "line": 337,
+      "line": 343,
       "routine": "read_interaction"
      },
      "value_type": "name",
@@ -5116,18 +5116,18 @@
      "default_source": {
       "anchor": "d489b5b5080ca6e4",
       "file": "src/input/read_interaction_.f90",
-      "line": 85,
+      "line": 89,
       "routine": "read_interaction"
      },
      "doc": null,
      "match": "substring 'STIFFNESS_FACTOR'; value after '='",
      "name": "STIFFNESS_FACTOR",
-     "notes": "Stored value = user value * 4.0 (330-333); used for eps_T = factor*min|G| when eps_T omitted (contact_models.f90:601). The factor 4 reproduces the documented G^mat = 4/(2*ndim-3)*sum(J_ii): the source averages the shear diagonal without the 4 (contact_models.f90:2906-2913), so the effective eps_T equals the documented s_T*G^mat with default s_T = 1 (no discrepancy).",
+     "notes": "Stored value = user value * 4.0 (336-339); used for eps_T = factor*min|G| when eps_T omitted (contact_models.f90:601). The factor 4 reproduces the documented G^mat = 4/(2*ndim-3)*sum(J_ii): the source averages the shear diagonal without the 4 (contact_models.f90:2906-2913), so the effective eps_T equals the documented s_T*G^mat with default s_T = 1 (no discrepancy).",
      "required": false,
      "source": {
       "anchor": "9c7c38bb7e549a87",
       "file": "src/input/read_interaction_.f90",
-      "line": 327,
+      "line": 333,
       "routine": "read_interaction"
      },
      "value_type": "real",
@@ -6118,7 +6118,7 @@
        "source": {
         "anchor": "a15b5cb78d3adbd3",
         "file": "src/input/read_interaction_.f90",
-        "line": 128,
+        "line": 134,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -6131,7 +6131,7 @@
        "source": {
         "anchor": "42da7540e2faf20b",
         "file": "src/input/read_interaction_.f90",
-        "line": 133,
+        "line": 139,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -6142,7 +6142,7 @@
      "source": {
       "anchor": "3eda802688131b24",
       "file": "src/input/read_interaction_.f90",
-      "line": 118,
+      "line": 124,
       "routine": "read_interaction"
      }
     },
@@ -6157,7 +6157,7 @@
        "source": {
         "anchor": "c02decf689d1b7c2",
         "file": "src/input/read_interaction_.f90",
-        "line": 147,
+        "line": 153,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -6170,7 +6170,7 @@
        "source": {
         "anchor": "611690d8a86d7a6e",
         "file": "src/input/read_interaction_.f90",
-        "line": 543,
+        "line": 612,
         "routine": "read_normal_contact_setting"
        },
        "type": "real",
@@ -6183,7 +6183,7 @@
        "source": {
         "anchor": "297f0c28983a7515",
         "file": "src/input/read_interaction_.f90",
-        "line": 156,
+        "line": 162,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -6194,7 +6194,7 @@
      "source": {
       "anchor": "2b6cd101d51aae48",
       "file": "src/input/read_interaction_.f90",
-      "line": 145,
+      "line": 151,
       "routine": "read_interaction"
      }
     },
@@ -6206,7 +6206,7 @@
      "source": {
       "anchor": "42c1ee0d77591fcb",
       "file": "src/input/read_interaction_.f90",
-      "line": 182,
+      "line": 188,
       "routine": "read_interaction"
      }
     }
@@ -6222,14 +6222,14 @@
    "handler": {
     "anchor": "3f264a8ec114860e",
     "file": "src/input/read_interaction_.f90",
-    "line": 50,
+    "line": 54,
     "routine": "read_interaction"
    },
    "keyword": "*INTERACTION",
    "match_forms": [
     "*INTERACTION,"
    ],
-   "notes": "All *NORMAL options are also accepted on the *INTERACTION line itself (same routine read_normal_contact_setting). Unknown options -> error (524-529). Bare '*INTERACTION' without comma is not dispatched. For iinteraction==1 the contact model library is built and all contact options are reset (516-521).",
+   "notes": "All *NORMAL options are also accepted on the *INTERACTION line itself (same routine read_normal_contact_setting). Unknown options -> error (593-598). Bare '*INTERACTION' without comma is not dispatched. For iinteraction==1 the contact model library is built and all contact options are reset (585-590).",
    "options": [
     {
      "default": null,
@@ -6237,12 +6237,12 @@
      "doc": "docs/reference/contacts/interaction.md",
      "match": "substring 'NAME' in a comma token; value after first '='",
      "name": "NAME",
-     "notes": "Error if absent (101).",
+     "notes": "Error if absent (107).",
      "required": true,
      "source": {
       "anchor": "638cd115e8d1aa7d",
       "file": "src/input/read_interaction_.f90",
-      "line": 97,
+      "line": 103,
       "routine": "read_interaction"
      },
      "value_type": "name",
@@ -6259,7 +6259,7 @@
      "source": {
       "anchor": "c669502a5c77b7b8",
       "file": "src/input/read_interaction_.f90",
-      "line": 432,
+      "line": 501,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -6270,7 +6270,7 @@
      "default_source": {
       "anchor": "c4475e686158cf7d",
       "file": "src/input/read_interaction_.f90",
-      "line": 538,
+      "line": 607,
       "routine": "read_normal_contact_setting"
      },
      "doc": "docs/reference/contacts/interaction.md",
@@ -6281,7 +6281,7 @@
      "source": {
       "anchor": "35d98342f240476b",
       "file": "src/input/read_interaction_.f90",
-      "line": 436,
+      "line": 505,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "name",
@@ -6297,7 +6297,7 @@
      "default_source": {
       "anchor": "55e3216d0718eeb8",
       "file": "src/input/read_interaction_.f90",
-      "line": 74,
+      "line": 78,
       "routine": "read_interaction"
      },
      "doc": null,
@@ -6308,7 +6308,7 @@
      "source": {
       "anchor": "d789d5a892132c1b",
       "file": "src/input/read_interaction_.f90",
-      "line": 441,
+      "line": 510,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -6319,18 +6319,18 @@
      "default_source": {
       "anchor": "dc7da87d3108fde9",
       "file": "src/input/read_interaction_.f90",
-      "line": 78,
+      "line": 82,
       "routine": "read_interaction"
      },
      "doc": null,
      "match": "substring 'USER'",
      "name": "USER",
-     "notes": "Runs user_contact_properties.sh/.bat or requires user_contact_properties.so/.dll in cwd (454-485). Only allowed together with *FRICTION (contact_models.f90:274-278). Substring match: any token containing 'USER' (also a NAME value!) sets it.",
+     "notes": "Runs user_contact_properties.sh/.bat or requires user_contact_properties.so/.dll in cwd (523-554). Only allowed together with *FRICTION (contact_models.f90:274-278). Substring match: any token containing 'USER' (also a NAME value!) sets it.",
      "required": false,
      "source": {
       "anchor": "26f41842b9c76ab0",
       "file": "src/input/read_interaction_.f90",
-      "line": 446,
+      "line": 515,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -6341,7 +6341,7 @@
      "default_source": {
       "anchor": "ff90011e2471caee",
       "file": "src/input/read_interaction_.f90",
-      "line": 83,
+      "line": 87,
       "routine": "read_interaction"
      },
      "doc": null,
@@ -6352,7 +6352,7 @@
      "source": {
       "anchor": "d39da3507e54bdff",
       "file": "src/input/read_interaction_.f90",
-      "line": 554,
+      "line": 623,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "real",
@@ -6363,7 +6363,7 @@
      "default_source": {
       "anchor": "9142512e8c375173",
       "file": "src/input/read_interaction_.f90",
-      "line": 84,
+      "line": 88,
       "routine": "read_interaction"
      },
      "doc": null,
@@ -6374,7 +6374,7 @@
      "source": {
       "anchor": "2897e90cda558cae",
       "file": "src/input/read_interaction_.f90",
-      "line": 492,
+      "line": 561,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -6385,7 +6385,7 @@
      "default_source": {
       "anchor": "36d1e85fc7ecb4f8",
       "file": "src/input/read_interaction_.f90",
-      "line": 502,
+      "line": 571,
       "routine": "read_normal_contact_setting"
      },
      "doc": null,
@@ -6396,7 +6396,7 @@
      "source": {
       "anchor": "ffca0e8ac8061266",
       "file": "src/input/read_interaction_.f90",
-      "line": 562,
+      "line": 631,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "real",
@@ -6407,18 +6407,18 @@
      "default_source": {
       "anchor": "61bddb6556701d9f",
       "file": "src/input/read_interaction_.f90",
-      "line": 87,
+      "line": 91,
       "routine": "read_interaction"
      },
      "doc": null,
      "match": "substring 'WATER-FILLEDGAP' or 'WATERFILLEDGAP'",
      "name": "WATER-FILLEDGAP",
-     "notes": "Requires MECHANICAL=PENALTY (547-551); contact pair must be element mortar/NTN and friction COULOMB/MOHR-COULOMB/MC or none (read_contact_pairing_.f90:211-227).",
+     "notes": "Requires MECHANICAL=PENALTY (616-620); contact pair must be element mortar/NTN and friction COULOMB/MOHR-COULOMB/MC or none (read_contact_pairing_.f90:211-227).",
      "required": false,
      "source": {
       "anchor": "488158f487c9e64e",
       "file": "src/input/read_interaction_.f90",
-      "line": 508,
+      "line": 577,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -7160,7 +7160,7 @@
        "source": {
         "anchor": "f4e43fba17c9a7d5",
         "file": "src/input/read_model_change_.f90",
-        "line": 98,
+        "line": 101,
         "routine": "read_model_change"
        },
        "type": "name",
@@ -7173,24 +7173,24 @@
        "source": {
         "anchor": "f4e43fba17c9a7d5",
         "file": "src/input/read_model_change_.f90",
-        "line": 98,
+        "line": 101,
         "routine": "read_model_change"
        },
        "type": "name",
        "unit": null
       }
      ],
-     "repeat": "until next line containing '*'; at least one line (l.86-94)",
+     "repeat": "until next line containing '*'; at least one line (l.89-97)",
      "source": {
       "anchor": "dd0ab02bf2bafd89",
       "file": "src/input/read_model_change_.f90",
-      "line": 85,
+      "line": 88,
       "routine": "read_model_change"
      }
     },
     {
      "count_rule": "narg == 1 + number of values of the *Friction data line of the interaction",
-     "description": "FRICTION: interaction name, then the values of the data line of its *Friction definition ([tangential penalty,] tan(delta)[, tan(theta)], c)",
+     "description": "FRICTION: interaction name, then the values of the data line of its *Friction definition ([tangential penalty,] tan(delta)[, tan(theta)], c[, tan(delta_r), u_r])",
      "fields": [
       {
        "default": null,
@@ -7199,7 +7199,7 @@
        "source": {
         "anchor": "9b9307ec486fcf9f",
         "file": "src/input/read_model_change_.f90",
-        "line": 159,
+        "line": 162,
         "routine": "read_model_change"
        },
        "type": "name",
@@ -7212,18 +7212,18 @@
        "source": {
         "anchor": "f0af82c775fde737",
         "file": "src/input/read_model_change_.f90",
-        "line": 161,
+        "line": 164,
         "routine": "read_model_change"
        },
        "type": "real",
        "unit": null
       }
      ],
-     "repeat": "until next line containing '*'; at least one line (l.140-145)",
+     "repeat": "until next line containing '*'; at least one line (l.143-148)",
      "source": {
       "anchor": "dd0ab02bf2bafd89",
       "file": "src/input/read_model_change_.f90",
-      "line": 139,
+      "line": 142,
       "routine": "read_model_change"
      }
     },
@@ -7238,18 +7238,18 @@
        "source": {
         "anchor": "82c5afef76747e8c",
         "file": "src/input/read_model_change_.f90",
-        "line": 292,
+        "line": 303,
         "routine": "read_model_change"
        },
        "type": "name",
        "unit": null
       }
      ],
-     "repeat": "until next line containing '*'; at least one set (l.281-289)",
+     "repeat": "until next line containing '*'; at least one set (l.292-300)",
      "source": {
       "anchor": "dd0ab02bf2bafd89",
       "file": "src/input/read_model_change_.f90",
-      "line": 280,
+      "line": 291,
       "routine": "read_model_change"
      }
     }
@@ -7265,7 +7265,7 @@
    "handler": {
     "anchor": "634e8d2e0590fa42",
     "file": "src/input/read_model_change_.f90",
-    "line": 60,
+    "line": 62,
     "routine": "read_model_change"
    },
    "keyword": "*MODELCHANGE",
@@ -7273,7 +7273,7 @@
     "*MODELCHANGE",
     "*MODELCHANGE,"
    ],
-   "notes": "REMOVE/ADD refused in *Reduction and explicit dynamic steps, with *Embedded region absorbed/<private>/plate and with general contact (l.226-250); an element in a REMOVE and an ADD set of the same step -> error (l.317-332). docs/reference/model-change/elements.md carries front matter 'level: confidential'. FRICTION (numgeo-src 60fca8b5): the parameters of the friction model of an interaction from this step on, see docs/reference/model-change/friction.md. Line numbers of read_model_change_.f90 refer to numgeo-src 60fca8b5.",
+   "notes": "REMOVE/ADD refused in *Reduction and explicit dynamic steps, with *Embedded region absorbed/<private>/plate and with general contact (l.237-261); an element in a REMOVE and an ADD set of the same step -> error (l.328-343). docs/reference/model-change/elements.md carries front matter 'level: confidential'. FRICTION (numgeo-src 60fca8b5): the parameters of the friction model of an interaction from this step on, see docs/reference/model-change/friction.md. Mohr-Coulomb friction with softening (uncommitted numgeo-src of 06.11.2026): also tan(delta_r) and u_r; the accumulated plastic slip is reset at the change. Line numbers of read_model_change_.f90 refer to the uncommitted numgeo-src of 06.11.2026.",
    "options": [
     {
      "default": null,
@@ -7286,7 +7286,7 @@
      "source": {
       "anchor": "1b47b86736a2ca6f",
       "file": "src/input/read_model_change_.f90",
-      "line": 82,
+      "line": 85,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7300,12 +7300,12 @@
      "doc": "docs/reference/model-change/friction.md",
      "match": "substring 'FRICTION' (checked after MATERIAL, before REMOVE/ADD)",
      "name": "FRICTION",
-     "notes": "numgeo-src 60fca8b5 (30.10.2026). Interaction defined before the first step, with *Friction, model=Coulomb or Mohr-Coulomb, not *Interaction, user; the tangential penalty (first value, if given in *Friction) must be repeated unchanged (l.203-213); as many values as the data line of its *Friction (l.195-200).",
+     "notes": "numgeo-src 60fca8b5 (30.10.2026). Interaction defined before the first step, with *Friction, model=Coulomb or Mohr-Coulomb, not *Interaction, user; the tangential penalty (first value, if given in *Friction) must be repeated unchanged (l.214-224); as many values as the data line of its *Friction (l.198-203). Mohr-Coulomb with softening (uncommitted numgeo-src of 06.11.2026): the six (five) values of *Friction, checked as there (u_r > 0, 0 <= tan(delta_r) <= tan(delta), tan(theta) >= 0; l.204-211, check_mc_softening_parameters). The change resets the accumulated plastic slip of the contact points (also when the parameters are repeated); the dilation reached is kept.",
      "required": false,
      "source": {
       "anchor": "2593f39c5063fa68",
       "file": "src/input/read_model_change_.f90",
-      "line": 136,
+      "line": 139,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7324,7 +7324,7 @@
      "source": {
       "anchor": "09432ac1b5d8f597",
       "file": "src/input/read_model_change_.f90",
-      "line": 221,
+      "line": 232,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7338,12 +7338,12 @@
      "doc": "docs/reference/model-change/elements.md",
      "match": "substring 'ADD'",
      "name": "ADD",
-     "notes": "One of MATERIAL/FRICTION/REMOVE/ADD required, else error (l.334-338).",
+     "notes": "One of MATERIAL/FRICTION/REMOVE/ADD required, else error (l.345-349).",
      "required": false,
      "source": {
       "anchor": "09432ac1b5d8f597",
       "file": "src/input/read_model_change_.f90",
-      "line": 221,
+      "line": 232,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7356,18 +7356,18 @@
      "default_source": {
       "anchor": "9e0523db61bedf98",
       "file": "src/input/read_model_change_.f90",
-      "line": 254,
+      "line": 265,
       "routine": "read_model_change"
      },
      "doc": "docs/reference/model-change/elements.md",
      "match": "substring 'POSITION=DEFORMED' / 'POSITION=DESIGN'",
      "name": "POSITION",
-     "notes": "Only with ADD (error with REMOVE l.256-259); other value -> error (l.260-263); all ADD blocks of a step must use the same position (l.265-272).",
+     "notes": "Only with ADD (error with REMOVE l.267-270); other value -> error (l.271-274); all ADD blocks of a step must use the same position (l.276-283).",
      "required": false,
      "source": {
       "anchor": "9e0523db61bedf98",
       "file": "src/input/read_model_change_.f90",
-      "line": 254,
+      "line": 265,
       "routine": "read_model_change"
      },
      "value_type": "enum",
@@ -8062,7 +8062,7 @@
        "source": {
         "anchor": "a15b5cb78d3adbd3",
         "file": "src/input/read_interaction_.f90",
-        "line": 128,
+        "line": 134,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -8075,7 +8075,7 @@
        "source": {
         "anchor": "42da7540e2faf20b",
         "file": "src/input/read_interaction_.f90",
-        "line": 133,
+        "line": 139,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -8086,7 +8086,7 @@
      "source": {
       "anchor": "3eda802688131b24",
       "file": "src/input/read_interaction_.f90",
-      "line": 118,
+      "line": 124,
       "routine": "read_interaction"
      }
     },
@@ -8101,7 +8101,7 @@
        "source": {
         "anchor": "c02decf689d1b7c2",
         "file": "src/input/read_interaction_.f90",
-        "line": 147,
+        "line": 153,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -8114,7 +8114,7 @@
        "source": {
         "anchor": "611690d8a86d7a6e",
         "file": "src/input/read_interaction_.f90",
-        "line": 543,
+        "line": 612,
         "routine": "read_normal_contact_setting"
        },
        "type": "real",
@@ -8127,7 +8127,7 @@
        "source": {
         "anchor": "297f0c28983a7515",
         "file": "src/input/read_interaction_.f90",
-        "line": 156,
+        "line": 162,
         "routine": "read_interaction"
        },
        "type": "real",
@@ -8138,7 +8138,7 @@
      "source": {
       "anchor": "2b6cd101d51aae48",
       "file": "src/input/read_interaction_.f90",
-      "line": 145,
+      "line": 151,
       "routine": "read_interaction"
      }
     }
@@ -8146,7 +8146,7 @@
    "dispatch": {
     "anchor": "00aa84a7171647bf",
     "file": "src/input/read_interaction_.f90",
-    "line": 193,
+    "line": 199,
     "routine": "read_interaction"
    },
    "display": "*Normal",
@@ -8154,21 +8154,21 @@
    "handler": {
     "anchor": "882fd9ddd55d6566",
     "file": "src/input/read_interaction_.f90",
-    "line": 401,
+    "line": 470,
     "routine": "read_normal_contact_setting"
    },
    "keyword": "*NORMAL",
    "match_forms": [
     "token containing '*NORMAL' on the line following *INTERACTION (or its numeric line)"
    ],
-   "notes": "Not a top-level keyword: only recognised inside read_interaction. Non-numeric line without '*' after *NORMAL -> error (303). Indices of STIFFNESS_FACTOR/VISCOUS found on the *INTERACTION line are reused on the *NORMAL line (suspected bug, see questions).",
+   "notes": "Not a top-level keyword: only recognised inside read_interaction. Non-numeric line without '*' after *NORMAL -> error (309). Indices of STIFFNESS_FACTOR/VISCOUS found on the *INTERACTION line are reused on the *NORMAL line (suspected bug, see questions).",
    "options": [
     {
      "default": "PENALTY",
      "default_source": {
       "anchor": "c4475e686158cf7d",
       "file": "src/input/read_interaction_.f90",
-      "line": 538,
+      "line": 607,
       "routine": "read_normal_contact_setting"
      },
      "doc": "docs/reference/contacts/interaction.md",
@@ -8179,7 +8179,7 @@
      "source": {
       "anchor": "35d98342f240476b",
       "file": "src/input/read_interaction_.f90",
-      "line": 436,
+      "line": 505,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "name",
@@ -8195,7 +8195,7 @@
      "default_source": {
       "anchor": "55e3216d0718eeb8",
       "file": "src/input/read_interaction_.f90",
-      "line": 74,
+      "line": 78,
       "routine": "read_interaction"
      },
      "doc": null,
@@ -8206,7 +8206,7 @@
      "source": {
       "anchor": "d789d5a892132c1b",
       "file": "src/input/read_interaction_.f90",
-      "line": 441,
+      "line": 510,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -8217,18 +8217,18 @@
      "default_source": {
       "anchor": "dc7da87d3108fde9",
       "file": "src/input/read_interaction_.f90",
-      "line": 78,
+      "line": 82,
       "routine": "read_interaction"
      },
      "doc": null,
      "match": "substring 'USER'",
      "name": "USER",
-     "notes": "Runs user_contact_properties.sh/.bat or requires user_contact_properties.so/.dll in cwd (454-485). Only allowed together with *FRICTION (contact_models.f90:274-278). Substring match: any token containing 'USER' (also a NAME value!) sets it.",
+     "notes": "Runs user_contact_properties.sh/.bat or requires user_contact_properties.so/.dll in cwd (523-554). Only allowed together with *FRICTION (contact_models.f90:274-278). Substring match: any token containing 'USER' (also a NAME value!) sets it.",
      "required": false,
      "source": {
       "anchor": "26f41842b9c76ab0",
       "file": "src/input/read_interaction_.f90",
-      "line": 446,
+      "line": 515,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -8239,7 +8239,7 @@
      "default_source": {
       "anchor": "ff90011e2471caee",
       "file": "src/input/read_interaction_.f90",
-      "line": 83,
+      "line": 87,
       "routine": "read_interaction"
      },
      "doc": null,
@@ -8250,7 +8250,7 @@
      "source": {
       "anchor": "d39da3507e54bdff",
       "file": "src/input/read_interaction_.f90",
-      "line": 554,
+      "line": 623,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "real",
@@ -8261,7 +8261,7 @@
      "default_source": {
       "anchor": "9142512e8c375173",
       "file": "src/input/read_interaction_.f90",
-      "line": 84,
+      "line": 88,
       "routine": "read_interaction"
      },
      "doc": null,
@@ -8272,7 +8272,7 @@
      "source": {
       "anchor": "2897e90cda558cae",
       "file": "src/input/read_interaction_.f90",
-      "line": 492,
+      "line": 561,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -8283,7 +8283,7 @@
      "default_source": {
       "anchor": "36d1e85fc7ecb4f8",
       "file": "src/input/read_interaction_.f90",
-      "line": 502,
+      "line": 571,
       "routine": "read_normal_contact_setting"
      },
      "doc": null,
@@ -8294,7 +8294,7 @@
      "source": {
       "anchor": "ffca0e8ac8061266",
       "file": "src/input/read_interaction_.f90",
-      "line": 562,
+      "line": 631,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "real",
@@ -8305,18 +8305,18 @@
      "default_source": {
       "anchor": "61bddb6556701d9f",
       "file": "src/input/read_interaction_.f90",
-      "line": 87,
+      "line": 91,
       "routine": "read_interaction"
      },
      "doc": null,
      "match": "substring 'WATER-FILLEDGAP' or 'WATERFILLEDGAP'",
      "name": "WATER-FILLEDGAP",
-     "notes": "Requires MECHANICAL=PENALTY (547-551); contact pair must be element mortar/NTN and friction COULOMB/MOHR-COULOMB/MC or none (read_contact_pairing_.f90:211-227).",
+     "notes": "Requires MECHANICAL=PENALTY (616-620); contact pair must be element mortar/NTN and friction COULOMB/MOHR-COULOMB/MC or none (read_contact_pairing_.f90:211-227).",
      "required": false,
      "source": {
       "anchor": "488158f487c9e64e",
       "file": "src/input/read_interaction_.f90",
-      "line": 508,
+      "line": 577,
       "routine": "read_normal_contact_setting"
      },
      "value_type": "flag",
@@ -13125,7 +13125,7 @@
      },
      "name": "MC",
      "nmatvar": 3,
-     "notes": "Alias of MOHR-COULOMB (contact_models.f90:737, 1405-1408).",
+     "notes": "Alias of MOHR-COULOMB (contact_models.f90:737, 1405-1408). Softening (uncommitted numgeo-src of 06.11.2026): with 5 or 6 values in the data line tan_phi_r and u_r follow c (positions 5, 6 with eps_T); friction and dilatancy decrease linearly with the accumulated plastic slip to tan_phi_r and 0 at u_r; nprops 4 + 2, nmatvar 5 (contact_library.f90:1957-1958, contact_models.f90:747-753,1461-1481); same option in all interactions of merged IPS pairs (contact_.f90:1479-1494).",
      "nprops": 4,
      "parameters": [
       {
@@ -13151,6 +13151,18 @@
        "name": "c",
        "pos": 4,
        "unit": "F/L^2"
+      },
+      {
+       "meaning": "tan of residual friction angle (optional, softening)",
+       "name": "tan_phi_r",
+       "pos": 5,
+       "unit": "-"
+      },
+      {
+       "meaning": "plastic slip up to the residual state (optional, with tan_phi_r)",
+       "name": "u_r",
+       "pos": 6,
+       "unit": "L"
       }
      ],
      "public": true,
@@ -13166,7 +13178,7 @@
      },
      "name": "MOHR-COULOMB",
      "nmatvar": 3,
-     "notes": "",
+     "notes": "Softening (uncommitted numgeo-src of 06.11.2026): with 5 or 6 values in the data line tan_phi_r and u_r follow c (positions 5, 6 with eps_T); friction and dilatancy decrease linearly with the accumulated plastic slip to tan_phi_r and 0 at u_r; nprops 4 + 2, nmatvar 5 (contact_library.f90:1957-1958, contact_models.f90:747-753,1461-1481); same option in all interactions of merged IPS pairs (contact_.f90:1479-1494).",
      "nprops": 4,
      "parameters": [
       {
@@ -13188,6 +13200,16 @@
        "name": "c",
        "pos": 4,
        "unit": "F/L^2"
+      },
+      {
+       "name": "tan_phi_r",
+       "pos": 5,
+       "unit": "-"
+      },
+      {
+       "name": "u_r",
+       "pos": 6,
+       "unit": "L"
       }
      ],
      "public": true,
@@ -15474,10 +15496,10 @@
     "application_time": "beginning of the step: model_change_material and model_change_elements_topology before the BCs are initialised (src/main.f90:428-434), model_change_elements_state after a possible restart read (src/main.f90:526-535); model_change_friction after model_change_material, also for the skipped steps of a restart (numgeo-src 60fca8b5: src/main.f90:320,434)",
     "keyword": "*MODELCHANGE",
     "options": {
-     "ADD": "data lines with element set names; POSITION=DESIGN (default) | DEFORMED; src/input/read_model_change_.f90:221-332",
-     "FRICTION": "data lines 'interaction, values of the *Friction data line'; src/input/read_model_change_.f90:136-220",
-     "MATERIAL": "data lines 'elset, material' (narg==2); src/input/read_model_change_.f90:82-132",
-     "REMOVE": "data lines with element set names; src/input/read_model_change_.f90:221-332"
+     "ADD": "data lines with element set names; POSITION=DESIGN (default) | DEFORMED; src/input/read_model_change_.f90:232-343",
+     "FRICTION": "data lines 'interaction, values of the *Friction data line'; src/input/read_model_change_.f90:139-231; Mohr-Coulomb with softening also tan(delta_r), u_r (uncommitted numgeo-src of 06.11.2026)",
+     "MATERIAL": "data lines 'elset, material' (narg==2); src/input/read_model_change_.f90:85-135",
+     "REMOVE": "data lines with element set names; src/input/read_model_change_.f90:232-343"
     },
     "semantics": [
      {
@@ -15532,8 +15554,8 @@
      },
      {
       "item": "friction change",
-      "source": "src/fem/fem_global_model_change_friction_.f90:38-70 (numgeo-src 60fca8b5)",
-      "text": "contact%interaction%props replaced by the values of the data line at the beginning of the step; kept in the following steps; contact state (status, stresses, state variables) untouched; Coulomb with tan(delta) = c = 0 gives the tractions and tangent of frictionless contact"
+      "source": "src/fem/fem_global_model_change_friction_.f90:43-76 (numgeo-src 60fca8b5, softening: uncommitted numgeo-src of 06.11.2026)",
+      "text": "contact%interaction%props replaced by the values of the data line at the beginning of the step; kept in the following steps; contact state (status, stresses, state variables) untouched; Coulomb with tan(delta) = c = 0 gives the tractions and tangent of frictionless contact; Mohr-Coulomb with softening: the step of the change is stored (friction_change_step, fem_global_model_change_friction_.f90:60) and the accumulated plastic slip of the contact points is reset in that step (mohr_coulomb_friction); the plastic normal displacement (dilation) is kept"
      }
     ]
    },
@@ -53738,7 +53760,7 @@
      "condition": "USER options of *MATERIAL, *DLOAD, *AMPLITUDE, *INTERACTION, *BOUNDARY (step), *INITIAL CONDITIONS",
      "direction": "execute",
      "form": "shell script",
-     "notes": "'chmod +x user_x.sh' then './user_x.sh' via execute_command_line (also read_dload_.f90:194-197, read_amplitude_.f90:185-188, read_interaction_.f90:462-465, read_step_.f90:1350-1353, read_initial_condition_.f90:402-405, 632-635)",
+     "notes": "'chmod +x user_x.sh' then './user_x.sh' via execute_command_line (also read_dload_.f90:194-197, read_amplitude_.f90:185-188, read_interaction_.f90:531-534, read_step_.f90:1350-1353, read_initial_condition_.f90:402-405, 632-635)",
      "pattern": "user_<routine>.sh (Linux) / user_<routine>.bat (Windows) in cwd",
      "phase": "input",
      "source": {
