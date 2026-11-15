@@ -20,6 +20,10 @@
 #                           Claude Opus 5.5)
 # 07.11.2026, J. Machacek - Mohr-Coulomb friction with softening: NG-CONT-110, NG-CONT-125, NG-CONT-126 and
 #                           NG-CONT-127 (uncommitted numgeo-src of 06.11.2026)
+# 13.11.2026, J. Machacek - *Reduction, arc-length (NG-STEP-132, NG-STEP-133); embedded reduction (NG-CONT-117 to 120)
+# 14.11.2026, J. Machacek - Line numbers of arc_length_.f90 in NG-STEP-133 (uncommitted numgeo-src of 14.11.2026)
+# 15.11.2026, J. Machacek - Pressure HPi / HP (NG-LOAD-115), water-filled gap also with IPS (NG-CONT-128,
+#                           NG-CONT-129), *PFEM remeshing (NG-STEP-134)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Rules on numgeo's behaviour in particular cases: input that numgeo rejects, ignores, clamps or reads
 differently than the text suggests. Every rule names the solver source it mirrors (``source``).
@@ -56,8 +60,10 @@ from pynumgeo.io.material_points import (
     assign_materials,
     read_material_points,
 )
+from pynumgeo.io.numbers import parse_real
 from pynumgeo.validation.engine import Context, Finding, rule
 from pynumgeo.validation.rules.keywords import (
+    arc_length_reduction,
     display,
     is_int_token,
     is_real_token,
@@ -1794,6 +1800,222 @@ def reduction_inc(ctx: Context) -> Iterator[Finding]:
             )
 
 
+# Options of *Reduction, arc-length: (integer, smallest value or None for > 0, requirement as numgeo states it).
+_ARC_OPTIONS: dict[str, tuple[bool, int | None, str]] = {
+    "MAX-DISPLACEMENT": (False, None, "a positive number"),
+    "PLATEAU-TOLERANCE": (False, None, "a positive number"),
+    "PLATEAU-INCREMENTS": (True, 2, "an integer of at least 2"),
+    "ARC-INCREMENTS": (True, 1, "a positive integer"),
+    "PERTURBATION": (False, None, "a positive number"),
+}
+
+
+@rule(
+    "NG-STEP-132",
+    "error",
+    "*Reduction, arc-length takes max-displacement=, plateau-tolerance=, plateau-increments=, arc-increments= and "
+    "perturbation= with valid values",
+    source="src/input/read_step_.f90:3909-4006 (read_reduction_options, uncommitted numgeo-src of 13.11.2026)",
+)
+def reduction_arc_length_options(ctx: Context) -> Iterator[Finding]:
+    # without the option arc-length numgeo does not read the options of *Reduction (NG-KW-011)
+    for st in ctx.deck.steps:
+        kw = st.procedure
+        if not arc_length_reduction(kw):
+            continue
+        where = f"step {st.name}: *Reduction, arc-length"
+        for k, v in kw.options:
+            if k == "ARC-LENGTH" and v is None:
+                continue
+            name = k.lower()
+            value = "" if v is None else _key(v)
+            if not value:
+                yield f"{where}: the option {name} needs a value ({name}=...); numgeo stops", _sloc(st, kw)
+                continue
+            spec = _ARC_OPTIONS.get(k)
+            if spec is None:
+                yield (
+                    f"{where}: unknown option {name}={v} (options: "
+                    f"{', '.join(o.lower() + '=' for o in _ARC_OPTIONS)}); numgeo stops",
+                    _sloc(st, kw),
+                )
+                continue
+            integer, least, text = spec
+            if integer:
+                # numgeo accepts digits only (no sign, no decimal point or exponent)
+                ok = re.fullmatch(r"[0-9]+", value) is not None and int(value) >= (least or 1)
+            else:
+                ok = is_real_token(value) and parse_real(value) > 0.0
+            if not ok:
+                yield f"{where}: {name}={v} must be {text}; numgeo stops", _sloc(st, kw)
+
+
+def _arc_length_solver(kw: Keyword | None, nelems: int) -> tuple[str, bool]:
+    """Solver name and iterative strategy (reuse of the factorization) of a step as numgeo sets them: Pardiso without
+    *Solver, matching by substring in numgeo's order, an unknown name keeps Pardiso, SIMPLE becomes Pardiso for more
+    than 10 elements (src/input/read_step_.f90:683-1311, read_direct_solver_options :4060-4066; uncommitted
+    numgeo-src of 13.11.2026)."""
+    if kw is None:
+        return "PARDISO", False
+    key = _solver_key(kw)
+    tests: tuple[tuple[str, bool], ...] = (
+        ("NONE", "NONE" in key),
+        ("SIMPLE", "SIMPLE" in key),
+        ("PARDISO", "PARDISO" in key),
+        ("MUMPS", "MUMPS" in key and "MUMPS-MPI" not in key),
+        ("CUDSS", key == "CUDSS"),
+        ("EXTERNAL", "EXTERNAL" in key),
+        ("LIS", "LIS" in key),
+        ("BICGSTAB", "BICGSTAB" in key),
+        ("GMRES", key == "GMRES"),
+        ("AMGCL", key == "AMGCL"),
+        ("FGMRES", "FGMRES" in key),
+    )
+    name = next((n for n, hit in tests if hit), "PARDISO")
+    if name == "SIMPLE" and nelems > 10:
+        name = "PARDISO"
+    iterative = False
+    if name in ("PARDISO", "MUMPS"):
+        for k, v in kw.options[1:]:
+            if v is None and k in ("DIRECT", "ITERATIVE"):
+                iterative = k == "ITERATIVE"
+    return name, iterative
+
+
+@rule(
+    "NG-STEP-133",
+    "error",
+    "*Reduction, arc-length needs Pardiso or MUMPS without iterative, no *Accelerator, type=anderson and no NOCUTBACK",
+    source="src/fem/arc_length_.f90:167-179,196-208 (arc_length_initialize, numgeo-src 3ece972)",
+)
+def reduction_arc_length_setup(ctx: Context) -> Iterator[Finding]:
+    for st in ctx.deck.steps:
+        if not arc_length_reduction(st.procedure):
+            continue
+        where = f"step {st.name}: *Reduction, arc-length"
+        solvers = [k for k in st.items if k.keyword == "*SOLVER"]
+        solver = solvers[-1] if solvers else None
+        name, iterative = _arc_length_solver(solver, ctx.deck.mesh.element_count)
+        if name not in ("PARDISO", "MUMPS"):
+            yield (
+                f"{where} needs the direct solver Pardiso or MUMPS (*Solver, pardiso | mumps), the solver of the "
+                f"step is {name.lower()}; numgeo stops at the start of the step",
+                _sloc(st, solver),
+            )
+        elif iterative:
+            yield (
+                f"{where} needs the factors of the current matrix: *Solver, {name.lower()}, iterative (reuse of the "
+                "factorization) is not supported, use the direct strategy; numgeo stops at the start of the step",
+                _sloc(st, solver),
+            )
+        accelerators = [k for k in st.items if k.keyword in ("*ACCELERATOR", "*LINESEARCH")]
+        if accelerators and next((m for m in _ACCEL if m in _opt_text(accelerators[-1])), None) == "ANDERSON":
+            yield (
+                f"{where} cannot be combined with *Accelerator, type=anderson (use linear, relaxation, back-looking "
+                "or no accelerator); numgeo stops at the start of the step",
+                _sloc(st, accelerators[-1]),
+            )
+        if st.nocutback:
+            yield (
+                f"{where} rejects and repeats increments: nocutback in the *Step line is not supported; numgeo stops "
+                "at the start of the step",
+                _sloc(st),
+            )
+
+
+_PFEM_YES_NO = ("YES", "TRUE", "1", "NO", "FALSE", "0")
+_PFEM_ONCE = ("INTERVAL", "INCREMENTS", "QUALITY", "DROP", "LIMIT", "ELSET")
+
+
+def _pfem_int(v: str | None) -> int | None:
+    return int(v) if v is not None and is_int_token(v) else None
+
+
+@rule(
+    "NG-STEP-134",
+    "error",
+    "*PFEM remeshing needs a criterion, valid values, *PFEM write and a static, dynamic or transient step after the "
+    "first",
+    source="src/input/read_step_.f90:3423-3567,3585-3662 (read_pfem_remeshing_options, "
+    "check_pfem_remeshing_definition; numgeo-src ab1f76b)",
+)
+def pfem_remeshing(ctx: Context) -> Iterator[Finding]:
+    for i, st in enumerate(ctx.deck.steps):
+        cmds = [k for k in st.items if k.keyword == "*PFEMREMESHING"]
+        if not cmds:
+            continue
+        where = f"step {st.name}: *PFEM remeshing"
+        loc = _sloc(st, cmds[0])
+        opts: dict[str, str | None] = {}
+        for k in cmds:
+            if not k.options:
+                yield f"{where} has no option (interval=, increments=, quality=, ...)", _sloc(st, k)
+            for key, v in k.options:
+                key = _key(key)
+                if key in opts and key in _PFEM_ONCE:
+                    yield f"{where}: the option {key.lower()} is defined more than once", _sloc(st, k)
+                opts[key] = v
+        interval, min_interval, drop = _num(opts.get("INTERVAL")), _num(opts.get("MININTERVAL")), _num(opts.get("DROP"))
+        increments, min_increments = _pfem_int(opts.get("INCREMENTS")), _pfem_int(opts.get("MININCREMENTS"))
+        bad = [
+            name.lower()
+            for name, wrong in (
+                ("INTERVAL", "INTERVAL" in opts and (interval is None or interval <= 0.0)),
+                ("DROP", "DROP" in opts and (drop is None or drop <= 0.0)),
+                ("LIMIT", "LIMIT" in opts and _num(opts.get("LIMIT")) is None),
+                ("INCREMENTS", "INCREMENTS" in opts and (increments is None or increments <= 0)),
+                ("MININCREMENTS", "MININCREMENTS" in opts and (min_increments is None or min_increments < 1)),
+                ("MININTERVAL", "MININTERVAL" in opts and (min_interval is None or min_interval < 0.0)),
+                ("EXACT", "EXACT" in opts and _key(opts["EXACT"]) not in _PFEM_YES_NO),
+                ("ENDOFSTEP", "ENDOFSTEP" in opts and _key(opts["ENDOFSTEP"]) not in _PFEM_YES_NO),
+            )
+            if wrong
+        ]
+        if bad:
+            yield (
+                f"{where}: invalid value of {', '.join(bad)} (interval and drop are positive numbers, increments and "
+                "min increments positive integers, min interval is not negative, exact and end of step are yes or no)",
+                loc,
+            )
+        quality = _key(opts.get("QUALITY"))
+        if "QUALITY" in opts and quality not in ("SCALEDJACOBIAN", "EDGERATIO", "MINANGLE"):
+            yield (
+                f"{where}: unknown quality measure {opts['QUALITY']!r} (scaled jacobian, edge ratio or min angle)",
+                loc,
+            )
+        has_interval, has_increments = (interval or 0.0) > 0.0, (increments or 0) > 0
+        if not (has_interval or has_increments or quality):
+            yield f"{where} needs at least one criterion: interval=, increments= or quality=", loc
+        if quality and not ("DROP" in opts or "LIMIT" in opts):
+            yield f"{where}: quality={opts['QUALITY']} needs drop= and/or limit=", loc
+        if not quality and any(o in opts for o in ("DROP", "LIMIT", "ELSET")):
+            yield f"{where} defines drop, limit or elset without the criterion quality=", loc
+        if _key(opts.get("EXACT")) in ("YES", "TRUE", "1") and not has_interval:
+            yield f"{where} defines exact without the criterion interval=", loc
+        if has_interval and min_interval is not None and interval is not None and min_interval > interval:
+            yield f"{where} defines a min interval larger than the interval", loc
+        if has_increments and min_increments is not None and increments is not None and min_increments > increments:
+            yield f"{where} defines min increments larger than increments", loc
+        elset = opts.get("ELSET")
+        if elset:
+            try:
+                ctx.deck.mesh.elset(elset)
+            except KeyError:
+                yield f"{where} refers to the unknown element set {elset}", loc
+        if not any(k.keyword == "*PFEMWRITE" for k in st.items):
+            yield f"{where} requires *PFEM write in the same step", loc
+        if i == 0:
+            yield (
+                f"{where} is not possible in the first step (the step is continued after the remeshing with "
+                "*PFEM read, which requires a completed step before)",
+                loc,
+            )
+        if st.procedure.keyword not in ("*STATIC", "*DYNAMIC", "*TRANSIENT"):
+            yield f"{where} is only available for steps of type static, dynamic (implicit) and transient", loc
+        if any(k.keyword == "*MODELCHANGE" and ("REMOVE" in _opt_text(k) or "ADD" in _opt_text(k)) for k in st.items):
+            yield f"{where} cannot be combined with *Model change, remove/add in the same step", loc
+
+
 @rule(
     "NG-STEP-127",
     "error",
@@ -2449,6 +2671,43 @@ def penalty_value(ctx: Context) -> Iterator[Finding]:
         for c in kw.children:
             if c.keyword == "*PENALTY" and (_value_count(c) != 1 or not _values_numeric(c)):
                 yield f"step {st.name}: *Penalty needs exactly one value (*Penalty=<factor>)", _sloc(st, c)
+
+
+@rule(
+    "NG-LOAD-115",
+    "error",
+    "the pressures HPi and HP take coordinate, p1, c1, p2, c2",
+    source="src/input/read_dload_.f90:1099-1165 (read_hydrostatic_pressure, uncommitted numgeo-src of 15.11.2026)",
+)
+def linear_pressure(ctx: Context) -> Iterator[Finding]:
+    nd = _ndim(ctx)
+    for st, kw, r in _dload_rows(ctx.deck):
+        if len(r) < 2:
+            continue
+        label = _key(str(r[1]))
+        if not (re.fullmatch(r"HP[1-6]", label) if kw.keyword == "*DLOAD" else label == "HP"):
+            continue
+        where = f"step {st.name}: {display(ctx.catalogue, kw.keyword)} {r[1]}"
+        loc = _sloc(st, kw)
+        if any(_key(k).startswith(("USER", "SIDE")) for k, _ in kw.options):
+            yield f"{where} is not available as user load or with the option side", loc
+        if len(r) != 7:
+            yield f"{where} needs 7 fields (set, {r[1]}, coordinate, p1, c1, p2, c2), {len(r)} given ({_row(r)})", loc
+            continue
+        axis = {"X": 1, "Y": 2, "Z": 3, "1": 1, "2": 2, "3": 3}.get(_key(str(r[2])))
+        if axis is None:
+            yield (
+                f"{where}: the third field is the coordinate along which the pressure varies (x, y or z), "
+                f"read {str(r[2])!r}",
+                loc,
+            )
+        elif axis > nd:
+            yield f"{where} varies along the coordinate {r[2]}, which a 2D model does not have", loc
+        values = [_num(t) for t in r[3:7]]
+        if any(v is None for v in values):
+            yield f"{where}: p1, c1, p2 and c2 must be numbers ({_row(r[3:7])})", loc
+        elif values[1] == values[3]:
+            yield f"{where} needs two different coordinates c1 and c2 ({_row(r[3:7])})", loc
 
 
 # ============================================================================= initial conditions
@@ -3332,7 +3591,7 @@ def _embedded_method(kw: Keyword) -> str:
     "NG-CONT-117",
     "error",
     "*Embedded region needs at least one data line",
-    source="src/input/read_embedded_region_.f90:105,777 (read_embedded_region)",
+    source="src/input/read_embedded_region_.f90:107,785 (read_embedded_region)",
 )
 def embedded_lines(ctx: Context) -> Iterator[Finding]:
     for kw in _model_kws(ctx.deck, "*EMBEDDEDREGION"):
@@ -3351,7 +3610,7 @@ _EMB_VALUES = {"TYPE": ("CONSTANT", "MOHR-COULOMB"), "SECTION": ("BAR", "SHEET")
     "NG-CONT-118",
     "error",
     "*Embedded region, interaction: type and section values",
-    source="src/input/read_embedded_region_.f90:749-765 (read_embedded_region)",
+    source="src/input/read_embedded_region_.f90:753-769 (read_embedded_region)",
 )
 def embedded_values(ctx: Context) -> Iterator[Finding]:
     for kw in _model_kws(ctx.deck, "*EMBEDDEDREGION"):
@@ -3369,27 +3628,37 @@ def embedded_values(ctx: Context) -> Iterator[Finding]:
 @rule(
     "NG-CONT-119",
     "error",
-    "*Embedded region, interaction takes only type= and section=",
-    source="src/input/read_embedded_region_.f90:746-770 (read_embedded_region)",
+    "*Embedded region, interaction takes only type=, section= and reduction",
+    source="src/input/read_embedded_region_.f90:750-778 (read_embedded_region, uncommitted numgeo-src of 13.11.2026)",
 )
 def embedded_options(ctx: Context) -> Iterator[Finding]:
     for kw in _model_kws(ctx.deck, "*EMBEDDEDREGION"):
         if _embedded_method(kw) != "INTERACTION":
             continue
         for k, v in kw.options:
-            if k != "INTERACTION" and k not in _EMB_VALUES:
-                tok = k if v is None else f"{k}={v}"
+            if k == "INTERACTION" or k in _EMB_VALUES or (k == "REDUCTION" and v is None):
+                continue
+            tok = k if v is None else f"{k}={v}"
+            if "REDUCTION" in _key(tok):
+                # numgeo searches the word anywhere in the line (index(subcommand,'REDUCTION'))
                 yield (
-                    f"*Embedded region, interaction: unknown option {tok.lower()!r} (numgeo ignores it)",
+                    f"*Embedded region, interaction: option {tok.lower()!r} contains 'reduction', which numgeo reads "
+                    "as the option reduction (the capacity of the interface is divided by the factor of safety in "
+                    "*Reduction steps); write reduction without a value, or leave it out",
                     _loc(kw, "model *Embedded region"),
                 )
+                continue
+            yield (
+                f"*Embedded region, interaction: unknown option {tok.lower()!r} (numgeo ignores it)",
+                _loc(kw, "model *Embedded region"),
+            )
 
 
 @rule(
     "NG-CONT-120",
     "error",
     "*Embedded region needs a method numgeo reads",
-    source="src/input/read_embedded_region_.f90:881-886; src/database/embedded_region_ty_.f90:333-354",
+    source="src/input/read_embedded_region_.f90:890-895; src/database/embedded_region_ty_.f90:333-354",
 )
 def embedded_method(ctx: Context) -> Iterator[Finding]:
     for kw in _model_kws(ctx.deck, "*EMBEDDEDREGION"):
@@ -3660,6 +3929,76 @@ def merged_pairs_softening(ctx: Context) -> Iterator[Finding]:
                 f"{pairs[first][3]} also on the master faces of this pair (merged pairs: all with softening or all "
                 "without)",
                 _loc(kw, "model *Contact pair"),
+            )
+
+
+def _water_gap(kw: Keyword) -> Keyword | None:
+    """The line of an interaction (*Interaction or its *Normal) that carries the option water-filled gap."""
+    for k in (kw, *[c for c in kw.children if c.keyword == "*NORMAL"]):
+        text = _opt_text(k)
+        if "WATER-FILLEDGAP" in text or "WATERFILLEDGAP" in text:
+            return k
+    return None
+
+
+@rule(
+    "NG-CONT-128",
+    "error",
+    "the option water-filled gap needs mechanical=penalty",
+    source="src/input/read_interaction_.f90:615-620 (read_normal_contact_setting)",
+)
+def water_gap_penalty(ctx: Context) -> Iterator[Finding]:
+    for kw in _interactions(ctx.deck):
+        line = _water_gap(kw)
+        if line is None:
+            continue
+        models = [m for k, m in _normal_models(kw) if k is line]
+        if models and models[-1] != "PENALTY":
+            yield (
+                f"interaction {kw.option('NAME')}: the option water-filled gap requires mechanical=penalty, not "
+                f"{models[-1].lower()}",
+                _loc(line, "model *Interaction"),
+            )
+
+
+@rule(
+    "NG-CONT-129",
+    "error",
+    "water-filled gap: IPS (without doublepass), element mortar or NTN; frictionless, Coulomb or Mohr-Coulomb friction",
+    source="src/input/read_contact_pairing_.f90:210-235 (read_contact_pairing, uncommitted numgeo-src of 15.11.2026: "
+    "IPS, doublepass)",
+)
+def water_gap_pair(ctx: Context) -> Iterator[Finding]:
+    gaps = {_key(kw.option("NAME")): kw for kw in _interactions(ctx.deck) if _water_gap(kw) is not None}
+    if not gaps:
+        return
+    for pair in _model_kws(ctx.deck, "*CONTACTPAIR"):
+        text = _opt_text(pair)
+        name = next((v for k, v in pair.options if "INTERACTION" in k and v is not None), None)
+        kw = gaps.get(_key(name))
+        if kw is None:
+            continue
+        where = f"*Contact pair, interaction={name}"
+        loc = _loc(pair, "model *Contact pair")
+        ips = "DISCRETISATION=IPS" in text or "DISCRETISATION=INTEGRATION-POINT-SURFACE" in text
+        if "DISCRETISATION=SEGMENTMORTAR" in text:
+            yield (
+                f"{where}: the option water-filled gap of the interaction is available for the discretisations IPS, "
+                "element mortar and NTN only",
+                loc,
+            )
+        if ips and "DOUBLEPASS" in text:
+            yield (
+                f"{where}: the option water-filled gap of the interaction is not available with doublepass (each "
+                "pass would apply the pore water pressure)",
+                loc,
+            )
+        fr = _friction(kw)
+        if fr is not None and _friction_model(fr) not in ("COULOMB", "MOHR-COULOMB", "MC"):
+            yield (
+                f"{where}: the option water-filled gap of the interaction is available for frictionless contact and "
+                f"the friction models Coulomb and Mohr-Coulomb only, not {_friction_model(fr).lower()}",
+                loc,
             )
 
 

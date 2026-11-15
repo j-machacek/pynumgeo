@@ -35,7 +35,7 @@ Rules for agents: take every numgeo keyword, option, parameter order and default
 
 ## Catalogue (`ng.catalogue`)
 
-126 keywords, 198 element types, 48 constitutive models, 2053 solver message sites, generated from the numgeo source.
+128 keywords, 204 element types, 49 constitutive models, 2163 solver message sites, generated from the numgeo source.
 
 - `catalogue.describe(name: 'str', *, with_docs: 'bool' = True) -> 'str'`: Shortcut for ``load().describe(...)``.
 - `catalogue.keyword(name: 'str', context: 'str | None' = None) -> 'KeywordSpec'`: Shortcut for ``load().keyword(...)``.

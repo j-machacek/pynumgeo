@@ -18,6 +18,8 @@
 # 02.11.2026, J. Machacek - *Integration point of the field output takes no options (with help of Claude Opus 5.5)
 # 07.11.2026, J. Machacek - Line numbers of read_interaction_.f90 and read_model_change_.f90 (uncommitted
 #                           numgeo-src of 06.11.2026)
+# 13.11.2026, J. Machacek - *Reduction, arc-length: its options are checked by NG-STEP-132 (arc_length_reduction)
+# 15.11.2026, J. Machacek - Options of *PFEM remeshing (numgeo-src ab1f76b)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Catalogue-driven checks of every generic keyword of a deck.
 
@@ -66,6 +68,7 @@ from pynumgeo.validation.engine import Context, Finding, rule
 
 __all__ = [
     "Site",
+    "arc_length_reduction",
     "display",
     "is_int_token",
     "is_real_token",
@@ -373,6 +376,20 @@ def is_int_token(t: Token) -> bool:
     return isinstance(t, str) and re.fullmatch(r"\s*[+-]?\d+\s*", t) is not None
 
 
+def arc_length_reduction(kw: Keyword) -> bool:
+    """True if a ``*Reduction`` line switches on the arc-length control: an option that is exactly ``arc-length``.
+
+    Only then numgeo reads the other options of the line (src/input/read_step_.f90:3916-3929, read_reduction_options,
+    uncommitted numgeo-src of 13.11.2026).
+
+    >>> arc_length_reduction(Keyword.make("*Reduction", options=["arc-length", ("arc-increments", 50)]))
+    True
+    >>> arc_length_reduction(Keyword.make("*Reduction", options=[("arc-length", "yes"), "arclength"]))
+    False
+    """
+    return kw.keyword == "*REDUCTION" and any(k == "ARC-LENGTH" and v is None for k, v in kw.options)
+
+
 def _bare(name: str) -> str:
     """Catalogue option name without descriptors: ``'TYPE (method)'`` -> ``'TYPE'``."""
     return re.sub(r"\s*\(.*\)\s*$", "", name).strip().upper().replace(" ", "")
@@ -617,6 +634,8 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
     ("step", "*TIMEINTEGRATION"): _Policy("substring", "warning", "src/input/read_step_.f90:3049-3089"),
     ("step", "*RIGIDBODY"): _Policy("substring", "warning", "src/input/read_equation_.f90:276-310"),
     ("step", "*PFEMWRITE"): _Policy("substring", "warning", "src/input/read_step_.f90:2974-3040"),
+    # every option is option=value, compared exactly; unknown options stop numgeo
+    ("step", "*PFEMREMESHING"): _Policy("exact", "error", "src/input/read_step_.f90:3423-3544"),
     ("step", "*ROBIN"): _Policy("substring", "warning", "src/input/read_robin_.f90:60-80"),
     ("step", "*BOUNDARY-FLEXIBLE"): _Policy("substring", "warning", "src/input/read_flexible_bc_.f90:60-80"),
     ("step", "*CONNECTORELEMENT"): _Policy("ignored", "warning", "src/input/read_connector_element_.f90:72"),
@@ -694,6 +713,8 @@ def _option_findings(ctx: Context, severity: str) -> Iterator[Finding]:
         name = display(cat, s.kw.keyword)
         opts = _options_of(s, pol)
         if pol.match == "ignored":
+            if arc_length_reduction(s.kw):  # numgeo reads the options (NG-STEP-132)
+                continue
             for k, v in opts:
                 yield (
                     f"{s.where}: option {_token(k, v).lower()!r} of {name} is ignored by numgeo ({pol.source})",
@@ -820,6 +841,9 @@ _VALUES_ELSEWHERE = frozenset(
         "*PPP-STABILISATION",
     }
 )
+# Numeric option values read only in some cases, checked by a specific rule: the options of *Reduction are read
+# only together with arc-length (NG-STEP-132).
+_TYPES_ELSEWHERE = frozenset({"*REDUCTION"})
 # *Jacobian= values per preceding keyword (src/input/read_material_.f90:715-729, 794-807).
 _JACOBIAN = {
     "*HYDRAULIC": ("ANALYTICAL", "CHORD-SLOPE", "SMOOTHED", "TIME-STEP-CENTERED"),
@@ -885,7 +909,7 @@ def option_types(ctx: Context) -> Iterator[Finding]:
     cat = ctx.catalogue
     for s in sites(ctx.deck):
         spec = spec_for(cat, s.kw, s.ctx)
-        if spec is None:
+        if spec is None or spec.keyword in _TYPES_ELSEWHERE:
             continue
         name = display(cat, s.kw.keyword)
         for o in spec.options:

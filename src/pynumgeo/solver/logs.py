@@ -15,6 +15,8 @@
 # History
 # 26.10.2026, J. Machacek - Initial version
 # 27.10.2026, J. Machacek - Console lines without any message word are skipped before the patterns are searched
+# 13.11.2026, J. Machacek - .sta of a strength reduction with arc-length control: column Ctrl, summary of the step
+# 14.11.2026, J. Machacek - Line numbers of arc_length_.f90 (uncommitted numgeo-src of 14.11.2026)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Parsers for numgeo's report files (``.log``, ``.sta``, ``.msg``) and console output.
 
@@ -39,7 +41,10 @@ Only what decides the outcome of a run is parsed; the formats are those of the s
     transient critical adds two columns, :210; explicit dynamic ``(1x,I7,5x,g11.4,2x,g11.4,2x,g11.4,
     3x,g11.4)`` only every 60 s CPU, :208, :295), ``rejected (<reason>)`` on rejected attempts (:214-230),
     ``Step sucessfully terminated, Date: ...`` (sic, :139) and ``Total number of iterations  = <n>``
-    (:142).
+    (:142). A strength reduction step with arc-length control (``*Reduction, arc-length``, uncommitted
+    numgeo-src of 13.11.2026) adds the column ``Ctrl`` (``F`` or ``A``) before the rejection text (format6,
+    :248, :333) and writes a summary after the last increment that starts with ``Strength reduction with
+    arc-length control`` (src/fem/arc_length_.f90:1149-1222).
 
 Examples:
     >>> log = parse_log(["-> NUMGEO *START*", " ", "-> ERROR:", "   The following material was not defin-",
@@ -108,8 +113,12 @@ _STA_DISABLED = re.compile(
 _INC = re.compile(
     r"^\s+(?P<inc>\d+|\*+)\s+(?P<iters>\d+|\*+)\s+(?P<total>\S+)\s+(?P<step>\S+)\s+(?P<dt>\S+)"
     r"(?:\s+(?P<dtcrit>\S+)\s+(?P<elem>-?\d+|\*+))?"
+    r"(?:\s+(?P<ctrl>[FA]))?"
     r"(?:\s+rejected \((?P<reason>.*)\))?\s*$"
-)  # src/report/report_statistics.f90:207 (format2), :210 (format5)
+)  # src/report/report_statistics.f90:207 (format2), :210 (format5), :248 (format6, arc-length control)
+_ARC_SUMMARY = re.compile(
+    r"^\s{3}Strength reduction with arc-length control\s*$"
+)  # src/fem/arc_length_.f90:1150 (uncommitted numgeo-src of 14.11.2026)
 _INC_EXPLICIT = re.compile(
     r"^\s*(?P<inc>\d+|\*+)\s+(?P<cpu>\S+)\s+(?P<total>\S+)\s+(?P<step>\S+)\s+(?P<dt>\S+)\s*$"
 )  # src/report/report_statistics.f90:208 (format3)
@@ -196,6 +205,7 @@ class StaAttempt:
     dt: float | None
     rejected: str | None
     line: int
+    control: str | None = None  # column Ctrl of a strength reduction with arc-length control: "F" or "A"
 
 
 @dataclass
@@ -208,6 +218,9 @@ class StaStep:
     attempts: list[StaAttempt] = field(default_factory=list)
     terminated: bool = False
     iterations: int | None = None
+    #: lines of the summary of a strength reduction step with arc-length control (stripped, without the
+    #: dashed lines), starting with ``Strength reduction with arc-length control``; empty for other steps.
+    summary: list[str] = field(default_factory=list)
 
     def accepted(self, *, maxinc: int | None = None, nocutback: bool = False) -> list[StaAttempt]:
         """The accepted attempts.
@@ -219,7 +232,8 @@ class StaStep:
         accepted when the step terminated and either NOCUTBACK is set or its increment number does not
         exceed ``maxinc`` (a rejected attempt ends the increment loop only once ``iinc > maxinc``,
         main.f90:555). In a strength reduction step the FoS logic sets the counter to ``maxinc + 1``
-        to end the step (src/database/step_ty_.f90:345), so there only the label decides.
+        to end the step (src/database/step_ty_.f90:345), so there only the label decides (also with
+        arc-length control, column ``Ctrl``).
         """
         if self.type == "REDUCTION":
             return [a for a in self.attempts if a.rejected is None]
@@ -425,6 +439,9 @@ def parse_sta(lines: Iterable[str], name: str = "job.sta") -> StaInfo:
             cur.terminated = True
         elif (m := _STEP_ITERS.match(ln)) is not None:
             cur.iterations = int(m.group("n"))
+        elif not cur.terminated and (cur.summary or (cur.type == "REDUCTION" and _ARC_SUMMARY.match(ln))):
+            if ln.strip().strip("-"):
+                cur.summary.append(ln.strip())
         elif cur.type == "EXPLICIT DYNAMIC" and (m := _INC_EXPLICIT.match(ln)) is not None:
             cur.attempts.append(
                 StaAttempt(
@@ -447,6 +464,7 @@ def parse_sta(lines: Iterable[str], name: str = "job.sta") -> StaInfo:
                     dt=fortran_float(m.group("dt")),
                     rejected=m.group("reason"),
                     line=no,
+                    control=m.group("ctrl"),
                 )
             )
     return info

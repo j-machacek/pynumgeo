@@ -14,6 +14,7 @@
 #
 # History
 # 26.10.2026, J. Machacek - Initial version
+# 15.11.2026, J. Machacek - Only a line starting with *Include is an include (numgeo-src aa15af6)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Start numgeo for a deck or an input file and judge the outcome.
 
@@ -22,9 +23,9 @@ and output file into it (runtime inventory §3). What goes into the folder:
 
 * a :class:`~pynumgeo.deck.Deck` is written as ``<job>.inp`` with :func:`pynumgeo.io.writer.write`;
 * an input file is copied as ``<job>.inp``. numgeo resolves ``*Include`` names relative to its working
-  directory (input_create_internal_input_.f90:70-97), so includes are resolved relative to the folder
+  directory (input_create_internal_input_.f90:83-104), so includes are resolved relative to the folder
   of the original file and copied **into** ``<job>.inp`` textually, line by line, with numgeo's own rule
-  (a line whose upper-cased text before ``**`` contains ``INCLUDE`` is replaced by ``<name>.inp``, the
+  (a line whose upper-cased text before ``**`` starts with ``*INCLUDE`` is replaced by ``<name>.inp``, the
   text after the first ``=``). The input text is not otherwise changed (no reading and re-writing by
   pynumgeo). Nested includes are an error (numgeo does not nest them). If the input file already is
   ``<workdir>/<job>.inp`` it is used in place. Other files the input refers to (amplitude tables,
@@ -66,7 +67,7 @@ from typing import IO
 
 from pynumgeo._provenance import console_header
 from pynumgeo.deck.deck import Deck
-from pynumgeo.io.lexer import upper_ascii
+from pynumgeo.io.lexer import MAX_RAW_LINE, upper_ascii
 from pynumgeo.solver import executable as _exe
 from pynumgeo.solver.outcome import RunFacts, judge
 from pynumgeo.solver.result import RunResult
@@ -204,7 +205,7 @@ def prepare_input(src: Path, workdir: Path, job: str) -> list[str]:
 
     Raises:
         FileNotFoundError: an include file is missing (numgeo would stop with "INCLUDE file not found",
-            input_create_internal_input_.f90:74-79).
+            input_create_internal_input_.f90:86-91).
         ValueError: an include file contains an include (numgeo does not nest includes).
     """
     target = workdir / f"{job}.inp"
@@ -222,7 +223,7 @@ def prepare_input(src: Path, workdir: Path, job: str) -> list[str]:
         if not inc.is_file():
             raise FileNotFoundError(
                 f"{src}:{no}: INCLUDE file not found: {inc} (numgeo stops; every line whose text before '**' "
-                "contains INCLUDE is an include for numgeo, input_create_internal_input_.f90:71)"
+                "starts with *INCLUDE is an include for numgeo, input_create_internal_input_.f90:84)"
             )
         content = inc.read_bytes().decode("latin-1")
         for ino, iraw in enumerate(_split_keep(content), start=1):
@@ -244,16 +245,17 @@ def _split_keep(text: str) -> list[str]:
 
 
 def _include_name(raw: str) -> str | None:
-    """numgeo's include test: 256 characters, comment cut at ``**``, ``INCLUDE`` anywhere (case-insensitive).
+    """numgeo's include test: the first 1024 characters, comment cut at ``**``, the rest starts with ``*INCLUDE``
+    after leading blanks (case-insensitive).
 
-    The name is the text after the first ``=`` (src/input/input_create_internal_input_.f90:58-74), with
+    The name is the text after the first ``=`` (src/input/input_create_internal_input_.f90:76-86), with
     blanks removed at both ends like :func:`pynumgeo.io.lexer.preprocess` does.
     """
-    line = raw.rstrip("\r\n")[:256]
+    line = raw.rstrip("\r\n")[: MAX_RAW_LINE + 1]
     pos = line.find("**")
     if pos >= 0:
         line = line[:pos]
-    if not line.strip() or "INCLUDE" not in upper_ascii(line):
+    if not upper_ascii(line).lstrip(" ").startswith("*INCLUDE"):
         return None
     eq = line.find("=")
     return line[eq + 1 :].strip(" ") if eq >= 0 else ""

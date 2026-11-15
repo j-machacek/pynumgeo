@@ -14,6 +14,8 @@
 #
 # History
 # 26.10.2026, J. Machacek - Initial version
+# 13.11.2026, J. Machacek - Note of a strength reduction step with arc-length control (end of the step, FoS)
+# 14.11.2026, J. Machacek - Line numbers of arc_length_.f90 (uncommitted numgeo-src of 14.11.2026)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Judge the outcome of a numgeo run from its files.
 
@@ -566,6 +568,8 @@ def _step_report(index: int, b: logs.StaStep, ds: DeckStep | None, no_sta: bool)
         t_reached = None
         completed = b.terminated
         note = f"strength reduction: last FoS = {fos:g}" if fos is not None else "strength reduction"
+        if b.summary:
+            note = _arc_length_note(b.summary, fos)
     elif t_end is None:
         completed = b.terminated
         if completed:
@@ -598,6 +602,20 @@ def _step_report(index: int, b: logs.StaStep, ds: DeckStep | None, no_sta: bool)
         procedure=proc,
         note=note,
     )
+
+
+def _arc_length_note(summary: list[str], fos: float | None) -> str:
+    """Note of a strength reduction step with arc-length control: the end of the step and the factor of safety
+    as the summary of the ``.sta`` gives them (src/fem/arc_length_.f90:1149-1222, uncommitted numgeo-src of
+    14.11.2026), and the factor of safety of the last accepted increment."""
+    parts = [
+        " ".join(ln.split()).rstrip(".")
+        for ln in summary
+        if ln.startswith(("End of the step:", "Arc-length control was never engaged", "Factor of safety ("))
+    ]
+    if fos is not None:
+        parts.append(f"last FoS = {fos:g}")
+    return "strength reduction with arc-length control: " + "; ".join(p[:1].lower() + p[1:] for p in parts)
 
 
 # ----------------------------------------------------------------------------- files

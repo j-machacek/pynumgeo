@@ -16,6 +16,7 @@
 # 26.10.2026, J. Machacek - Initial version
 # 27.10.2026, J. Machacek - Names of interactions; words standing with blanks in a name
 # 07.11.2026, J. Machacek - Line numbers of read_interaction_.f90 (uncommitted numgeo-src of 06.11.2026)
+# 15.11.2026, J. Machacek - The word INCLUDE in a name is no longer read as an include (numgeo-src aa15af6)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Names that numgeo reads as options, and renaming them throughout a deck.
 
@@ -56,14 +57,15 @@ if TYPE_CHECKING:  # pragma: no cover
 
 __all__ = ["RISKY_WORDS", "named_objects", "rename", "risky_words", "safe_name", "safe_names"]
 
-#: Words that numgeo reads as options when they occur in a name, per kind of name. ``INCLUDE`` makes the
-#: whole line an include (input_create_internal_input_.f90:71) and is risky for every kind.
+#: Words that numgeo reads as options when they occur in a name, per kind of name. (Until the numgeo-src of
+#: 29.10.2026, commit aa15af6, the word ``INCLUDE`` anywhere in a line made the line an include; now only a line
+#: that starts with ``*Include`` is one.)
 RISKY_WORDS: dict[str, tuple[str, ...]] = {
-    "node set": ("GENERATE", "INTERNAL", "INSTANCE", "FIND", "BOUNDINGBOX", "CYLINDER", "INCLUDE"),
-    "element set": ("GENERATE", "INTERNAL", "INSTANCE", "FIND", "BOUNDINGBOX", "MATERIAL", "INCLUDE"),
-    "surface": ("TYPE", "INSTANCE", "INCLUDE"),
-    "material": ("ELSET", "PHASES", "INCLUDE"),
-    "amplitude": ("NAME", "TYPE", "VELOCITY", "ACCELERATION", "HYDROSTATIC", "INCREMENT", "INSTANT", "INCLUDE"),
+    "node set": ("GENERATE", "INTERNAL", "INSTANCE", "FIND", "BOUNDINGBOX", "CYLINDER"),
+    "element set": ("GENERATE", "INTERNAL", "INSTANCE", "FIND", "BOUNDINGBOX", "MATERIAL"),
+    "surface": ("TYPE", "INSTANCE"),
+    "material": ("ELSET", "PHASES"),
+    "amplitude": ("NAME", "TYPE", "VELOCITY", "ACCELERATION", "HYDROSTATIC", "INCREMENT", "INSTANT"),
     "interaction": (
         # *Interaction, name=... (read_normal_contact_setting)
         "USER",
@@ -89,9 +91,8 @@ RISKY_WORDS: dict[str, tuple[str, ...]] = {
         "CHECKDISP",
         "CHECKDIST",
         "REDUCTION",
-        "INCLUDE",
     ),
-    "step": ("INCLUDE",),
+    "step": (),
 }
 
 _SHORT = {
@@ -111,7 +112,6 @@ _SHORT = {
     "HYDROSTATIC": "Hydro",
     "INCREMENT": "Incr",
     "INSTANT": "Inst",
-    "INCLUDE": "Incl",
     "USER": "Usr",
     "NORMAL": "Nrml",
     "MECHANICAL": "Mech",

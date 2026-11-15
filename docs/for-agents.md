@@ -15,6 +15,9 @@ License: BSD-3-Clause, see LICENSE.
 
 History
 26.10.2026, J. Machacek - Initial version
+13.11.2026, J. Machacek - Factor of safety of a strength reduction with arc-length control
+14.11.2026, J. Machacek - fos_basis of the factor of safety with arc-length control
+15.11.2026, J. Machacek - Pressure HPi/HP and water-filled gap
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -98,3 +101,12 @@ file).
   keep them lower case and in the job folder.
 - **Build profile.** The default validates for the current numgeo developer build; for a public numgeo
   build use `ng.validate(deck, profile=ng.BuildProfile.public_build())`.
+- **Factor of safety with arc-length control.** With `*Reduction, arc-length` the factor of safety of the
+  step is `open_results(...).arc_length_summaries()[i].fos` (`fos_basis`: plateau at the end of the step,
+  first plateau or no plateau), not the factor of the last increment. The options of `*Reduction` are read only together
+  with `arc-length`.
+- **Pressure that varies along a coordinate.** `*Dsload` `HP` and `*Dload` `HPi` need seven fields: set, label,
+  coordinate (`x`, `y`, `z` or `1`, `2`, `3`), `p1`, `c1`, `p2`, `c2`. The pressure is zero outside `c1`..`c2`;
+  the coordinate is not optional (`NG-LOAD-115`).
+- **Water-filled gap.** `*Normal, mechanical=penalty, water-filled gap` works with the contact discretisations
+  `IPS`, `element mortar` and `NTN`, not with `doublepass` of an `IPS` pair (`NG-CONT-128`, `NG-CONT-129`).

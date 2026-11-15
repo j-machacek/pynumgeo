@@ -39,6 +39,7 @@ Heat flux and film exchange on u-T solids are defined using [`HFi` under `*Dload
      |[Tangential traction](#tangential-traction) |
      |[Traction in global direction](#traction-in-global-direction) |
      |[Water weight](#water-weight) |
+     |[Hydrostatic and triangular pressure](#hydrostatic-and-triangular-pressure) |
      |[Springs](#springs) |
      |[Compliant base boundary condition](#compliant-base-boundary-condition) |
      |[Drainage condition (seepage)](#drainage-seepage-condition)|
@@ -97,6 +98,65 @@ Distributed load acting perpendicular to the surface face compensating(positive)
 ```
 
 The magnitude of the load is calculated such that the (only positive) more water pressure acting on the surface is compensated.
+
+------
+
+## Hydrostatic and triangular pressure
+
+Pressure acting perpendicular to the faces of the surface which varies linearly along a global coordinate between two values of this coordinate and is zero outside of them. It serves for the water pressure on a face (linear with the depth) and for triangular or trapezoidal loads:
+
+```numgeo
+*Dsload, <option>
+<surface name>, HP, <coordinate>, <p1>, <c1>, <p2>, <c2>
+```
+
+$$
+p(c) =
+\begin{cases}
+p_1 + (p_2 - p_1)\,\dfrac{c - c_1}{c_2 - c_1} & \text{for } c \text{ between } c_1 \text{ and } c_2 \\[1ex]
+0 & \text{otherwise}
+\end{cases}
+$$
+
+- `<coordinate>`: global coordinate $c$ along which the pressure varies: `X`, `Y` or `Z` (`Z` in 3D models only). It has to be given; numgeo does not assume a direction.
+- `<p1>`, `<p2>`: pressure at the coordinates `<c1>` and `<c2>`. The sign is that of the [uniform pressure](#uniform-pressure): positive values act along the outward face normal, a pressure which presses on the face is negative.
+- `<c1>`, `<c2>`: two different values of the coordinate. They limit the load: a point outside of the interval between them carries no load, a point on one of them belongs to the interval.
+
+**Water pressure.** The coordinate is the vertical one (`Y` in 2D and axisymmetric models, `Z` in 3D models), with $p_1 = 0$ at the water level $c_1 = h_w$ and $p_2 = -\gamma_w\,(h_w - c_2)$ at the lowest loaded level $c_2$. Water level at 18 m, bottom of the pit at 0 m, $\gamma_w = 10$ kN/m³:
+
+```numgeo
+*Dsload, ramp
+wall_pit_side, HP, Y, 0.0, 18.0, -180.0, 0.0
+```
+
+Faces above 18 m and below 0 m carry no load, also if they belong to the surface.
+
+**Triangular and trapezoidal loads.** With a horizontal coordinate the load is triangular on a horizontal face, e.g. a surcharge which increases from zero at $x = 2$ m to 40 kPa at $x = 6$ m:
+
+```numgeo
+*Dsload, ramp
+ground, HP, X, 0.0, 2.0, -40.0, 6.0
+```
+
+Several definitions on the same faces add up. A trapezoid consists of a rising part, a constant part (`<p1>` = `<p2>`) and a falling part:
+
+```numgeo
+*Dsload, ramp
+ground, HP, X, 0.0, 2.0, -40.0, 6.0
+*Dsload, ramp
+ground, HP, X, -40.0, 6.0, -40.0, 10.0
+*Dsload, ramp
+ground, HP, X, -40.0, 10.0, 0.0, 14.0
+```
+
+* `instant`, `ramp` and `amplitude=<amplitude name>` scale the pressure. The options `user` and `side` are not available.
+* The load is available for the faces of 2D, axisymmetric and 3D continuum elements. It is not available for shell elements and for faces of elements cut by an [embedded shell](../embedded-regions/interaction-surface-plate.md) (`host=split`); numgeo stops with an error message.
+* The pressure is evaluated at the integration points of the face from their coordinate, with the integration rule of the uniform pressure. **The coordinates `<c1>` and `<c2>` should coincide with element boundaries.** The resultant force is then exact for plane faces, and so is its line of action for elements with full integration. A face which is crossed by one of the two coordinates is loaded at its integration points inside the interval only: with three elements over the loaded height the resultant deviated by 0.3 to 3.6 % in the verification, the more the larger the pressure at the crossed coordinate.
+* Faces with a single integration point (linear triangles and tetrahedra, linear quadrilaterals with reduced integration) carry the pressure of their centre as a uniform pressure: the resultant is exact in plane strain and 3D, its line of action and, in axisymmetric models, the resultant itself deviate by a term which decreases with the square of the element size (4 to 6 % with two to three elements over the loaded length).
+* In a step with `nlgeom` the pressure follows the coordinates of the face at the beginning of the increment.
+* The load does not depend on the pore water pressure of the model. For the free surface of two-phase elements whose pore water pressure is prescribed, the [water weight](#water-weight) (`SWP`) is the alternative.
+
+The same load on the faces `i` of an element set is defined with [`*Dload`](dload.md#hydrostatic-and-triangular-pressure) (label `HPi`).
 
 ------
 

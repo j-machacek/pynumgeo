@@ -14,26 +14,34 @@
 #
 # History
 # 26.10.2026, J. Machacek - Initial version
+# 15.11.2026, J. Machacek - Only a line starting with *Include is an include; lines that are too long stop
+#                           numgeo instead of being truncated (numgeo-src aa15af6, 23530eb)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Emulation of numgeo's preprocessing of an input file.
 
 numgeo first copies the input file into an internal file (``<job>_internal.inp``) and parses only that
 copy (``src/input/input_create_internal_input_.f90``). The rules, reproduced here one by one:
 
-1. Every physical line is read into 256 characters; the rest is lost (:49, :58).
-2. ``**`` starts a comment anywhere in a line; blank lines are dropped (:64-68, :134-153).
-3. A line whose upper-cased text contains ``INCLUDE`` is an include: the text after the first ``=``
-   (leading and trailing blanks removed) plus ``.inp`` is copied in; includes are not nested (:70-97).
-4. Lines are upper-cased (ASCII letters only) (:127).
-5. All blanks are deleted, except between the first and the last ``$`` of a line (:156-160).
-6. A comma at the end of a line is removed (:162-174).
-7. The line ``*AMPLITUDE,NAME=DEFAULT,TYPE=RAMP`` is prepended (:55).
+1. Every physical line is read into 1024 characters. A line that fills them and has no ``**`` in them stops
+   numgeo with an error (:70-74, :225-239). If the 1024th character is a blank, the characters behind it are
+   not read and numgeo has no message (quirk ``line-cut``).
+2.``**`` starts a comment anywhere in a line; blank lines are dropped (:76-81, :147-170).
+3. A line that starts with ``*INCLUDE`` (after leading blanks, any case) is an include: the text after the
+   first ``=`` (leading and trailing blanks removed) plus ``.inp`` is copied in; includes are not nested
+   (:83-111).
+4. Lines are upper-cased (ASCII letters only) (:144).
+5. All blanks are deleted, except between the first and the last ``$`` of a line (:172-177).
+6. A comma at the end of a line is removed (:179-186).
+7. A line that is then longer than 256 characters stops numgeo with an error (:188-194).
+8. The line ``*AMPLITUDE,NAME=DEFAULT,TYPE=RAMP`` is prepended (:67).
+
+The line numbers are those of the numgeo-src of 31.10.2026 (commits aa15af6 and 23530eb). Before, a line was
+an include if it contained the word INCLUDE anywhere, and lines were cut after 256 characters without a message.
 
 Every resulting :class:`Line` keeps the solver's text (``text``), the same text without upper-casing
 (``cased``, used to keep the user's spelling of names) and its source position. Deviations from what a
-careful user would expect (truncated lines, tabs, a line that is an include only because it contains the
-word INCLUDE, ...) are reported
-as :class:`Quirk` objects, never silently corrected.
+careful user would expect (lines that are too long, tabs, nested includes) are reported as :class:`Quirk`
+objects, never silently corrected.
 
 Examples:
     >>> pre = preprocess_text("*Step, name = Load 1  ** first step\\n*Static\\n0.1, 1., 1e-5, 1.,\\n")
@@ -53,6 +61,7 @@ from pathlib import Path
 __all__ = [
     "DEFAULT_AMPLITUDE_LINE",
     "MAX_LINE",
+    "MAX_RAW_LINE",
     "Line",
     "Preprocessed",
     "Quirk",
@@ -62,8 +71,10 @@ __all__ = [
     "upper_ascii",
 ]
 
-#: Characters numgeo reads per physical line (``character(len=256)``).
+#: Longest line of the internal input file (``len_line``): a line without blanks and comments.
 MAX_LINE = 256
+#: Longest physical line, blanks and comments included (``len_line_raw - 1``).
+MAX_RAW_LINE = 1023
 #: Line that numgeo prepends to every internal input file.
 DEFAULT_AMPLITUDE_LINE = "*AMPLITUDE,NAME=DEFAULT,TYPE=RAMP"
 
@@ -98,7 +109,7 @@ class Line:
         text: upper-cased text with blanks removed (what the solver parses).
         cased: the same text without upper-casing (same length as ``text``).
         pos: source position, ``None`` for the prepended default amplitude.
-        raw: the physical line as read (after truncation to 256 characters).
+        raw: the physical line as read (its first 1024 characters).
     """
 
     text: str
@@ -119,6 +130,7 @@ class Quirk:
     code: str
     message: str
     pos: SourcePos | None = None
+    severity: str = "warning"  # "error": numgeo stops
 
     def __str__(self) -> str:
         where = f"{self.pos}: " if self.pos else ""
@@ -187,29 +199,58 @@ def _drop_trailing_comma(s: str) -> str:
 
 
 def _internal(raw: str, pos: SourcePos | None, quirks: list[Quirk]) -> Line | None:
-    """``write_internal_input`` for one physical line (already truncated)."""
+    """``write_internal_input`` for one physical line (read into at most 1024 characters)."""
     cased = _strip_comment(raw)
     if cased.strip(" ") == "":
         return None
     if "\t" in cased:
         quirks.append(Quirk("tab", "tab characters are not blanks for numgeo and stay in the line", pos))
     cased = _drop_trailing_comma(_delete_blanks(cased))
+    if len(cased) > MAX_LINE:
+        quirks.append(
+            Quirk(
+                "line-too-long",
+                f"line has {len(cased)} characters without blanks and comments, the maximum is {MAX_LINE}; numgeo "
+                "stops. Split the data over several lines",
+                pos,
+                "error",
+            )
+        )
     return Line(text=upper_ascii(cased), cased=cased, pos=pos, raw=raw)
 
 
+def _is_include(body: str) -> bool:
+    """A line (without its comment) that starts with ``*INCLUDE`` after leading blanks, in any case."""
+    return upper_ascii(body).lstrip(" ").startswith("*INCLUDE")
+
+
 def _truncate(raw: str, pos: SourcePos, quirks: list[Quirk]) -> str:
-    if len(raw) > MAX_LINE:
-        # reported when the cut changes what numgeo reads: content lost, or a "**" cut to a single "*"
-        if _strip_comment(raw[:MAX_LINE]).rstrip(" ") != _strip_comment(raw).rstrip(" "):
-            quirks.append(
-                Quirk(
-                    "truncated",
-                    f"line has {len(raw)} characters; numgeo reads only the first {MAX_LINE}",
-                    pos,
-                )
+    """The first 1024 characters of a physical line (``check_raw_line_length``): numgeo stops if the line fills
+    them without a ``**``; with a ``**`` the rest is taken as part of the comment. If the 1024th character is a
+    blank, numgeo has no message: data behind it is not read."""
+    buffer = raw[: MAX_RAW_LINE + 1]
+    if "**" in buffer:
+        return buffer
+    if len(buffer.rstrip(" ")) > MAX_RAW_LINE:
+        quirks.append(
+            Quirk(
+                "line-too-long",
+                f"line has at least {MAX_RAW_LINE + 1} characters (blanks and comments included), the maximum is "
+                f"{MAX_RAW_LINE}; numgeo stops. Split the data over several lines",
+                pos,
+                "error",
             )
-        return raw[:MAX_LINE]
-    return raw
+        )
+    elif _strip_comment(raw[MAX_RAW_LINE + 1 :]).strip(" ") != "":
+        quirks.append(
+            Quirk(
+                "line-cut",
+                f"numgeo reads the first {MAX_RAW_LINE + 1} characters of a line only: the data behind them is "
+                "ignored without a message. Split the data over several lines",
+                pos,
+            )
+        )
+    return buffer
 
 
 def preprocess_text(
@@ -234,33 +275,22 @@ def preprocess_text(
         body = _strip_comment(raw)
         if body.strip(" ") == "":
             continue
-        if "INCLUDE" in upper_ascii(body):
+        if _is_include(body):
             eq = body.find("=")
             inc = body[eq + 1 :].strip(" ") if eq >= 0 else ""
-            word_only = not upper_ascii(body).replace(" ", "").startswith("*INCLUDE")
-            if word_only:
-                quirks.append(
-                    Quirk(
-                        "include-word",
-                        "the line contains the word INCLUDE, so numgeo reads it as an include of "
-                        f"{inc + '.inp'!r}, not as the line it is",
-                        pos,
-                    )
-                )
             if include_resolver is None:
                 raise FileNotFoundError(f"{pos}: include {inc!r} cannot be resolved without a file path")
             try:
                 shown, content = include_resolver(inc)
             except FileNotFoundError as e:
-                hint = " (the line is an include only because it contains the word INCLUDE)" if word_only else ""
-                raise FileNotFoundError(f"{pos}: {e}{hint}") from None
+                raise FileNotFoundError(f"{pos}: {e}") from None
             includes.append(Path(shown))
             for j, iraw0 in enumerate(_physical_lines(content), start=1):
                 ipos = SourcePos(shown, j)
                 iraw = _truncate(iraw0, ipos, quirks)
                 if iraw.strip(" ") == "":
                     continue
-                if "INCLUDE" in upper_ascii(_strip_comment(iraw)):
+                if _is_include(_strip_comment(iraw)):
                     quirks.append(
                         Quirk(
                             "nested-include",

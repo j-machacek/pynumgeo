@@ -15,6 +15,7 @@
 # History
 # 26.10.2026, J. Machacek - Initial version
 # 02.11.2026, J. Machacek - Frame.integration_points (dataset Integration points) (with help of Claude Opus 5.5)
+# 13.11.2026, J. Machacek - Results.arc_length_summaries (strength reduction with arc-length control)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """The results of one numgeo run: :func:`open_results`, :class:`Results`, :class:`Frame`.
 
@@ -54,7 +55,7 @@ from pynumgeo.results.printfiles import (
     list_print_files,
     read_print_file,
 )
-from pynumgeo.results.sta import StaRow, read_msg_steps, read_sta
+from pynumgeo.results.sta import ArcLengthSummary, StaRow, read_arc_length_summaries, read_msg_steps, read_sta
 from pynumgeo.results.vtk import VtuData, cell_blocks, read_pvd, read_vtm, read_vtu
 
 __all__ = ["IP_DATASET", "MODEL_BLOCK", "Frame", "Results", "open_results"]
@@ -279,6 +280,21 @@ class Results:
         if self.msg_path.is_file():
             numbers = [n for n, _ in read_msg_steps(self.msg_path)]
         return read_sta(self.sta_path, step_numbers=numbers)
+
+    def arc_length_summaries(self) -> list[ArcLengthSummary]:
+        """Strength reduction steps with arc-length control in ``<job>.sta`` (factor of safety, end of the step;
+        see :func:`pynumgeo.results.read_arc_length_summaries`), with step numbers from the ``.msg`` file when it
+        exists; ``[]`` without such a step.
+
+        Raises:
+            FileNotFoundError: no ``.sta`` file.
+        """
+        if not self.sta_path.is_file():
+            raise FileNotFoundError(f"{self.sta_path} not found")
+        numbers = None
+        if self.msg_path.is_file():
+            numbers = [n for n, _ in read_msg_steps(self.msg_path)]
+        return read_arc_length_summaries(self.sta_path, step_numbers=numbers)
 
     def frames(self) -> list[Frame]:
         """All VTK frames in the order of the ``.pvd``.

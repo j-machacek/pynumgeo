@@ -1,7 +1,7 @@
 # Interaction
 
 ```numgeo
-*Embedded region, interaction [, type=constant | type=Mohr-Coulomb] [, section=bar | section=sheet]
+*Embedded region, interaction [, type=constant | type=Mohr-Coulomb] [, section=bar | section=sheet] [, reduction]
 <guest element set>, <host element set>, <interface parameters>
 ```
 
@@ -13,12 +13,13 @@ For the underlying formulation refer to the [Theory Manual](../../theory/embedde
 
 ## Keyword options
 
-Both options are optional.
+All options are optional.
 
 | Option | Values | Default | Effect |
 |---|---|---:|---|
 | `type` | `constant`, `Mohr-Coulomb` | `constant` | Axial capacity of the interface: none or a constant skin traction `t_ult` (`constant`), or a capacity which follows from the stress of the host, $t_{cap} = A_s \cdot \max(c - \sigma_n\tan\varphi,\ 0)$ (`Mohr-Coulomb`). The type determines the entries of the data lines. |
 | `section` | `bar`, `sheet` | `bar` | What the guest elements represent, see [Sections](#sections). `bar`: a bar surrounded by soil. `sheet`: a layer with soil on its two faces, in two-dimensional models; requires `type=Mohr-Coulomb`. |
+| `reduction` | – | not reduced | In [`*Reduction`](../step/reduction.md) steps the capacity of the interface is divided by the current factor of safety: $c$ and $\tan\varphi$ (`type=Mohr-Coulomb`) or `t_ult` (`type=constant`), like the strength of the soil. The stiffnesses `k_t`, `k_n` are not changed. Without a capacity the option has no effect. See [Strength reduction of the interface](#strength-reduction-of-the-interface). |
 
 ---
 
@@ -125,6 +126,25 @@ Beam elements can be embedded as sheets as well, e.g. a thin wall or a stiff rei
 
 ---
 
+## Strength reduction of the interface
+
+With the option `reduction` the interface takes part in the strength reduction of a [`*Reduction`](../step/reduction.md) step: its capacity is divided by the current factor of safety $FoS$,
+
+$$
+t_{cap} = \frac{A_s \cdot \max(c - \sigma_n\tan\varphi,\ 0)}{FoS} \quad \text{or} \quad t_{cap} = \frac{t_{ult}}{FoS} ,
+$$
+
+which is the capacity with the reduced parameters $c/FoS$ and $\tan\varphi/FoS$. In the other steps the capacity is not reduced. Without the option the interface keeps its full strength in the reduction step, while the strength of the soil is reduced: the pull-out resistance of a geosynthetic layer or an anchor then grows relative to the soil. PLAXIS reduces the strength of interfaces together with the soil; for a comparison with PLAXIS define the interfaces of geosynthetics with `reduction`:
+
+```numgeo
+*Embedded region, interaction, type=Mohr-Coulomb, section=sheet, reduction
+Geogrid, Soil, 4.0e4, 1.0e6, 0.0, 28.0, 2.0
+```
+
+Under [arc-length control](../step/reduction.md#arc-length-control) the interface enters the pseudo-load $\partial\boldsymbol{r}/\partial FoS$ with the derivative of its capacity: at the integration points that slip, the shear traction $t$ changes with the factor of safety by $\partial t/\partial FoS = -t/FoS$ ([Theory Manual](../../theory/solution-method/strength-reduction.md#formulation)).
+
+---
+
 ## Construction stages, reset and restart
 
 Guest elements and host elements may be removed and activated with [`*Model change, remove/add`](../model-change/elements.md). The interface of a guest element acts as long as the guest element and the host elements to which its nodes are coupled are active:
@@ -181,4 +201,4 @@ A 2-node element (one integration point) reports the mean over its length, a 3-n
 
     - If the host elements on one side of a layer are removed, the capacity drops to that of one face at the beginning of the step; this change is not ramped over the step.
 
-    - In [`*Reduction`](../step/reduction.md) steps the strength parameters of the interface are not reduced.
+    - In [`*Reduction`](../step/reduction.md) steps the strength parameters of the interface are reduced only with the option `reduction`.

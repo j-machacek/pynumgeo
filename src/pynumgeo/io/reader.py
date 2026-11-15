@@ -17,6 +17,7 @@
 # 27.10.2026, J. Machacek - data_tokens, parse_fragment and include files given as texts (parse_text)
 # 03.11.2026, J. Machacek - *Assign material, from-file (NG-READ-SEC-004, NG-READ-SEC-005) (with help of
 #                           Claude Opus 5.5)
+# 15.11.2026, J. Machacek - Severity of the reader quirks (lines that are too long stop numgeo)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Read a numgeo input file into a :class:`~pynumgeo.deck.Deck`.
 
@@ -162,7 +163,7 @@ class _Reader:
     def __init__(self, pre: Preprocessed) -> None:
         self.pre = pre
         self.issues: list[Issue] = [
-            Issue("NG-READ-INPUT-" + q.code.upper(), "warning", q.message, str(q.pos) if q.pos else None)
+            Issue("NG-READ-INPUT-" + q.code.upper(), q.severity, q.message, str(q.pos) if q.pos else None)
             for q in pre.quirks
         ]
         self.deck = Deck()
@@ -1010,7 +1011,7 @@ def parse_fragment(text: str, context: str = "model", name: str = "<fragment>") 
         deck = r.run()
         return FragmentResult(keywords=list(deck.keywords), deck=deck, issues=r.issues)
     issues = [
-        Issue("NG-READ-INPUT-" + q.code.upper(), "warning", q.message, str(q.pos) if q.pos else None)
+        Issue("NG-READ-INPUT-" + q.code.upper(), q.severity, q.message, str(q.pos) if q.pos else None)
         for q in pre.quirks
     ]
     lines = [ln for ln in pre.lines if ln.pos is not None]  # without the prepended default amplitude

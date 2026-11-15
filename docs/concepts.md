@@ -17,6 +17,9 @@ History
 26.10.2026, J. Machacek - Initial version
 27.10.2026, J. Machacek - diff, text tokens, include files, comments, fragments; safe names of
                           interactions
+13.11.2026, J. Machacek - Results of a strength reduction with arc-length control
+14.11.2026, J. Machacek - Factor of safety of the plateau at the end of the step (fos_basis)
+15.11.2026, J. Machacek - Include lines and lines that are too long as numgeo reads them since 31.10.2026
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -54,10 +57,16 @@ True
 ## The reader reads like numgeo
 
 numgeo copies the input into an internal file before it parses it
-(`src/input/input_create_internal_input_.f90`). pynumgeo emulates every rule: lines are read into 256
-characters, `**` starts a comment, every line containing the word `INCLUDE` is an include, ASCII letters
+(`src/input/input_create_internal_input_.f90`). pynumgeo emulates every rule: lines are read into 1024
+characters, `**` starts a comment, a line that starts with `*Include` is an include, ASCII letters
 are upper-cased, blanks are removed (except between `$` signs), a trailing comma is dropped, and the
 line `*AMPLITUDE,NAME=DEFAULT,TYPE=RAMP` is prepended.
+
+numgeo stops if a line is too long, and the reader reports it as an error: a line that fills the 1024
+characters without a `**` (`NG-READ-INPUT-LINE-TOO-LONG`), and a line that has more than 256 characters
+after its blanks and its comment are removed (same id). One case has no message in numgeo: if the 1024th
+character of a line is a blank, the data behind it is not read. The reader warns
+(`NG-READ-INPUT-LINE-CUT`).
 
 numgeo finds options by searching for words inside the option text. A set named `FindFix` therefore
 switches on the `find` option, and numgeo reads the members as the coordinates of a point. The reader
@@ -168,6 +177,16 @@ the message inventory of the catalogue, so `RunResult.errors` names the source l
 numpy arrays), the print files (`print_series()`, one time series per set member) and the `.sta` rows.
 Column names of print files are built in numgeo's data order; where numgeo's header disagrees with the
 data, the reader says so in `issues`.
+
+A strength reduction step with arc-length control (`*Reduction, arc-length`) continues into the failure
+mechanism. Its `.sta` rows carry the control of each increment (`StaRow.control`: `F` factor of safety
+prescribed, `A` arc-length control), and `arc_length_summaries()` returns the summary numgeo writes at the
+end of the step (`ArcLengthSummary`): why the step ended, the increment and factor of safety at the switch
+to the arc-length control, the first plateau (`first_plateau_*`), the factor of safety of the step (`fos`,
+with `fos_min` and `fos_max`) and the peak. `fos_basis` says what `fos` is: the mean over the windows at
+the end of the step if they agree (`"plateau at the end"`, the normal case), else the first plateau
+(`"first plateau"`) or, without plateau, the mean over the windows at the end of the step (`"no plateau"`).
+The factor of safety of the step is `fos`, not the factor of the last increment.
 
 ## The catalogue
 

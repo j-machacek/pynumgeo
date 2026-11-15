@@ -23,6 +23,9 @@ History
 03.11.2026, J. Machacek - Version 2026.2.0.dev5 with *Assign material, from-file, binary-zlib, SF and IP
                           and *Integration point in the field output (with help of Claude Opus 5.5)
 07.11.2026, J. Machacek - Version 2026.2.0.dev6 with the softening of the Mohr-Coulomb friction
+13.11.2026, J. Machacek - *Reduction, arc-length and *Embedded region, interaction, reduction
+15.11.2026, J. Machacek - Pressure HPi/HP, water-filled gap with IPS, TANGENT and E_MAX of Hardening-Soil-MN,
+                          *PFEM remeshing, 3D u-J elements, include and line length rules of the reader
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -67,7 +70,7 @@ from `docs/` (`pip install -e ".[docs]"`, then `zensical serve`); `docs/llms.txt
 agents.
 
 pynumgeo `2026.2.0.dev6` is a pre-release (hence `pip install --pre`) built against the numgeo developer
-source `834564ed` (`numgeo2026-v2`), with `*Model change, friction` of `60fca8b5`, the Concrete model (`*Mechanical = Concrete`) of the numgeo developer source of 31.10.2026, `*Assign material, from-file` of `60135dc`, the VTK output `binary-zlib`, `SF` and `IP` of `7052b69` and the field output `*Integration point` of the numgeo developer source of 02.11.2026 and the softening of the Mohr-Coulomb friction (`*Friction, model=Mohr-Coulomb` and `*Model change, friction` with tan(δ_r), u_r) of the numgeo developer source of 06.11.2026; `2026.2.0` will be released together with numgeo2026-v2. Every input file it writes starts with a header that names the
+source `834564ed` (`numgeo2026-v2`), with `*Model change, friction` of `60fca8b5`, the Concrete model (`*Mechanical = Concrete`) of the numgeo developer source of 31.10.2026, `*Assign material, from-file` of `60135dc`, the VTK output `binary-zlib`, `SF` and `IP` of `7052b69` and the field output `*Integration point` of the numgeo developer source of 02.11.2026 and the softening of the Mohr-Coulomb friction (`*Friction, model=Mohr-Coulomb` and `*Model change, friction` with tan(δ_r), u_r) of the numgeo developer source of 06.11.2026, the arc-length control of the strength reduction (`*Reduction, arc-length`, its `.sta` output) and the strength reduction of embedded interfaces (`*Embedded region, interaction, ..., reduction`) of the numgeo developer source of 13.11.2026, and the pressure that varies linearly along a coordinate (`*Dload` `HPi`, `*Dsload` `HP`), the option `water-filled gap` of `*Normal` with the discretisation `IPS`, the optional parameters `TANGENT` and `E_MAX` and the automatic `Ei` of Hardening-Soil-MN(-Bricks), `*PFEM remeshing`, the 3D u-J elements and the rules for include lines and for lines that are too long of the numgeo developer source of 15.11.2026; `2026.2.0` will be released together with numgeo2026-v2. Every input file it writes starts with a header that names the
 pynumgeo version, its author and the numgeo build it was written for.
 
 Author: Jan Machacek. Licence: BSD-3-Clause (`LICENSE`). The numgeo reference texts bundled with the

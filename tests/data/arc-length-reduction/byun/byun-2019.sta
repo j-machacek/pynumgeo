@@ -1,0 +1,276 @@
+~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~
+|                                numgeo                                     |
+|                                                                           |
+|                      Jan Machacek, Patrick Staubach                       |
+|          numgeo is to be used only in accordance with the terms           |
+|     specified in the license file shipped together with this program      |
+|                                                                           |
+|                             www.numgeo.de                                 |
+|                                                                           |
+|                    Version: numgeo2026-v2 (Nov 10 2026)                   |
+|                                                                           |
+~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~
+ 
+-> NUMGEO *START*
+   Date: 14.11.2026   time: 00:05:48
+   Number of CPUs:           1
+ 
+ 
+   =========================================================================
+-> Step = STEP1
+   =========================================================================
+   Type = GEOSTATIC
+   -
+   Solver = PARDISO
+   The system of equations has 14114 equations with 14114 non-zero entries. 
+   The sparsity is 7.085163667280714E-005
+   -------------------------------------------------------------------------
+     Inc  Equil. Iters   Total time     Step time    Inc of time
+   -------------------------------------------------------------------------
+         1        1         1.000          1.000          1.000      
+   -------------------------------------------------------------------------
+   Step sucessfully terminated, Date: 14.11.2026, Time: 00:05: 49
+   Total number of iterations  = 1
+ 
+ 
+   =========================================================================
+-> Step = STEP2
+   =========================================================================
+   Type = STATIC
+   dt0 =   0.010000, t_end =   1.000000, dtmin =   0.001000, dtmax =   0.100000
+   -
+   Solver = PARDISO
+   The system of equations has 14114 equations with 308978 non-zero entries. 
+   The sparsity is 1.551055476540357E-003
+   -------------------------------------------------------------------------
+     Inc  Equil. Iters   Total time     Step time    Inc of time
+   -------------------------------------------------------------------------
+         1        1         1.010         0.1000E-01     0.1000E-01  
+         2        1         1.020         0.2000E-01     0.1000E-01  
+         3        1         1.032         0.3250E-01     0.1250E-01  
+        23       10         1.944         0.9445         0.9313E-01  
+        24        8         2.000          1.000         0.5555E-01  
+   -------------------------------------------------------------------------
+   Step sucessfully terminated, Date: 14.11.2026, Time: 00:05: 58
+   Total number of iterations  = 53
+ 
+ 
+   =========================================================================
+-> Step = STEP3
+   =========================================================================
+   Type = REDUCTION
+    FoS_0 =   0.950000, dFos_0 =   0.050000, dFos_max =   0.050000, dFos_min =   0.000100
+   -
+   Solver = PARDISO
+   -
+   Arc-length control of the factor of safety (*Reduction, arc-length): plateau-tolerance = 2.00E-03, plateau-increments = 5, arc-increments = 100, perturbation = 1.00E-03
+   Arc-length increments: Jacobian of the input factorized in every iteration, force tolerance of the step, at most 60 iterations
+   The system of equations has 14114 equations with 308978 non-zero entries. 
+   The sparsity is 1.551055476540357E-003
+   -------------------------------------------------------------------------
+     Inc  Equil. Iters          FoS          dFoS   Max. |u-u_0|    Ctrl
+   -------------------------------------------------------------------------
+         1        2         1.000         0.5000E-01     0.2750E-04    F  
+         2        2         1.050         0.5000E-01     0.1565E-03    F  
+         3        4         1.100         0.5000E-01     0.3174E-03    F  
+         4        2         1.150         0.5000E-01     0.5147E-03    F  
+         5        2         1.200         0.5000E-01     0.7616E-03    F  
+         6        2         1.250         0.5000E-01     0.1072E-02    F  
+         7        3         1.300         0.5000E-01     0.1440E-02    F  
+         8        3         1.350         0.5000E-01     0.1877E-02    F  
+         9        4         1.400         0.5000E-01     0.2436E-02    F  
+        10        4         1.450         0.5000E-01     0.2533E+08    F  rejected (divergence)
+        10        8         1.417         0.1667E-01     0.3841E+09    F  rejected (divergence)
+        10        2         1.405         0.4775E-02     0.2521E-02    A  
+        11        2         1.410         0.4994E-02     0.2685E-02    A  
+        12        4         1.408        -0.1583E-02     0.2863E-02    A  
+        13        2         1.406        -0.1932E-02     0.3065E-02    A  
+        14        6         1.402        -0.4239E-02     0.3288E-02    A  
+        15        2         1.413        -0.4468E-02     0.2265E-01    A  rejected (arc-length)
+        15        2         1.394        -0.2234E-02     0.2949E-02    A  rejected (arc-length)
+        15        0         1.401        -0.1117E-02     0.3288E-02    A  rejected (arc-length)
+        15        5         1.400        -0.2424E-02     0.3316E-02    A  
+        16        1         1.396        -0.3430E-02     0.3374E-02    A  
+        17        2         1.393        -0.3168E-02     0.3497E-02    A  
+        18        2         1.393        -0.2967E-03     0.3753E-02    A  
+        19        3         1.394         0.1103E-02     0.4040E-02    A  
+        20        1         1.381         0.1115E-02     0.6220E-02    A  rejected (arc-length)
+        20       60         1.394         0.5574E-03     0.4178E-02    A  rejected (niter > maxiter)
+        20       60         1.394         0.2787E-03     0.4115E-02    A  rejected (niter > maxiter)
+        20       60         1.394         0.1394E-03     0.4077E-02    A  rejected (niter > maxiter)
+        20        1         1.394         0.1339E-03     0.4059E-02    A  
+        21       60         1.394         0.2679E-03     0.4089E-02    A  rejected (niter > maxiter)
+        21        3         1.394        -0.1599E-03     0.4076E-02    A  
+        22       60         1.394        -0.3197E-03     0.4114E-02    A  rejected (niter > maxiter)
+        22       60         1.394        -0.1599E-03     0.4095E-02    A  rejected (niter > maxiter)
+        22        3         1.394        -0.8318E-04     0.4086E-02    A  
+        23       60         1.394        -0.1664E-03     0.4096E-02    A  rejected (niter > maxiter)
+        23       60         1.394        -0.8318E-04     0.4089E-02    A  rejected (niter > maxiter)
+        23       60         1.394        -0.4159E-04     0.4085E-02    A  rejected (niter > maxiter)
+        23       60         1.394        -0.2080E-04     0.4083E-02    A  rejected (niter > maxiter)
+        23        5         1.393        -0.4762E-03     0.4086E-02    A  
+        24        1         1.394         0.4542E-03     0.4089E-02    A  
+        25        2         1.393        -0.2587E-03     0.4095E-02    A  
+        26        1         1.393         0.6474E-04     0.4106E-02    A  
+        27        1         1.393        -0.2518E-04     0.4128E-02    A  
+        28        2         1.393        -0.4456E-03     0.4171E-02    A  
+        29        1         1.392        -0.1355E-02     0.4257E-02    A  
+        30        2         1.390        -0.1490E-02     0.4432E-02    A  
+        31        2         1.391         0.9990E-03     0.4761E-02    A  
+        32        2         1.393         0.2181E-02     0.5106E-02    A  
+        33        2         1.396         0.2219E-02     0.5474E-02    A  
+        34        2         1.397         0.1447E-02     0.5864E-02    A  
+        35        8         1.402         0.5366E-02     0.6302E-02    A  
+        36        4         1.401        -0.9363E-03     0.6706E-02    A  
+        37        3         1.404         0.2360E-02     0.7203E-02    A  
+        38        9         1.407         0.2453E-02     0.3370E-01    A  rejected (arc-length)
+        38        2         1.405         0.1595E-02     0.7466E-02    A  
+        39        0         1.409         0.3191E-02     0.7525E-02    A  rejected (arc-length)
+        39        1         1.356         0.1595E-02     0.7875E-01    A  rejected (arc-length)
+        39       60         1.406         0.7976E-03     0.7581E-02    A  rejected (niter > maxiter)
+        39        1         1.406         0.5884E-03     0.7535E-02    A  
+        40        1         1.427         0.1177E-02     0.8428E-02    A  rejected (arc-length)
+        40       60         1.406         0.5884E-03     0.7589E-02    A  rejected (niter > maxiter)
+        40        1         1.406         0.3725E-03     0.7570E-02    A  
+        41       60         1.406         0.7451E-03     0.7629E-02    A  rejected (niter > maxiter)
+        41        8         1.407         0.6812E-03     0.7605E-02    A  
+        42        1         1.407         0.3518E-03     0.7637E-02    A  
+        43        5         1.407        -0.7857E-04     0.7698E-02    A  
+        44        3         1.407        -0.4407E-03     0.7820E-02    A  
+        45        3         1.405        -0.1481E-02     0.8080E-02    A  
+        46        4         1.406         0.1003E-02     0.8623E-02    A  
+        47        1         1.425         0.1144E-02     0.1962E-01    A  rejected (arc-length)
+        47        1         1.423         0.5720E-03     0.9849E-02    A  rejected (arc-length)
+        47        2         1.406        -0.4876E-03     0.8778E-02    A  
+        48        5         1.410         0.4258E-02     0.9084E-02    A  
+        49        3         1.416         0.5739E-02     0.9690E-02    A  
+        50       60         1.419         0.6594E-02     0.1040E-01    A  rejected (niter > maxiter)
+        50        2         1.418         0.1722E-02     0.1003E-01    A  
+        51        3         1.436         0.3445E-02     0.1279E-01    A  rejected (arc-length)
+        51        3         1.434         0.1722E-02     0.3791        A  rejected (arc-length)
+        51        2         1.419         0.1163E-02     0.1021E-01    A  
+        52        0         1.421         0.2327E-02     0.1018E-01    A  rejected (arc-length)
+        52        8         1.419         0.1163E-02     0.1021E-01    A  rejected (arc-length)
+        52        3         1.419         0.5817E-03     0.1022E-01    A  rejected (arc-length)
+        52       60         1.419         0.2909E-03     0.1025E-01    A  rejected (niter > maxiter)
+        52        5         1.419        -0.1064E-03     0.1023E-01    A  
+        53       60         1.418        -0.2128E-03     0.1027E-01    A  rejected (niter > maxiter)
+        53       60         1.419        -0.1064E-03     0.1025E-01    A  rejected (niter > maxiter)
+        53        4         1.419         0.9592E-04     0.1024E-01    A  
+        54       10         1.448         0.1918E-03     0.5916E-01    A  rejected (arc-length)
+        54       60         1.419         0.9592E-04     0.1024E-01    A  rejected (niter > maxiter)
+        54        7         1.408         0.4796E-04      1.119        A  rejected (arc-length)
+        54        6         1.419        -0.4645E-04     0.1024E-01    A  
+        55        1         1.419         0.2306E-03     0.1025E-01    A  
+        56        1         1.419         0.2462E-03     0.1026E-01    A  
+        57        2         1.419         0.2544E-03     0.1029E-01    A  
+        58        2         1.420         0.5549E-03     0.1034E-01    A  
+        59        2         1.421         0.1189E-02     0.1044E-01    A  
+        60        2         1.423         0.1757E-02     0.1063E-01    A  
+        61        3         1.424         0.1301E-02     0.1100E-01    A  
+        62        8         1.423        -0.1449E-02     0.1177E-01    A  
+        63        6         1.410        -0.1290E-01     0.1258E-01    A  
+        64        1         1.416        -0.1440E-01     0.1617E-01    A  rejected (arc-length)
+        64       23         1.422        -0.7199E-02     0.3721E-01    A  rejected (arc-length)
+        64        5         1.412         0.2014E-02     0.1278E-01    A  
+        65        4         1.411        -0.1163E-02     0.1320E-01    A  
+        66       12         1.412         0.1217E-02     0.1405E-01    A  
+        67        5         1.414         0.2419E-02     0.1494E-01    A  
+        68        3         1.415         0.5082E-03     0.1605E-01    A  
+        69        1         1.420         0.5290E-03     0.1012E-01    A  rejected (arc-length)
+        69        2         1.416         0.8784E-03     0.1664E-01    A  
+        70        3         1.416         0.7101E-03     0.1778E-01    A  
+        71        2         1.417         0.1320E-03     0.1904E-01    A  
+        72        1         1.419         0.1421E-03     0.6780E-01    A  rejected (arc-length)
+        72        0         1.417         0.7106E-04     0.1918E-01    A  rejected (arc-length)
+        72        7         1.413         0.3553E-04     0.6651        A  rejected (arc-length)
+        72        7         1.433         0.1777E-04     0.4195E-01    A  rejected (arc-length)
+        72        6         1.417         0.1915E-03     0.1913E-01    A  
+        73        2         1.417         0.8582E-04     0.1930E-01    A  
+        74        5         1.417         0.1288E-03     0.1965E-01    A  
+        75        0         1.417         0.2575E-03     0.1967E-01    A  rejected (arc-length)
+        75        1         1.439         0.1288E-03     0.3786E-01    A  rejected (arc-length)
+        75       16         1.418         0.7459E-03     0.1981E-01    A  
+        76        9         1.418        -0.3453E-04     0.1990E-01    A  
+        77       60         1.418        -0.3453E-04     0.1998E-01    A  rejected (niter > maxiter)
+        77       60         1.418        -0.1727E-04     0.1994E-01    A  rejected (niter > maxiter)
+        77       10         1.417        -0.1026E-02     0.1992E-01    A  
+        78        2         1.416        -0.9032E-03     0.1994E-01    A  
+        79        1         1.414        -0.1397E-02     0.1998E-01    A  
+        80        1         1.413        -0.1494E-02     0.2007E-01    A  
+        81        7         1.413         0.3759E-03     0.2025E-01    A  
+        82        2         1.415         0.3759E-03     0.6871E-01    A  rejected (arc-length)
+        82        7         1.415         0.2009E-02     0.2033E-01    A  
+        83        4         1.414        -0.1104E-02     0.2042E-01    A  
+        84        3         1.413        -0.1292E-02     0.2059E-01    A  
+        85        3         1.414         0.1572E-02     0.2096E-01    A  
+        86       60         1.419         0.3144E-02     0.2173E-01    A  rejected (niter > maxiter)
+        86       60         1.417         0.1572E-02     0.2134E-01    A  rejected (niter > maxiter)
+        86        2         1.416         0.1173E-02     0.2114E-01    A  
+        87       60         1.418         0.2346E-02     0.2154E-01    A  rejected (niter > maxiter)
+        87       60         1.416         0.1173E-02     0.2134E-01    A  rejected (niter > maxiter)
+        87       60         1.416         0.5866E-03     0.2124E-01    A  rejected (niter > maxiter)
+        87       60         1.416         0.2933E-03     0.2119E-01    A  rejected (niter > maxiter)
+        87        1         1.416         0.2888E-03     0.2117E-01    A  
+        88        3         1.416         0.1741E-03     0.2122E-01    A  
+        89       60         1.417         0.3483E-03     0.2133E-01    A  rejected (niter > maxiter)
+        89       60         1.417         0.1741E-03     0.2127E-01    A  rejected (niter > maxiter)
+        89        4         1.417         0.4393E-03     0.2124E-01    A  
+        90       60         1.417         0.8786E-03     0.2130E-01    A  rejected (niter > maxiter)
+        90        4         1.417         0.3352E-03     0.2127E-01    A  
+        91        9         1.416        -0.7574E-03     0.2133E-01    A  
+        92        2         1.415        -0.1002E-02     0.2138E-01    A  
+        93        3         1.413        -0.2207E-02     0.2149E-01    A  
+        94        3         1.411        -0.2414E-02     0.2171E-01    A  
+        95        4         1.407        -0.3997E-02     0.2216E-01    A  
+        96        5         1.396        -0.1022E-01     0.2307E-01    A  
+        97       10         1.388        -0.8096E-02     0.2470E-01    A  
+        98        1         1.379        -0.8096E-02     0.1865E-01    A  rejected (arc-length)
+        98       60         1.381        -0.4048E-02     0.2557E-01    A  rejected (niter > maxiter)
+        98        9         1.382        -0.6621E-02     0.2514E-01    A  
+        99        4         1.380        -0.6621E-02     0.2535E-01    A  rejected (arc-length)
+        99        3         1.380        -0.1836E-02     0.2536E-01    A  
+       100        1         1.372        -0.3673E-02     0.2414        A  rejected (arc-length)
+       100        1         1.372        -0.1836E-02     0.2347E-01    A  rejected (arc-length)
+       100       60         1.381        -0.9181E-03     0.2546E-01    A  rejected (niter > maxiter)
+       100        5         1.380        -0.1777E-03     0.2542E-01    A  
+       101        4         1.372        -0.3555E-03     0.8593E-01    A  rejected (arc-length)
+       101       60         1.379        -0.1777E-03     0.2547E-01    A  rejected (niter > maxiter)
+       101       13         1.380         0.6599E-03     0.2544E-01    A  
+       102        1         1.381         0.5997E-03     0.2546E-01    A  
+       103        2         1.382         0.1074E-02     0.2551E-01    A  
+       104        1         1.384         0.2016E-02     0.2560E-01    A  
+       105        3         1.388         0.4149E-02     0.2580E-01    A  
+       106        4         1.397         0.8635E-02     0.2619E-01    A  
+       107        7         1.398         0.1663E-02     0.2699E-01    A  
+       108        4         1.388         0.1663E-02     0.1947        A  rejected (arc-length)
+       108        9         1.422         0.8314E-03     0.4869E-01    A  rejected (arc-length)
+       108        1         1.400         0.4157E-03     0.2691E-01    A  rejected (arc-length)
+       108       60         1.397         0.2079E-03     0.2710E-01    A  rejected (niter > maxiter)
+       108        3         1.401         0.2180E-02     0.2704E-01    A  
+       109        2         1.404         0.3791E-02     0.2713E-01    A  
+   -------------------------------------------------------------------------
+   Strength reduction with arc-length control
+   End of the step: arc-increments = 100 arc-length increments accepted
+   Arc-length control engaged at increment 10 (last converged FoS   1.400000); 100 increments accepted and 68 rejected under arc-length control
+   FoS of the last accepted increment:        1.404331   (max. |u-u_0| =  2.7130E-02)
+   Displacement windows at the end of the step, (u/4,u/2] and (u/2,u], u = 2.7130E-02: mean  1.413374 (29 increments),  1.406570 (44 increments)
+   The windows at the end of the step do not agree within plateau-tolerance (or hold fewer than plateau-increments increments).
+   All 100 accepted arc-length increments: mean  1.405874, min  1.379564, max  1.424258
+   First plateau of the step: increment 96, u = 2.3070E-02, mean  1.413235  (min  1.396295, max  1.424258)
+   Factor of safety (first plateau, increment 96, u = 2.3070E-02; the windows at the end of the step do not agree):  1.413235  (min  1.396295, max  1.424258)
+   Peak FoS of the step:                     1.424258   (max. |u-u_0| =  1.0996E-02, increment 61)
+   Note: the peak exceeds the factor of safety by more than the plateau tolerance (softening-like response, e.g. non-associated flow).
+   Estimated FoS error |dFoS| of the last accepted iteration: 4.772E-07
+   Largest constraint error |b.(du-du_pred)|/|b|^2 of the accepted increments: 8.639E-13
+   -------------------------------------------------------------------------
+   Step sucessfully terminated, Date: 14.11.2026, Time: 00:16: 59
+   Total number of iterations  = 2509
+ 
+ 
+  =========================================================================
+-> Time Statistics
+  =========================================================================
+ 
+-> NUMGEO *END*
+   Date: 14.11.2026   time: 00:16:59

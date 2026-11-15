@@ -1,0 +1,85 @@
+~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~
+|                                numgeo                                     |
+|                                                                           |
+|                      Jan Machacek, Patrick Staubach                       |
+|          numgeo is to be used only in accordance with the terms           |
+|     specified in the license file shipped together with this program      |
+|                                                                           |
+|                             www.numgeo.de                                 |
+|                                                                           |
+|                    Version: numgeo2026-v2 (Nov 10 2026)                   |
+|                                                                           |
+~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~
+ 
+-> NUMGEO *START*
+   Date: 13.11.2026   time: 19:53:41
+   Number of CPUs:           1
+ 
+ 
+   =========================================================================
+-> Step = STEP1
+   =========================================================================
+   Type = STATIC
+   dt0 =   0.010000, t_end =   1.000000, dtmin =   0.001000, dtmax =   0.100000
+   -
+   Solver = MUMPS
+   The system of equations has 16526 equations with 362058 non-zero entries. 
+   The sparsity is 1.325692047952369E-003
+   -------------------------------------------------------------------------
+     Inc  Equil. Iters   Total time     Step time    Inc of time
+   -------------------------------------------------------------------------
+         1        1        0.1000E-01     0.1000E-01     0.1000E-01  
+         2        1        0.2000E-01     0.2000E-01     0.1000E-01  
+        24        5         1.000          1.000         0.7417E-01  
+   -------------------------------------------------------------------------
+   Step sucessfully terminated, Date: 13.11.2026, Time: 19:53: 58
+   Total number of iterations  = 61
+ 
+ 
+   MUMPS device: requested=CPU selected=CPU
+   MUMPS statistics: factorizations=85 gpu_factorizations=0 gpu_flops= 0.0000000000000000E+000 gpu_seconds= 0.0000000000000000E+000
+   =========================================================================
+-> Step = STEP2
+   =========================================================================
+   Type = REDUCTION
+    FoS_0 =   0.850000, dFos_0 =   0.050000, dFos_max =   0.050000, dFos_min =   0.000100
+   -
+   Solver = MUMPS
+   The system of equations has 16526 equations with 362058 non-zero entries. 
+   The sparsity is 1.325692047952369E-003
+   -------------------------------------------------------------------------
+     Inc  Equil. Iters          FoS          dFoS   Max. |u-u_0|
+   -------------------------------------------------------------------------
+         1        1        0.9000         0.5000E-01     0.2210E-03  
+         2        2        0.9500         0.5000E-01     0.2210E-03  
+         3        5         1.000         0.5000E-01     0.2026E-02  
+         4        7         1.050         0.5000E-01     0.2314E-01  
+         5        6         1.100         0.5000E-01     0.5786E-01  
+         6        6         1.150         0.5000E-01     0.1194      
+         7        6         1.200         0.5000E-01     0.2341      
+         8        5         1.250         0.5000E-01     0.4424E+07  rejected (divergence)
+         8        8         1.217         0.1667E-01     0.3704      
+         9        6         1.233         0.1667E-01     0.2974E+09  rejected (divergence)
+         9       18         1.222         0.5556E-02     0.1112E+08  rejected (divergence)
+         9        5         1.219         0.1852E-02     0.5259      
+        10        5         1.220         0.1852E-02      1.192      
+        11        6         1.224         0.3704E-02     0.5865E+09  rejected (divergence)
+        11        5         1.222         0.1235E-02     0.5785E+12  rejected (divergence)
+        11        4         1.221         0.4115E-03      1.611      
+        12        4         1.221         0.4115E-03      2.815      
+        13        7         1.222         0.8230E-03      32.59      
+        14        4         1.223         0.8230E-03     0.1810E+13  rejected (divergence)
+     10001       10         1.222         0.2743E-03     0.1124E+08  rejected (divergence)
+   -------------------------------------------------------------------------
+   Step sucessfully terminated, Date: 13.11.2026, Time: 19:54: 37
+   Total number of iterations  = 120
+ 
+ 
+   MUMPS device: requested=CPU selected=CPU
+   MUMPS statistics: factorizations=140 gpu_factorizations=0 gpu_flops= 0.0000000000000000E+000 gpu_seconds= 0.0000000000000000E+000
+  =========================================================================
+-> Time Statistics
+  =========================================================================
+ 
+-> NUMGEO *END*
+   Date: 13.11.2026   time: 19:54:37

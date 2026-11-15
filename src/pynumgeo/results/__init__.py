@@ -14,14 +14,17 @@
 #
 # History
 # 26.10.2026, J. Machacek - Initial version
+# 13.11.2026, J. Machacek - ArcLengthSummary, read_arc_length_summaries (strength reduction with arc-length control)
+# 14.11.2026, J. Machacek - FosBasis
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Readers for numgeo's result files (numpy and the standard library only).
 
 * :func:`open_results` -> :class:`Results` of one job: VTK frames (:meth:`Results.frames`), print output
-  (:meth:`Results.print_files`, :meth:`Results.print_series`), the status file (:meth:`Results.sta`).
+  (:meth:`Results.print_files`, :meth:`Results.print_series`), the status file (:meth:`Results.sta`,
+  :meth:`Results.arc_length_summaries`).
 * Single files: :func:`read_vtu`, :func:`read_vtm`, :func:`read_pvd` (:mod:`~pynumgeo.results.vtk`),
   :func:`read_print_file`, :func:`read_print_blocks` (:mod:`~pynumgeo.results.printfiles`),
-  :func:`read_sta`, :func:`read_msg_steps` (:mod:`~pynumgeo.results.sta`).
+  :func:`read_sta`, :func:`read_arc_length_summaries`, :func:`read_msg_steps` (:mod:`~pynumgeo.results.sta`).
 * :func:`voigt_to_tensor`: stresses/strains as tensors with explicit component order and shear.
 
 Values are returned as numgeo writes them: total time, Voigt components in the file's order, strains with
@@ -51,12 +54,21 @@ from pynumgeo.results.printfiles import (
     read_print_rows,
 )
 from pynumgeo.results.results import Frame, Results, open_results
-from pynumgeo.results.sta import StaRow, read_msg_steps, read_sta
+from pynumgeo.results.sta import (
+    ArcLengthSummary,
+    FosBasis,
+    StaRow,
+    read_arc_length_summaries,
+    read_msg_steps,
+    read_sta,
+)
 from pynumgeo.results.tensors import voigt_to_tensor
 from pynumgeo.results.vtk import DataArray, PvdEntry, VtmEntry, VtuData, read_pvd, read_vtm, read_vtu
 
 __all__ = [
+    "ArcLengthSummary",
     "DataArray",
+    "FosBasis",
     "Frame",
     "PrintFileInfo",
     "PrintFormatError",
@@ -69,6 +81,7 @@ __all__ = [
     "VtuData",
     "list_print_files",
     "open_results",
+    "read_arc_length_summaries",
     "read_msg_steps",
     "read_print_blocks",
     "read_print_file",

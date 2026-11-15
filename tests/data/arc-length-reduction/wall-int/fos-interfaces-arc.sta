@@ -1,0 +1,91 @@
+~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~
+|                                numgeo                                     |
+|                                                                           |
+|                      Jan Machacek, Patrick Staubach                       |
+|          numgeo is to be used only in accordance with the terms           |
+|     specified in the license file shipped together with this program      |
+|                                                                           |
+|                             www.numgeo.de                                 |
+|                                                                           |
+|                    Version: numgeo2026-v2 (Nov 10 2026)                   |
+|                                                                           |
+~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~
+ 
+-> NUMGEO *START*
+   Date: 14.11.2026   time: 00:07:05
+   Number of CPUs:           1
+ 
+ 
+   =========================================================================
+-> Step = REDUCTION
+   =========================================================================
+   Type = REDUCTION
+    FoS_0 =   0.990000, dFos_0 =   0.010000, dFos_max =   0.050000, dFos_min =   0.000100
+   -
+   Solver = MUMPS
+   -
+   Arc-length control of the factor of safety (*Reduction, arc-length): plateau-tolerance = 2.00E-03, plateau-increments = 5, arc-increments = 200, perturbation = 1.00E-03
+   Arc-length increments: Jacobian of the input factorized in every iteration, force tolerance of the step, at most 60 iterations
+   Note: contact interactions with *Contact options, reduction contribute nothing to the pseudo-load of the arc-length control (elements only). The equilibrium states are not affected; the iteration may need more steps.
+   Note: embedded interfaces with *Embedded region, interaction, reduction enter the pseudo-load of the arc-length control by the derivative of their capacity at slipping points.
+   The system of equations has 2540 equations with 90890 non-zero entries. 
+   The sparsity is 1.408797817595635E-002
+   -------------------------------------------------------------------------
+     Inc  Equil. Iters          FoS          dFoS   Max. |u-u_0|    Ctrl
+   -------------------------------------------------------------------------
+        26       10         2.130         0.5000E-01     0.3869        F  
+        27       19         2.180         0.5000E-01     0.6146E+05    F  rejected (divergence)
+        27      100         2.147         0.1667E-01     0.5138        F  rejected (niter > maxiter)
+        27        2         2.131         0.7390E-03     0.4134        A  
+        28        2         2.137         0.5853E-02     0.4430        A  
+       139       60         2.157        -0.1269E-02      8.292        A  rejected (niter > maxiter)
+       139        1         2.158        -0.6533E-03      8.272        A  
+       140       60         2.157        -0.1307E-02      8.312        A  rejected (niter > maxiter)
+       140       60         2.157        -0.6533E-03      8.292        A  rejected (niter > maxiter)
+       140       60         2.157        -0.3267E-03      8.282        A  rejected (niter > maxiter)
+       140        1         2.158        -0.1718E-03      8.277        A  
+       141       60         2.157        -0.3437E-03      8.287        A  rejected (niter > maxiter)
+       141       60         2.158        -0.1718E-03      8.282        A  rejected (niter > maxiter)
+       141        1         2.158        -0.8647E-04      8.280        A  
+       142       60         2.158        -0.1729E-03      8.285        A  rejected (niter > maxiter)
+       142       60         2.158        -0.8647E-04      8.282        A  rejected (niter > maxiter)
+       142       16         2.158        -0.4530E-04      8.281        A  
+       143       60         2.158        -0.2265E-04      8.281        A  rejected (niter > maxiter)
+       143       60         2.158        -0.1132E-04      8.281        A  rejected (niter > maxiter)
+       143        8         2.158         0.6296E-04      8.281        A  
+       144       60         2.158         0.6296E-04      8.281        A  rejected (niter > maxiter)
+       144       60         2.158         0.3148E-04      8.281        A  rejected (niter > maxiter)
+       144       60         2.158         0.1574E-04      8.281        A  rejected (niter > maxiter)
+       144       60         2.158         0.7870E-05      8.281        A  rejected (niter > maxiter)
+       144       60         2.158         0.3935E-05      8.281        A  rejected (niter > maxiter)
+       144       60         2.158         0.1968E-05      8.281        A  rejected (niter > maxiter)
+       144       60         2.158         0.9838E-06      8.281        A  rejected (niter > maxiter)
+       144       60         2.157         0.4919E-06      8.281        A  rejected (niter > maxiter)
+       144       60         2.157         0.2459E-06      8.281        A  rejected (niter > maxiter)
+      1001       60         2.157         0.1230E-06      8.281        A  rejected (niter > maxiter)
+   -------------------------------------------------------------------------
+   Strength reduction with arc-length control
+   End of the step: no convergence under arc-length control (10 consecutive rejections)
+   Arc-length control engaged at increment 27 (last converged FoS   2.130000); 117 increments accepted and 91 rejected under arc-length control
+   FoS of the last accepted increment:        2.157585   (max. |u-u_0| =  8.2810E+00)
+   Displacement windows at the end of the step, (u/4,u/2] and (u/2,u], u = 8.2810E+00: mean  2.194099 (13 increments),  2.180274 (80 increments)
+   The windows at the end of the step do not agree within plateau-tolerance (or hold fewer than plateau-increments increments).
+   All 117 accepted arc-length increments: mean  2.179323, min  2.130739, max  2.195840
+   First plateau of the step: increment 75, u = 5.3870E+00, mean  2.192122  (min  2.184246, max  2.195840)
+   Factor of safety (first plateau, increment 75, u = 5.3870E+00; the windows at the end of the step do not agree):  2.192122  (min  2.184246, max  2.195840)
+   Peak FoS of the step:                     2.195840   (max. |u-u_0| =  3.2959E+00, increment 58)
+   Estimated FoS error |dFoS| of the last accepted iteration: 4.716E-05
+   Largest constraint error |b.(du-du_pred)|/|b|^2 of the accepted increments: 1.293E-13
+   -------------------------------------------------------------------------
+   Step sucessfully terminated, Date: 14.11.2026, Time: 00:10: 08
+   Total number of iterations  = 2154
+ 
+ 
+   MUMPS device: requested=CPU selected=CPU
+   MUMPS statistics: factorizations=2390 gpu_factorizations=0 gpu_flops= 0.0000000000000000E+000 gpu_seconds= 0.0000000000000000E+000
+  =========================================================================
+-> Time Statistics
+  =========================================================================
+ 
+-> NUMGEO *END*
+   Date: 14.11.2026   time: 00:10:08
