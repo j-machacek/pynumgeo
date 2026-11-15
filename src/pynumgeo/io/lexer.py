@@ -57,6 +57,7 @@ import os
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Literal
 
 __all__ = [
     "DEFAULT_AMPLITUDE_LINE",
@@ -130,7 +131,7 @@ class Quirk:
     code: str
     message: str
     pos: SourcePos | None = None
-    severity: str = "warning"  # "error": numgeo stops
+    severity: Literal["error", "warning"] = "warning"  # "error": numgeo stops
 
     def __str__(self) -> str:
         where = f"{self.pos}: " if self.pos else ""

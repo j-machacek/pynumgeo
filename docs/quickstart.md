@@ -20,6 +20,7 @@ History
 31.10.2026, J. Machacek - Version 2026.2.0.dev4 in the example header
 03.11.2026, J. Machacek - Version 2026.2.0.dev5 in the example header (with help of Claude Opus 5.5)
 07.11.2026, J. Machacek - Version 2026.2.0.dev6 in the example header
+15.11.2026, J. Machacek - Version 2026.2.0.dev7 in the example header
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -124,7 +125,7 @@ print("\n".join(text.splitlines()[:5]))
 ```text
 ** =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 **                                            numgeo input file
-**             Created with pynumgeo 2026.2.0.dev6, the Python API for numgeo by Jan Machacek
+**             Created with pynumgeo 2026.2.0.dev7, the Python API for numgeo by Jan Machacek
 **                           Written for numgeo2026-v2 (numgeo source 834564ed)
 ** =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 ```
