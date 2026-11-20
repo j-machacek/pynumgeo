@@ -22,7 +22,7 @@
 # 15.11.2026, J. Machacek - Options of *PFEM remeshing (numgeo-src ab1f76b)
 # 19.11.2026, J. Machacek - Option contact pair of *Model change (its other options are checked by NG-CONT-131);
 #                           line numbers of numgeo-src 1f48283 for *Contact pair and *Model change
-# 20.11.2026, J. Machacek - Line numbers of numgeo-src 1f48283 for *PFEM remeshing
+# 20.11.2026, J. Machacek - Line numbers of read_step_.f90 of numgeo-src 1f48283 in all citations
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Catalogue-driven checks of every generic keyword of a deck.
 
@@ -165,7 +165,7 @@ class Site:
 def output_type(kw: Keyword) -> str:
     """Type of an ``*Output`` block as numgeo decides it: substring FIELD, then PRINT, then USER.
 
-    ``src/input/read_step_.f90:1742,1925,2192`` (``index(..., back=.true.)`` on the option text).
+    ``src/input/read_step_.f90:1768,2001,2268`` (``index(..., back=.true.)`` on the option text).
 
     >>> output_type(Keyword.make("*Output", options=["print"]))
     'print'
@@ -361,7 +361,7 @@ def _head(kw: Keyword, ctx: str) -> str:
         return line
     comma = line.find(",")
     head = line[: comma + 1] if comma >= 0 else line
-    if ctx == "procedure":  # src/input/read_step_.f90:357-359: commas deleted
+    if ctx == "procedure":  # src/input/read_step_.f90:363-365: commas deleted
         head = head.replace(",", "")
     return head
 
@@ -402,8 +402,8 @@ def is_int_token(t: Token) -> bool:
 def arc_length_reduction(kw: Keyword) -> bool:
     """True if a ``*Reduction`` line switches on the arc-length control: an option that is exactly ``arc-length``.
 
-    Only then numgeo reads the other options of the line (src/input/read_step_.f90:3916-3929, read_reduction_options,
-    uncommitted numgeo-src of 13.11.2026).
+    Only then numgeo reads the other options of the line (src/input/read_step_.f90:3940-3953, read_reduction_options,
+    numgeo-src e15b379).
 
     >>> arc_length_reduction(Keyword.make("*Reduction", options=["arc-length", ("arc-increments", 50)]))
     True
@@ -429,8 +429,8 @@ def _values(values: Sequence[str]) -> set[str] | None:
 
 # ----------------------------------------------------------------------------- NG-KW-001 / 002
 _SOURCES_DISPATCH = (
-    "src/input/read_input.f90:487-497 (model); src/input/read_step_.f90:3160-3165 (step); "
-    "src/input/read_material_.f90:1867-1870 (material); src/input/read_step_.f90:626-628 (procedure)"
+    "src/input/read_input.f90:487-497 (model); src/input/read_step_.f90:3258-3263 (step); "
+    "src/input/read_material_.f90:1867-1870 (material); src/input/read_step_.f90:652-654 (procedure)"
 )
 
 
@@ -508,8 +508,8 @@ def _src(d: object) -> str:
     "NG-KW-003",
     "error",
     "sub-keywords that numgeo reads at one position only must stand there",
-    source="src/input/read_material_.f90:285-287,416,715-729,794-807; src/input/read_step_.f90:546-561,"
-    "586-622,1820-1837; src/input/read_equation_.f90:77-92; src/input/read_interaction_.f90:186-336",
+    source="src/input/read_material_.f90:285-287,416,715-729,794-807; src/input/read_step_.f90:572-587,"
+    "612-648,1856-1873; src/input/read_equation_.f90:77-92; src/input/read_interaction_.f90:186-336",
 )
 def placement(ctx: Context) -> Iterator[Finding]:
     cat = ctx.catalogue
@@ -563,7 +563,7 @@ def placement(ctx: Context) -> Iterator[Finding]:
         elif s.ctx.startswith("output-") and k == "*FREQUENCY" and pk == "*FREQUENCY":
             yield (
                 f"{s.where}: two consecutive *Frequency lines; the second ends the *Output block and numgeo "
-                "stops (src/input/read_step_.f90:1826-1905)",
+                "stops (src/input/read_step_.f90:1862-1986)",
                 s.loc,
             )
 
@@ -641,7 +641,7 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
     ("step", "*MODIFY"): _Policy("exact", "error", "src/input/read_modify_.f90:83-111", ("AMPLITUDE",), True),
     ("step", "*CONTACTPENALTY"): _Policy("substring", "warning", "src/input/read_penalty_factor_.f90:86-112"),
     ("step", "*OUTPUT"): _Policy(
-        "substring", "warning", "src/input/read_step_.f90:1742,1925,2192", ("FIELD", "PRINT", "USER")
+        "substring", "warning", "src/input/read_step_.f90:1768,2001,2268", ("FIELD", "PRINT", "USER")
     ),
     ("step", "*MODELCHANGE"): _Policy(
         "substring",
@@ -650,13 +650,13 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
         ("CONTACTPAIR", "MATERIAL", "FRICTION", "REMOVE", "ADD"),
     ),
     ("step", "*EQUATION"): _Policy("substring", "warning", "src/input/read_equation_.f90:46-120"),
-    ("step", "*EXECUTECOMMAND"): _Policy("substring", "warning", "src/input/read_step_.f90:3296-3330"),
-    ("step", "*READSTATE"): _Policy("substring", "warning", "src/input/read_step_.f90:3252-3290"),
-    ("step", "*NON-LOCAL"): _Policy("substring", "warning", "src/input/read_step_.f90:3463-3500"),
-    ("step", "*SUBMODEL"): _Policy("substring", "warning", "src/input/read_step_.f90:3340-3440"),
-    ("step", "*TIMEINTEGRATION"): _Policy("substring", "warning", "src/input/read_step_.f90:3049-3089"),
+    ("step", "*EXECUTECOMMAND"): _Policy("substring", "warning", "src/input/read_step_.f90:3397-3420"),
+    ("step", "*READSTATE"): _Policy("substring", "warning", "src/input/read_step_.f90:3353-3391"),
+    ("step", "*NON-LOCAL"): _Policy("substring", "warning", "src/input/read_step_.f90:3833-3870"),
+    ("step", "*SUBMODEL"): _Policy("substring", "warning", "src/input/read_step_.f90:3710-3810"),
+    ("step", "*TIMEINTEGRATION"): _Policy("substring", "warning", "src/input/read_step_.f90:3147-3187"),
     ("step", "*RIGIDBODY"): _Policy("substring", "warning", "src/input/read_equation_.f90:276-310"),
-    ("step", "*PFEMWRITE"): _Policy("substring", "warning", "src/input/read_step_.f90:2974-3040"),
+    ("step", "*PFEMWRITE"): _Policy("substring", "warning", "src/input/read_step_.f90:3062-3127"),
     # every option is option=value, compared exactly; unknown options stop numgeo
     ("step", "*PFEMREMESHING"): _Policy("exact", "error", "src/input/read_step_.f90:3444-3565"),
     ("step", "*ROBIN"): _Policy("substring", "warning", "src/input/read_robin_.f90:60-80"),
@@ -664,7 +664,7 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
     ("step", "*CONNECTORELEMENT"): _Policy("ignored", "warning", "src/input/read_connector_element_.f90:72"),
     ("step", "*SAVEREACTIONFORCE"): _Policy("ignored", "warning", "src/input/read_save_reaction_force_.f90:80-108"),
     ("step", "*NODALDYNAMICFORCE"): _Policy("ignored", "warning", "src/input/read_dynforce_.f90:41-75"),
-    ("step", "*RESET"): _Policy("ignored", "warning", "src/input/read_step_.f90:2929-2950"),
+    ("step", "*RESET"): _Policy("ignored", "warning", "src/input/read_step_.f90:3010-3031"),
     ("model", "*INTERACTION"): _Policy(
         "substring", "error", "src/input/read_interaction_.f90:494-598", names=_NORMAL_WORDS
     ),
@@ -675,23 +675,23 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
         "substring", "error", "src/input/read_interaction_.f90:494-598", names=_NORMAL_WORDS
     ),
     ("interaction", "*FRICTION"): _Policy("substring", "error", "src/input/read_interaction_.f90:320-325"),
-    ("output-field", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:3700-3780"),
-    ("output-field", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:3791-3860"),
+    ("output-field", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:4187-4267"),
+    ("output-field", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:4278-4347"),
     # print and user cards: nset=/elset= are required options of the catalogue (NG-KW-012)
-    ("output-print", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:1966-2054"),
-    ("output-print", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:2061-2112"),
-    ("output-print", "*INTEGRATIONPOINT"): _Policy("exact", "error", "src/input/read_step_.f90:2115-2168"),
+    ("output-print", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:2047-2135"),
+    ("output-print", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:2142-2193"),
+    ("output-print", "*INTEGRATIONPOINT"): _Policy("exact", "error", "src/input/read_step_.f90:2196-2249"),
     # field card (numgeo-src working tree of 02.11.2026): no options, the field output covers all elements
-    ("output-field", "*INTEGRATIONPOINT"): _Policy("exact", "error", "src/input/read_step_.f90:1931-1937"),
-    ("output-user", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:2217-2270"),
-    ("output-user", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:2272-2325"),
-    ("procedure", "*DYNAMIC"): _Policy("exact", "warning", "src/input/read_step_.f90:570-573"),
+    ("output-field", "*INTEGRATIONPOINT"): _Policy("exact", "error", "src/input/read_step_.f90:1954-1960"),
+    ("output-user", "*NODE"): _Policy("exact", "error", "src/input/read_step_.f90:2298-2351"),
+    ("output-user", "*ELEMENT"): _Policy("exact", "error", "src/input/read_step_.f90:2353-2406"),
+    ("procedure", "*DYNAMIC"): _Policy("exact", "warning", "src/input/read_step_.f90:596-599"),
     ("material", "*HOURGLASS"): _Policy(
         "substring", None, "src/input/read_material_.f90:1611-1621", ("STIFFNESS", "SCALING")
     ),
 }
 for _p in ("*STATIC", "*TRANSIENT", "*TRANSIENT-CRITICAL", "*REDUCTION", "*GEOSTATIC", "*EXPLICITDYNAMIC"):
-    _OPTION_POLICY[("procedure", _p)] = _Policy("ignored", "warning", "src/input/read_step_.f90:357-359")
+    _OPTION_POLICY[("procedure", _p)] = _Policy("ignored", "warning", "src/input/read_step_.f90:363-365")
 
 
 def _policy(site: Site, spec: KeywordSpec) -> _Policy | None:
@@ -1028,9 +1028,9 @@ _DATA_ELSEWHERE = frozenset(
 )
 # Keywords whose data lines numgeo reads although the catalogue lists no data-line table.
 _DATA_ALLOWED = frozenset({"*USERPROPERTIES"})
-# Cards of an *Output block: exactly one line of variable names (src/input/read_step_.f90:1866-1873).
+# Cards of an *Output block: exactly one line of variable names (src/input/read_step_.f90:1902-1909).
 _OUTPUT_CARDS = frozenset({"*NODE", "*ELEMENT", "*INTEGRATIONPOINT"})
-# Data lines compared as a whole (src/input/read_material_.f90:226-234; src/input/read_step_.f90:2944-2949).
+# Data lines compared as a whole (src/input/read_material_.f90:226-234; src/input/read_step_.f90:3025-3030).
 _WHOLE_LINE = {
     "*THERMALCAPACITY": ("LUMPED", "CONSISTENT"),
     "*RESET": ("DISPLACEMENT", "DISPLACEMENT,STRAIN"),
@@ -1078,7 +1078,7 @@ def data_lines(ctx: Context) -> Iterator[Finding]:
             if len(rows) != 1:
                 yield (
                     f"{s.where}: {name} in *Output needs exactly one line of variable names, {len(rows)} "
-                    "given (src/input/read_step_.f90:1866-1873)",
+                    "given (src/input/read_step_.f90:1902-1909)",
                     s.loc,
                 )
             continue

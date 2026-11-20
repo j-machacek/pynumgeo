@@ -15,6 +15,7 @@
 # History
 # 15.11.2026, J. Machacek - Initial version
 # 19.11.2026, J. Machacek - Message of the water-filled gap told from the one of sliding=small with doublepass
+# 20.11.2026, J. Machacek - Note on the entries of read_step_.f90 (checked in test_read_step_references.py)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """numgeo-src working tree of 15.11.2026 and features of earlier commits which the catalogue did not have yet:
 
@@ -339,7 +340,8 @@ def test_lines_that_are_too_long_stop_numgeo():
 @pytest.mark.source
 def test_catalogue_anchors_match_the_source():
     """The entries of this update cite lines of the numgeo-src working tree of 15.11.2026: their anchors must match
-    it. (Entries taken over from the catalogue commit keep the lines of that commit and are not checked here.)"""
+    it. (Entries of other files taken over from the catalogue commit keep the lines of that commit and are not checked
+    here; all entries of read_step_.f90 are checked in test_read_step_references.py.)"""
     root = Path(os.environ["NUMGEO_SRC"])
     c = cat.load()
     spec = cat.keyword("*PFEM remeshing", "step")

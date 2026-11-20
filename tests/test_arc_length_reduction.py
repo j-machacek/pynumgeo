@@ -16,7 +16,8 @@
 # 13.11.2026, J. Machacek - Initial version
 # 14.11.2026, J. Machacek - Data and summary of the numgeo-src of 14.11.2026 (plateau at the end, first plateau)
 # 20.11.2026, J. Machacek - numgeo-src e15b379 (18.11.2026): finite positive option values, data line and
-#                           iteration limits of the step, summary without a plateau
+#                           iteration limits of the step, summary without a plateau; line numbers of
+#                           read_step_.f90 of numgeo-src 1f48283
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Strength reduction with arc-length control (``*Reduction, arc-length``) and strength reduction of embedded
 interfaces (``*Embedded region, interaction, ..., reduction``), uncommitted numgeo-src of 13.11.2026: catalogue,
@@ -188,7 +189,7 @@ def test_options_without_arc_length_are_ignored():
     found = _found(_reduction_deck("plateau-increments=1"), *ARC_RULES)
     assert [(i.id, i.severity) for i in found] == [("NG-KW-011", "warning")]
     assert found[0].message == (
-        "step Load: option 'plateau-increments=1' of *Reduction is ignored by numgeo (src/input/read_step_.f90:357-359)"
+        "step Load: option 'plateau-increments=1' of *Reduction is ignored by numgeo (src/input/read_step_.f90:363-365)"
     )
     found = _found(_reduction_deck("arc-length=yes", "arc-increments=0"), *ARC_RULES)
     assert [i.id for i in found] == ["NG-KW-011", "NG-KW-011"]

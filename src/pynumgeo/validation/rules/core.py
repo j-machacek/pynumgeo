@@ -15,6 +15,7 @@
 # History
 # 26.10.2026, J. Machacek - Initial version
 # 03.11.2026, J. Machacek - NG-REF-001 for *Assign material, from-file (with help of Claude Opus 5.5)
+# 20.11.2026, J. Machacek - Line numbers of read_step_.f90 of numgeo-src 1f48283
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Core rules: mesh, names, references, materials, steps.
 
@@ -423,7 +424,7 @@ _PROCEDURE_DATA = {
     "NG-STEP-010",
     "error",
     "the procedure line needs its time data",
-    source="src/input/read_step_.f90:364-623",
+    source="src/input/read_step_.f90:370-649",
 )
 def procedure_data(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -451,7 +452,7 @@ def procedure_data(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-011",
     "error",
     "field output must name its format (vtk or gid)",
-    source="src/input/read_step_.f90:1772-1776",
+    source="src/input/read_step_.f90:1798-1802",
 )
 def field_output_format(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -484,7 +485,7 @@ def increments(ctx: Context) -> Iterator[Finding]:
                 )
 
 
-@rule("NG-STEP-013", "error", "step names must be given", source="src/input/read_step_.f90:273-280")
+@rule("NG-STEP-013", "error", "step names must be given", source="src/input/read_step_.f90:279-286")
 def step_names(ctx: Context) -> Iterator[Finding]:
     for i, st in enumerate(ctx.deck.steps):
         if not st.name:

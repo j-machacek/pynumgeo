@@ -14,9 +14,10 @@
 #
 # History
 # 02.11.2026, J. Machacek - Initial version (with help of Claude Opus 5.5)
+# 20.11.2026, J. Machacek - Line numbers of read_step_.f90 of numgeo-src 1f48283
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """*Integration point in *Output, field (numgeo-src working tree of 02.11.2026): catalogue, check, writer and the
-dataset ``Integration points`` of the results (src/input/read_step_.f90:1917-1959,
+dataset ``Integration points`` of the results (src/input/read_step_.f90:1940-1982 of numgeo-src 1f48283,
 src/output/VTK_write_results_.f90:248-291)."""
 
 from __future__ import annotations

@@ -29,7 +29,7 @@
 #                           rules on *Contact pair and *Model change
 # 20.11.2026, J. Machacek - *Reduction, arc-length of numgeo-src e15b379: finite positive option values, data line
 #                           and numbers of *Reduction (NG-STEP-135), iteration limits of the step (NG-STEP-133);
-#                           line numbers of numgeo-src 1f48283 for *PFEM remeshing
+#                           line numbers of read_step_.f90 of numgeo-src 1f48283 in all rules
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Rules on numgeo's behaviour in particular cases: input that numgeo rejects, ignores, clamps or reads
 differently than the text suggests. Every rule names the solver source it mirrors (``source``).
@@ -1164,7 +1164,7 @@ def solid_bulk_ignored(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-101",
     "error",
     "*Step options must be known",
-    source="src/input/read_step_.f90:293-352 (read_step)",
+    source="src/input/read_step_.f90:299-358 (read_step)",
 )
 def step_options(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -1194,7 +1194,7 @@ def _values_numeric(kw: Keyword) -> bool:
     "NG-STEP-102",
     "error",
     "*Hilber-Hughes-Taylor needs alpha (or alpha, beta, gamma)",
-    source="src/input/read_step_.f90:590-600; src/tools/strings_.f90:435",
+    source="src/input/read_step_.f90:616-626; src/tools/strings_.f90:435",
 )
 def hht_values(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -1213,7 +1213,7 @@ def hht_values(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-103",
     "error",
     "*Mass scaling needs one factor",
-    source="src/input/read_step_.f90:548-561 (read_step)",
+    source="src/input/read_step_.f90:574-587 (read_step)",
 )
 def mass_scaling(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -1230,7 +1230,7 @@ def mass_scaling(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-104",
     "error",
     "*Termination takes no options",
-    source="src/input/read_step_.f90:2352 (read_step)",
+    source="src/input/read_step_.f90:2433 (read_step)",
 )
 def termination_options(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1246,7 +1246,7 @@ def termination_options(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-105",
     "warning",
     "*Extrapolation, coupled runs quadratic extrapolation",
-    source="src/input/read_step_.f90:655-660; src/soe/soe_extrapolate_solution_.f90:276",
+    source="src/input/read_step_.f90:681-686; src/soe/soe_extrapolate_solution_.f90:276",
 )
 def extrapolation_coupled(ctx: Context) -> Iterator[Finding]:
     # TODO: drop when numgeo is fixed.
@@ -1263,7 +1263,7 @@ def extrapolation_coupled(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-106",
     "info",
     "*Controls, global has no effect",
-    source="src/input/read_step_.f90:2410-2448; src/database/controls_ty_.f90:58-64",
+    source="src/input/read_step_.f90:2491-2529; src/database/controls_ty_.f90:58-64",
 )
 def controls_global(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1286,7 +1286,7 @@ def _control_mode(kw: Keyword) -> str | None:
     "NG-STEP-107",
     "error",
     "*Controls needs a known field and mode",
-    source="src/input/read_step_.f90:2397-2790 (read_step)",
+    source="src/input/read_step_.f90:2478-2871 (read_step)",
 )
 def controls_mode(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1315,7 +1315,7 @@ def controls_mode(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-108",
     "error",
     "*Controls, max-dpw, deactivate activates the control",
-    source="src/input/read_step_.f90:2663 (read_step)",
+    source="src/input/read_step_.f90:2744 (read_step)",
 )
 def controls_maxdpw(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1339,7 +1339,7 @@ _CONTROL_DATA = {"MODIFY": (5, 6), "GLOBAL-MODIFY": (3,), "MAX-DPW-ACTIVATE": (2
     "NG-STEP-131",
     "error",
     "*Controls data line must match field and mode",
-    source="src/input/read_step_.f90:2410-2790 (read_step)",
+    source="src/input/read_step_.f90:2491-2871 (read_step)",
 )
 def controls_data(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1377,7 +1377,7 @@ def controls_data(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-109",
     "error",
     "*Pfem write: at most one per job and not with a complete *Restart write",
-    source="src/input/read_step_.f90:2960,2976-2990; src/output/restart_.f90:180",
+    source="src/input/read_step_.f90:3048,3064-3078; src/output/restart_.f90:180",
 )
 def pfem_write(ctx: Context) -> Iterator[Finding]:
     pfem = [(st, kw) for _, st, _, kw in _step_items(ctx.deck) if kw.keyword == "*PFEMWRITE"]
@@ -1405,7 +1405,7 @@ _EXPLICIT = ("*EXPLICITDYNAMIC", "*EXPLICITDYNAMICS")
     "NG-STEP-110",
     "error",
     "*Time integration only in explicit steps and with instance=",
-    source="src/input/read_step_.f90:3049-3089 (read_step)",
+    source="src/input/read_step_.f90:3147-3187 (read_step)",
 )
 def time_integration(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1427,7 +1427,7 @@ def time_integration(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-111",
     "warning",
     "*Read stress without *Read state",
-    source="src/database/step_ty_.f90:155; src/input/read_step_.f90:3096",
+    source="src/database/step_ty_.f90:155; src/input/read_step_.f90:3194",
 )
 def read_stress_alone(ctx: Context) -> Iterator[Finding]:
     # TODO: drop when numgeo is fixed.
@@ -1508,7 +1508,7 @@ def restart_line(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-115",
     "error",
     "*Submodel needs a variable option (statev, stress or disp)",
-    source="src/input/read_step_.f90:3435-3440 (read_submodel_options)",
+    source="src/input/read_step_.f90:3805-3810 (read_submodel_options)",
 )
 def submodel_variables(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1520,7 +1520,7 @@ def submodel_variables(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-116",
     "error",
     "*Submodel takes no numgeo= or inp=",
-    source="src/input/read_step_.f90:3355-3387 (read_submodel_options)",
+    source="src/input/read_step_.f90:3725-3757 (read_submodel_options)",
 )
 def submodel_names(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1538,7 +1538,7 @@ _NONLOCAL_WORDS = ("STATEV", "FREQUENCY", "LOCAL-LEN", "TIME", "ELSET")
     "NG-STEP-117",
     "error",
     "*Non-local element set names must not contain option words",
-    source="src/input/read_step_.f90:3475-3481 (read_nonlocal_options)",
+    source="src/input/read_step_.f90:3845-3851 (read_nonlocal_options)",
 )
 def nonlocal_names(ctx: Context) -> Iterator[Finding]:
     # TODO: drop when numgeo is fixed.
@@ -1556,7 +1556,7 @@ def nonlocal_names(ctx: Context) -> Iterator[Finding]:
 
 
 def _solver_key(kw: Keyword) -> str:
-    """numgeo's solver key: first option up to '=' (src/input/read_step_.f90:678-682)."""
+    """numgeo's solver key: first option up to '=' (src/input/read_step_.f90:704-708)."""
     return _key(kw.options[0][0]) if kw.options else ""
 
 
@@ -1568,7 +1568,7 @@ def _external(kw: Keyword) -> bool:
     "NG-STEP-118",
     "error",
     "external solver exe= and arg= must not contain 'external'",
-    source="src/input/read_step_.f90:763 (read_step)",
+    source="src/input/read_step_.f90:789 (read_step)",
 )
 def external_word(ctx: Context) -> Iterator[Finding]:
     # TODO: drop when numgeo is fixed.
@@ -1590,7 +1590,7 @@ _EXTERNAL_OPTIONS = ("EXE", "ARG", "MPI", "OMP", "ONEAPI")
     "NG-STEP-119",
     "warning",
     "unknown external-solver options are ignored",
-    source="src/input/read_step_.f90:773-825 (read_step)",
+    source="src/input/read_step_.f90:799-851 (read_step)",
 )
 def external_options(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1609,7 +1609,7 @@ def external_options(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-120",
     "error",
     "external solver mpi= must be at least 2",
-    source="src/input/read_step_.f90:795-805 (read_step)",
+    source="src/input/read_step_.f90:821-831 (read_step)",
 )
 def external_mpi(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1632,7 +1632,7 @@ def _has_upper(text: str) -> bool:
     "NG-STEP-121",
     "error",
     "solver options and commands passed to the shell must be lower case",
-    source="src/input/read_step_.f90:784,793,847; src/tools/execute_command_.f90:46-58",
+    source="src/input/read_step_.f90:810,819,873; src/tools/execute_command_.f90:46-58",
 )
 def lower_case_commands(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1675,7 +1675,7 @@ _SOLVERS = (
     "NG-STEP-122",
     "error",
     "solver names must be exact",
-    source="src/input/read_step_.f90:678-1305 (read_step)",
+    source="src/input/read_step_.f90:704-1331 (read_step)",
 )
 def solver_names(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1739,7 +1739,7 @@ _ACCEL = {"BACK-LOOKING": 2, "LINEAR": 2, "RELAXATION": 1, "ANDERSON": 2}
     "NG-STEP-124",
     "error",
     "*Accelerator needs one of the four methods and its data line",
-    source="src/input/read_step_.f90:2794-2910 (read_step)",
+    source="src/input/read_step_.f90:2875-2991 (read_step)",
 )
 def accelerator(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1777,7 +1777,7 @@ _TERMINATION_QUANTITIES = ("E11", "E22", "E33", "E12", "E13", "E23", "S11", "S22
     "NG-STEP-125",
     "error",
     "*Termination quantity must be one of e11..e23, s11..s23",
-    source="src/input/read_step_.f90:2379; src/fem/fem_global_early_termination_.f90:303-367",
+    source="src/input/read_step_.f90:2460; src/fem/fem_global_early_termination_.f90:303-367",
 )
 def termination_quantity(ctx: Context) -> Iterator[Finding]:
     for _, st, _, kw in _step_items(ctx.deck):
@@ -1796,7 +1796,7 @@ def termination_quantity(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-126",
     "error",
     "reduction steps need inc=",
-    source="src/input/read_step_.f90:415-418 (read_step)",
+    source="src/input/read_step_.f90:439-442 (read_step)",
 )
 def reduction_inc(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -1907,8 +1907,8 @@ def reduction_data(ctx: Context) -> Iterator[Finding]:
 def _arc_length_solver(kw: Keyword | None, nelems: int) -> tuple[str, bool]:
     """Solver name and iterative strategy (reuse of the factorization) of a step as numgeo sets them: Pardiso without
     *Solver, matching by substring in numgeo's order, an unknown name keeps Pardiso, SIMPLE becomes Pardiso for more
-    than 10 elements (src/input/read_step_.f90:683-1311, read_direct_solver_options :4060-4066; uncommitted
-    numgeo-src of 13.11.2026)."""
+    than 10 elements (src/input/read_step_.f90:704-1332, read_direct_solver_options :4079-4085; numgeo-src
+    e15b379)."""
     if kw is None:
         return "PARDISO", False
     key = _solver_key(kw)
@@ -2084,7 +2084,7 @@ def pfem_remeshing(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-127",
     "error",
     "one *Solver, one *Extrapolation and one *Controls block per field in a step",
-    source="src/input/read_step_.f90:645,673,2397 (read_step)",
+    source="src/input/read_step_.f90:671,699,2478 (read_step)",
 )
 def repeated_step_keywords(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -2109,7 +2109,7 @@ def repeated_step_keywords(ctx: Context) -> Iterator[Finding]:
     "NG-STEP-128",
     "warning",
     "a step should have a *Boundary",
-    source="src/input/read_step_.f90:3192,3202; src/soe/soe_apply_boundary_conditions_.f90:92",
+    source="src/input/read_step_.f90:3290,3300; src/soe/soe_apply_boundary_conditions_.f90:92",
 )
 def step_without_bc(ctx: Context) -> Iterator[Finding]:
     # TODO: drop when numgeo is fixed.
@@ -2137,7 +2137,7 @@ _BC_NAMES = {v: k.lower() for k, v in _BC_TYPES.items()} | {0: "none (total valu
 
 
 def bc_type(text: str) -> int:
-    """Boundary-condition type numgeo reads from the option text (src/input/read_step_.f90:1384-1397).
+    """Boundary-condition type numgeo reads from the option text (src/input/read_step_.f90:1410-1423).
 
     >>> bc_type("TYPE=HYDROSTATIC,AMPLITUDE=A"), bc_type("AMPLITUDE=A,TYPE=HYDROSTATIC")
     (3, 0)
@@ -2228,7 +2228,7 @@ def hydrostatic_zero(ctx: Context) -> Iterator[Finding]:
     "NG-BC-103",
     "error",
     "the boundary-condition type numgeo reads must be the one written",
-    source="src/input/read_step_.f90:1384-1412 (read_step)",
+    source="src/input/read_step_.f90:1410-1438 (read_step)",
 )
 def bc_type_read(ctx: Context) -> Iterator[Finding]:
     for st, kw in _bcs(ctx.deck):
@@ -2257,7 +2257,7 @@ _BC_WORDS = ("VELOCITY", "ACCELERATION", "HYDROSTATIC", "CONTACTPRESSURE", "INCR
     "NG-BC-104",
     "error",
     "amplitude names on *Boundary must not contain type words",
-    source="src/input/read_step_.f90:1385-1397,1419-1464 (read_step)",
+    source="src/input/read_step_.f90:1411-1423,1445-1490 (read_step)",
 )
 def bc_amplitude_names(ctx: Context) -> Iterator[Finding]:
     for st, kw in _bcs(ctx.deck):
@@ -2290,7 +2290,7 @@ def _bc_rows(deck: Deck) -> Iterator[tuple[Step | None, Keyword, list[Token]]]:
     "NG-BC-105",
     "error",
     "boundary-condition dofs must be numgeo dof names",
-    source="src/input/read_boundary_condition_.f90:118; src/input/read_step_.f90:1548; src/input/read_robin_.f90:98",
+    source="src/input/read_boundary_condition_.f90:118; src/input/read_step_.f90:1574; src/input/read_robin_.f90:98",
 )
 def bc_dof_names(ctx: Context) -> Iterator[Finding]:
     known = _dof_names(ctx)
@@ -2405,7 +2405,7 @@ def robin_fields(ctx: Context) -> Iterator[Finding]:
     "NG-BC-110",
     "error",
     "*Boundary data lines must match the type numgeo reads",
-    source="src/input/read_step_.f90:1480-1503 (read_step); src/input/read_boundary_condition_.f90:92",
+    source="src/input/read_step_.f90:1506-1529 (read_step); src/input/read_boundary_condition_.f90:92",
 )
 def bc_fields(ctx: Context) -> Iterator[Finding]:
     for st, kw in _bcs(ctx.deck):
@@ -2557,7 +2557,7 @@ def rigid_body_rotations(ctx: Context) -> Iterator[Finding]:
     "NG-LOAD-107",
     "error",
     "*Save reaction force and *Reaction force must not be interleaved in a step",
-    source="src/input/read_step_.f90:1607-1631; src/input/read_save_reaction_force_.f90:60-74",
+    source="src/input/read_step_.f90:1633-1657; src/input/read_save_reaction_force_.f90:60-74",
 )
 def reaction_interleaved(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -4437,7 +4437,7 @@ def print_pa(ctx: Context) -> Iterator[Finding]:
     "NG-OUT-102",
     "error",
     "*Frequency needs a positive integer",
-    source="src/input/read_step_.f90:1826-1837,1937-1946,2202-2211 (read_step)",
+    source="src/input/read_step_.f90:1862-1873,2018-2027,2283-2292 (read_step)",
 )
 def output_frequency(ctx: Context) -> Iterator[Finding]:
     for st, kw in _outputs(ctx.deck):
@@ -4455,7 +4455,7 @@ def output_frequency(ctx: Context) -> Iterator[Finding]:
     "NG-OUT-103",
     "error",
     "*Output, field, vtk, hdf5 is not supported",
-    source="src/input/read_step_.f90:1786-1790 (read_step)",
+    source="src/input/read_step_.f90:1822-1826 (read_step)",
 )
 def vtk_hdf5(ctx: Context) -> Iterator[Finding]:
     for st, kw in _outputs(ctx.deck):

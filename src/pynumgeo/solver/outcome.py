@@ -17,7 +17,7 @@
 # 13.11.2026, J. Machacek - Note of a strength reduction step with arc-length control (end of the step, FoS)
 # 14.11.2026, J. Machacek - Line numbers of arc_length_.f90 (uncommitted numgeo-src of 14.11.2026)
 # 20.11.2026, J. Machacek - Note of an arc-length step without plateau: factor of safety undetermined
-#                           (numgeo-src e15b379)
+#                           (numgeo-src e15b379); line numbers of read_step_.f90 of numgeo-src 1f48283
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Judge the outcome of a numgeo run from its files.
 
@@ -72,7 +72,7 @@ from pynumgeo.solver.result import MessageSeverity, Phase, RunResult, RunStatus,
 
 __all__ = ["DeckStep", "RunFacts", "assess", "deck_steps", "judge", "restart_step_of"]
 
-#: Default of ``*Step, inc=`` (src/input/read_step_.f90:332).
+#: Default of ``*Step, inc=`` (src/input/read_step_.f90:338).
 DEFAULT_MAXINC = 1_000_000
 _ELEMENT_DUMP = "ERROR_Element_elem_"
 _MATERIAL_DUMP = "ERROR_Material_elem_"
@@ -107,7 +107,7 @@ def _num(v: object) -> float | None:
 
 
 def deck_steps(deck: Deck) -> list[DeckStep]:
-    """End time and increment limit of every step (src/input/read_step_.f90:355-623).
+    """End time and increment limit of every step (src/input/read_step_.f90:361-649).
 
     ``t_end`` is the second value of the procedure's data line (``*Static``, ``*Transient``,
     ``*Transient-critical``, ``*Dynamic``, ``*Explicit dynamic``), 1.0 for ``*Geostatic`` (:369-372) and
@@ -126,7 +126,7 @@ def deck_steps(deck: Deck) -> list[DeckStep]:
             t_end = _num(row[1]) if len(row) >= 2 else None
         maxinc = int(s.inc) if s.inc is not None else DEFAULT_MAXINC
         if proc.startswith("EXPLICITDYNAMIC"):
-            maxinc = max(maxinc, DEFAULT_MAXINC)  # read_step_.f90:501-504
+            maxinc = max(maxinc, DEFAULT_MAXINC)  # read_step_.f90:527-530
         out.append(DeckStep(s.name, proc, t_end, maxinc, bool(s.nocutback)))
     return out
 

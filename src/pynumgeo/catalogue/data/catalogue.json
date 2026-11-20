@@ -7,7 +7,7 @@
    "context": "step",
    "data_lines": [
     {
-     "count_rule": "narg == 2 (2831)",
+     "count_rule": "narg == 2 (2912)",
      "description": "LINEAR / BACK-LOOKING",
      "fields": [
       {
@@ -17,7 +17,7 @@
        "source": {
         "anchor": "4f3c4f0ec5211c51",
         "file": "src/input/read_step_.f90",
-        "line": 2838,
+        "line": 2919,
         "routine": "read_step"
        },
        "type": "real",
@@ -30,7 +30,7 @@
        "source": {
         "anchor": "4f3c4f0ec5211c51",
         "file": "src/input/read_step_.f90",
-        "line": 2838,
+        "line": 2919,
         "routine": "read_step"
        },
        "type": "real",
@@ -41,12 +41,12 @@
      "source": {
       "anchor": "786d549c5db5ff7e",
       "file": "src/input/read_step_.f90",
-      "line": 2829,
+      "line": 2910,
       "routine": "read_step"
      }
     },
     {
-     "count_rule": "narg == 1 (2875)",
+     "count_rule": "narg == 1 (2956)",
      "description": "RELAXATION",
      "fields": [
       {
@@ -56,7 +56,7 @@
        "source": {
         "anchor": "423ada453cffacd2",
         "file": "src/input/read_step_.f90",
-        "line": 2882,
+        "line": 2963,
         "routine": "read_step"
        },
        "type": "real",
@@ -67,12 +67,12 @@
      "source": {
       "anchor": "786d549c5db5ff7e",
       "file": "src/input/read_step_.f90",
-      "line": 2873,
+      "line": 2954,
       "routine": "read_step"
      }
     },
     {
-     "count_rule": "narg == 2 (2897)",
+     "count_rule": "narg == 2 (2978)",
      "description": "ANDERSON",
      "fields": [
       {
@@ -82,7 +82,7 @@
        "source": {
         "anchor": "aeb27c1bcba2108b",
         "file": "src/input/read_step_.f90",
-        "line": 2904,
+        "line": 2985,
         "routine": "read_step"
        },
        "type": "real",
@@ -95,7 +95,7 @@
        "source": {
         "anchor": "aeb27c1bcba2108b",
         "file": "src/input/read_step_.f90",
-        "line": 2904,
+        "line": 2985,
         "routine": "read_step"
        },
        "type": "int",
@@ -106,23 +106,23 @@
      "source": {
       "anchor": "786d549c5db5ff7e",
       "file": "src/input/read_step_.f90",
-      "line": 2895,
+      "line": 2976,
       "routine": "read_step"
      }
     }
    ],
    "dispatch": {
-    "anchor": "8f876d78116c9dd1",
+    "anchor": "57abe8ccf27cf7a0",
     "file": "src/input/read_step_.f90",
-    "line": 2794,
+    "line": 2875,
     "routine": "read_step"
    },
    "display": "*Accelerator",
    "doc": "docs/reference/accelerator.md",
    "handler": {
-    "anchor": "8f876d78116c9dd1",
+    "anchor": "57abe8ccf27cf7a0",
     "file": "src/input/read_step_.f90",
-    "line": 2794,
+    "line": 2875,
     "routine": "read_step"
    },
    "keyword": "*ACCELERATOR",
@@ -132,7 +132,7 @@
     "*LINESEARCH",
     "*LINESEARCH,"
    ],
-   "notes": "Sets line_search%active (2796; reset each step 220). Type defaults: src/database/controls_ty_.f90:87-100. Anderson depth clamped to [1,2] at runtime (src/fem/solution_accelerators_.f90:567). The 5-value branch (2910-2924) is unreachable.",
+   "notes": "Sets line_search%active (2877; reset each step 226). Type defaults: src/database/controls_ty_.f90:87-100. Anderson depth clamped to [1,2] at runtime (src/fem/solution_accelerators_.f90:567). The 5-value branch (2991-3005) is unreachable.",
    "options": [
     {
      "default": null,
@@ -140,12 +140,12 @@
      "doc": "docs/reference/accelerator.md",
      "match": "substring of the whole option text, tested in order BACK-LOOKING, LINEAR, RELAXATION, ANDERSON ('TYPE=' itself is not parsed)",
      "name": "TYPE (method)",
-     "notes": "No match -> error (2813-2817). u-T solid elements -> stop (src/database/database.f90:1234).",
+     "notes": "No match -> error (2894-2898). u-T solid elements -> stop (src/database/database.f90:1234).",
      "required": true,
      "source": {
       "anchor": "5317cecada1bfee5",
       "file": "src/input/read_step_.f90",
-      "line": 2805,
+      "line": 2886,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -162,12 +162,12 @@
      "doc": "docs/reference/accelerator.md",
      "match": "substring 'DEFAULT'",
      "name": "DEFAULT",
-     "notes": "With DEFAULT no data line is read. LINEAR/BACK-LOOKING: lambda_min=0.5, lambda_max=1.0, psi=0, s_tol=0, max_iter=1 (2823-2827, 2847-2851); RELAXATION: lambda_max=0.8 (2871); ANDERSON: lambda_min=0, lambda_max=2.0, psi=0, s_tol=0, max_iter(depth)=1 (2889-2893).",
+     "notes": "With DEFAULT no data line is read. LINEAR/BACK-LOOKING: lambda_min=0.5, lambda_max=1.0, psi=0, s_tol=0, max_iter=1 (2904-2908, 2928-2932); RELAXATION: lambda_max=0.8 (2952); ANDERSON: lambda_min=0, lambda_max=2.0, psi=0, s_tol=0, max_iter(depth)=1 (2970-2974).",
      "required": false,
      "source": {
       "anchor": "ef80f604c6960cc6",
       "file": "src/input/read_step_.f90",
-      "line": 2822,
+      "line": 2903,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -523,7 +523,7 @@
    "dispatch": {
     "anchor": "68f12423e822e287",
     "file": "src/input/read_step_.f90",
-    "line": 612,
+    "line": 638,
     "routine": "read_step"
    },
    "display": "*Backward euler",
@@ -531,7 +531,7 @@
    "handler": {
     "anchor": "68f12423e822e287",
     "file": "src/input/read_step_.f90",
-    "line": 612,
+    "line": 638,
     "routine": "read_step"
    },
    "keyword": "*BACKWARDEULER",
@@ -539,7 +539,7 @@
     "line containing '*BACKWARDEULER'",
     "line containing '*BWE'"
    ],
-   "notes": "Sets time_integrator='BWE', alpha=0, beta=1, gamma=1 (613-616). Tested only if no HHT match.",
+   "notes": "Sets time_integrator='BWE', alpha=0, beta=1, gamma=1 (639-642). Tested only if no HHT match.",
    "options": [],
    "parent": "*DYNAMIC",
    "public_version_restricted": false
@@ -871,7 +871,7 @@
    "dispatch": {
     "anchor": "5e236af01998a4b4",
     "file": "src/input/read_step_.f90",
-    "line": 1570,
+    "line": 1596,
     "routine": "read_step"
    },
    "display": "*Body force",
@@ -1065,9 +1065,9 @@
        "name": "nset",
        "required": true,
        "source": {
-        "anchor": "3fac0d79c8aef02d",
+        "anchor": "47837b9ffd026f57",
         "file": "src/input/read_step_.f90",
-        "line": 1544,
+        "line": 1570,
         "routine": "read_step"
        },
        "type": "name",
@@ -1078,9 +1078,9 @@
        "name": "dof",
        "required": true,
        "source": {
-        "anchor": "3fac0d79c8aef02d",
+        "anchor": "47837b9ffd026f57",
         "file": "src/input/read_step_.f90",
-        "line": 1544,
+        "line": 1570,
         "routine": "read_step"
        },
        "type": "string(len=3)",
@@ -1093,7 +1093,7 @@
        "source": {
         "anchor": "cdb9c052b3edb2db",
         "file": "src/input/read_step_.f90",
-        "line": 1545,
+        "line": 1571,
         "routine": "read_step"
        },
        "type": "real",
@@ -1104,7 +1104,7 @@
      "source": {
       "anchor": "8b54427936ee9cfa",
       "file": "src/input/read_step_.f90",
-      "line": 1502,
+      "line": 1528,
       "routine": "read_step"
      }
     },
@@ -1117,9 +1117,9 @@
        "name": "nset",
        "required": true,
        "source": {
-        "anchor": "3fac0d79c8aef02d",
+        "anchor": "47837b9ffd026f57",
         "file": "src/input/read_step_.f90",
-        "line": 1517,
+        "line": 1543,
         "routine": "read_step"
        },
        "type": "name",
@@ -1130,9 +1130,9 @@
        "name": "dof",
        "required": true,
        "source": {
-        "anchor": "3fac0d79c8aef02d",
+        "anchor": "47837b9ffd026f57",
         "file": "src/input/read_step_.f90",
-        "line": 1517,
+        "line": 1543,
         "routine": "read_step"
        },
        "type": "string(len=3)",
@@ -1145,7 +1145,7 @@
        "source": {
         "anchor": "f0619ff30949da86",
         "file": "src/input/read_step_.f90",
-        "line": 1518,
+        "line": 1544,
         "routine": "read_step"
        },
        "type": "real",
@@ -1158,7 +1158,7 @@
        "source": {
         "anchor": "f0619ff30949da86",
         "file": "src/input/read_step_.f90",
-        "line": 1518,
+        "line": 1544,
         "routine": "read_step"
        },
        "type": "real",
@@ -1169,7 +1169,7 @@
      "source": {
       "anchor": "9543596264dfc68e",
       "file": "src/input/read_step_.f90",
-      "line": 1491,
+      "line": 1517,
       "routine": "read_step"
      }
     },
@@ -1184,7 +1184,7 @@
        "source": {
         "anchor": "3fac0d79c8aef02d",
         "file": "src/input/read_step_.f90",
-        "line": 1525,
+        "line": 1551,
         "routine": "read_step"
        },
        "type": "name",
@@ -1197,7 +1197,7 @@
        "source": {
         "anchor": "3fac0d79c8aef02d",
         "file": "src/input/read_step_.f90",
-        "line": 1525,
+        "line": 1551,
         "routine": "read_step"
        },
        "type": "string(len=3)",
@@ -1210,7 +1210,7 @@
        "source": {
         "anchor": "313a1c6e06bc8b40",
         "file": "src/input/read_step_.f90",
-        "line": 1529,
+        "line": 1555,
         "routine": "read_step"
        },
        "type": "real (int 1|2|3; 3 not allowed in 2D)",
@@ -1223,7 +1223,7 @@
        "source": {
         "anchor": "f86a0c7312502277",
         "file": "src/input/read_step_.f90",
-        "line": 1526,
+        "line": 1552,
         "routine": "read_step"
        },
        "type": "real",
@@ -1236,7 +1236,7 @@
        "source": {
         "anchor": "f86a0c7312502277",
         "file": "src/input/read_step_.f90",
-        "line": 1526,
+        "line": 1552,
         "routine": "read_step"
        },
        "type": "real",
@@ -1249,7 +1249,7 @@
        "source": {
         "anchor": "f86a0c7312502277",
         "file": "src/input/read_step_.f90",
-        "line": 1526,
+        "line": 1552,
         "routine": "read_step"
        },
        "type": "real",
@@ -1262,7 +1262,7 @@
        "source": {
         "anchor": "f86a0c7312502277",
         "file": "src/input/read_step_.f90",
-        "line": 1526,
+        "line": 1552,
         "routine": "read_step"
        },
        "type": "real",
@@ -1275,7 +1275,7 @@
        "source": {
         "anchor": "f86a0c7312502277",
         "file": "src/input/read_step_.f90",
-        "line": 1526,
+        "line": 1552,
         "routine": "read_step"
        },
        "type": "real",
@@ -1286,7 +1286,7 @@
      "source": {
       "anchor": "95b343344765780e",
       "file": "src/input/read_step_.f90",
-      "line": 1497,
+      "line": 1523,
       "routine": "read_step"
      }
     }
@@ -1294,7 +1294,7 @@
    "dispatch": {
     "anchor": "cb8b89487cefd4ef",
     "file": "src/input/read_step_.f90",
-    "line": 1315,
+    "line": 1341,
     "routine": "read_step"
    },
    "display": "*Boundary",
@@ -1302,7 +1302,7 @@
    "handler": {
     "anchor": "cb8b89487cefd4ef",
     "file": "src/input/read_step_.f90",
-    "line": 1315,
+    "line": 1341,
     "routine": "read_step"
    },
    "keyword": "*BOUNDARY",
@@ -1310,25 +1310,25 @@
     "*BOUNDARY",
     "*BOUNDARY,"
    ],
-   "notes": "Appended to cdb%step(istep)%bcs after model-level BCs of step 1 (l.1321-1329). Node set must exist (l.1557-1565). Values are total values (u = value*amp) except INCREMENT/VELOCITY/ACCELERATION (soe_apply_boundary_conditions_.f90:135-267). Active only in this step. TT: only type 0, value > 0, corner nodes (src/database/database.f90:1263-1280).",
+   "notes": "Appended to cdb%step(istep)%bcs after model-level BCs of step 1 (l.1347-1355). Node set must exist (l.1583-1591). Values are total values (u = value*amp) except INCREMENT/VELOCITY/ACCELERATION (soe_apply_boundary_conditions_.f90:135-267). Active only in this step. TT: only type 0, value > 0, corner nodes (src/database/database.f90:1263-1280).",
    "options": [
     {
      "default": 0,
      "default_source": {
       "anchor": "a4064f64d0961b18",
       "file": "src/input/read_step_.f90",
-      "line": 1399,
+      "line": 1425,
       "routine": "read_step"
      },
      "doc": "docs/reference/boundary-conditions/boundary.md",
      "match": "substring search (index(...,back=.true.)) on the whole option string, in this priority: 'VELOCITY'->1, 'ACCELERATION'->2, 'HYDROSTATIC' whose last occurrence starts at position <10 ->3, 'CONTACTPRESSURE'->4, 'INCREMENT'->5, 'MOVING-HYDROSTATIC'->6, else 0. The prefix 'TYPE=' is not required (bare 'INCREMENT' works).",
      "name": "TYPE",
-     "notes": "TYPE=HYDROSTATIC must be the first option (position check l.1389), e.g. 'AMPLITUDE=A,TYPE=HYDROSTATIC' -> type 0 -> error 'type not supported'. Any option text containing one of the substrings (also inside an amplitude name, e.g. AMPLITUDE=INCREMENTAL) changes the type. With type 0: narg==2 without OP=NEW/OP=MOD -> error, narg==3 -> error (l.1401-1413); a single unknown option (e.g. TYPE=DISPLACEMENT) is accepted silently as type 0.",
+     "notes": "TYPE=HYDROSTATIC must be the first option (position check l.1415), e.g. 'AMPLITUDE=A,TYPE=HYDROSTATIC' -> type 0 -> error 'type not supported'. Any option text containing one of the substrings (also inside an amplitude name, e.g. AMPLITUDE=INCREMENTAL) changes the type. With type 0: narg==2 without OP=NEW/OP=MOD -> error, narg==3 -> error (l.1427-1439); a single unknown option (e.g. TYPE=DISPLACEMENT) is accepted silently as type 0.",
      "required": false,
      "source": {
       "anchor": "a1db001b047a5435",
       "file": "src/input/read_step_.f90",
-      "line": 1384,
+      "line": 1410,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -1346,18 +1346,18 @@
      "default_source": {
       "anchor": "e980edcba70e2ffd",
       "file": "src/input/read_step_.f90",
-      "line": 1473,
+      "line": 1499,
       "routine": "read_step"
      },
      "doc": "docs/reference/boundary-conditions/boundary.md",
      "match": "substring 'AMPL' anywhere in the option string; the name is the text after the first '=' of the option that contains 'AMPL'",
      "name": "AMPLITUDE",
-     "notes": "At most 2 options when AMPL is present (narg>2 -> error l.1465). Name must be a defined amplitude (error). Comment at l.1472 says 'default amplitude is ramp' but ampl_id=0 means factor 1 in soe_apply_boundary_conditions_.f90:104-106. For *UBOUNDARY: warning, amplitude not used (l.1422-1426).",
+     "notes": "At most 2 options when AMPL is present (narg>2 -> error l.1491). Name must be a defined amplitude (error). Comment at l.1498 says 'default amplitude is ramp' but ampl_id=0 means factor 1 in soe_apply_boundary_conditions_.f90:104-106. For *UBOUNDARY: warning, amplitude not used (l.1448-1452).",
      "required": false,
      "source": {
       "anchor": "10af939df02a3a80",
       "file": "src/input/read_step_.f90",
-      "line": 1419,
+      "line": 1445,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -1374,7 +1374,7 @@
      "source": {
       "anchor": "f7da3b1b98f329bf",
       "file": "src/input/read_step_.f90",
-      "line": 1404,
+      "line": 1430,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -1499,7 +1499,7 @@
    "dispatch": {
     "anchor": "ef2196922a5f627b",
     "file": "src/input/read_step_.f90",
-    "line": 1713,
+    "line": 1739,
     "routine": "read_step"
    },
    "display": "*Boundary-flexible",
@@ -1730,7 +1730,7 @@
    "dispatch": {
     "anchor": "1eb738b8dd015603",
     "file": "src/input/read_step_.f90",
-    "line": 1594,
+    "line": 1620,
     "routine": "read_step"
    },
    "display": "*Cload",
@@ -1893,7 +1893,7 @@
    "dispatch": {
     "anchor": "198907da6dd0d731",
     "file": "src/input/read_step_.f90",
-    "line": 1673,
+    "line": 1699,
     "routine": "read_step"
    },
    "display": "*Connector element",
@@ -2407,7 +2407,7 @@
    "dispatch": {
     "anchor": "394fa3f31d3d0a75",
     "file": "src/input/read_step_.f90",
-    "line": 1659,
+    "line": 1685,
     "routine": "read_step"
    },
    "display": "*Contact penalty",
@@ -2491,7 +2491,7 @@
      "doc": null,
      "match": "substring",
      "name": "STIFFNESS",
-     "notes": "stiffness-dependent penalty; reader returns before reading any data line (l.114) and read_step does not backspace (read_step_.f90:1668).",
+     "notes": "stiffness-dependent penalty; reader returns before reading any data line (l.114) and read_step does not backspace (read_step_.f90:1694).",
      "required": false,
      "source": {
       "anchor": "da6737ffd3f9f2ec",
@@ -2544,7 +2544,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 2457,
+      "line": 2538,
       "routine": "read_step"
      }
     }
@@ -2552,7 +2552,7 @@
    "dispatch": {
     "anchor": "948087e08bde2d88",
     "file": "src/input/read_step_.f90",
-    "line": 2397,
+    "line": 2478,
     "routine": "read_step"
    },
    "display": "*Controls",
@@ -2560,7 +2560,7 @@
    "handler": {
     "anchor": "948087e08bde2d88",
     "file": "src/input/read_step_.f90",
-    "line": 2397,
+    "line": 2478,
     "routine": "read_step"
    },
    "keyword": "*CONTROLS",
@@ -2576,12 +2576,12 @@
      "doc": "docs/reference/controls.md",
      "match": "first token after '*CONTROLS,' (exact, with or without trailing comma)",
      "name": "dof",
-     "notes": "Exactly two arguments required: narg == 2 (2399-2404). Unknown dof -> error (2785-2789).",
+     "notes": "Exactly two arguments required: narg == 2 (2480-2485). Unknown dof -> error (2866-2870).",
      "required": true,
      "source": {
       "anchor": "1592d256c459f8d5",
       "file": "src/input/read_step_.f90",
-      "line": 2408,
+      "line": 2489,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -2602,12 +2602,12 @@
      "doc": "docs/reference/controls.md",
      "match": "second token, substring: MODIFY, then DEACTIVATE, then ACTIVATE (MAX-DPW: only ACTIVATE)",
      "name": "mode",
-     "notes": "Unknown mode -> error, except GLOBAL (silently ignored). MAX-DPW,DEACTIVATE matches 'ACTIVATE' (2663).",
+     "notes": "Unknown mode -> error, except GLOBAL (silently ignored). MAX-DPW,DEACTIVATE matches 'ACTIVATE' (2744).",
      "required": true,
      "source": {
       "anchor": "21afb545d65738a4",
       "file": "src/input/read_step_.f90",
-      "line": 2414,
+      "line": 2495,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -2800,7 +2800,7 @@
    "dispatch": {
     "anchor": "931f3a6a2a8e7a44",
     "file": "src/input/read_step_.f90",
-    "line": 1581,
+    "line": 1607,
     "routine": "read_step"
    },
    "display": "*Dload",
@@ -2968,7 +2968,7 @@
    "dispatch": {
     "anchor": "931f3a6a2a8e7a44",
     "file": "src/input/read_step_.f90",
-    "line": 1581,
+    "line": 1607,
     "routine": "read_step"
    },
    "display": "*Dsload",
@@ -3094,7 +3094,7 @@
    "context": "step-procedure",
    "data_lines": [
     {
-     "count_rule": "narg == 4 (576-581)",
+     "count_rule": "narg == 4 (602-607)",
      "description": "time incrementation",
      "fields": [
       {
@@ -3104,7 +3104,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 582,
+        "line": 608,
         "routine": "read_step"
        },
        "type": "real",
@@ -3117,7 +3117,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 582,
+        "line": 608,
         "routine": "read_step"
        },
        "type": "real",
@@ -3130,7 +3130,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 582,
+        "line": 608,
         "routine": "read_step"
        },
        "type": "real",
@@ -3143,7 +3143,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 582,
+        "line": 608,
         "routine": "read_step"
        },
        "type": "real",
@@ -3154,7 +3154,7 @@
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 575,
+      "line": 601,
       "routine": "read_step"
      }
     },
@@ -3166,7 +3166,7 @@
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 586,
+      "line": 612,
       "routine": "read_step"
      }
     }
@@ -3174,7 +3174,7 @@
    "dispatch": {
     "anchor": "d11e8d1d983c6a15",
     "file": "src/input/read_step_.f90",
-    "line": 567,
+    "line": 593,
     "routine": "read_step"
    },
    "display": "*Dynamic",
@@ -3182,7 +3182,7 @@
    "handler": {
     "anchor": "d11e8d1d983c6a15",
     "file": "src/input/read_step_.f90",
-    "line": 567,
+    "line": 593,
     "routine": "read_step"
    },
    "keyword": "*DYNAMIC",
@@ -3190,7 +3190,7 @@
     "*DYNAMIC",
     "*DYNAMIC,INITIAL"
    ],
-   "notes": "Sets calc%dynamic (568). Missing integrator line -> error (618-622).",
+   "notes": "Sets calc%dynamic (594). Missing integrator line -> error (644-648).",
    "options": [
     {
      "default": false,
@@ -3203,12 +3203,12 @@
      "doc": "docs/reference/initial-conditions/velocity-acceleration.md",
      "match": "exact: remainder after '*DYNAMIC,' == 'INITIAL'",
      "name": "INITIAL",
-     "notes": "Sets calc%initial_acceleration and calc%velocity_jump (571-572).",
+     "notes": "Sets calc%initial_acceleration and calc%velocity_jump (597-598).",
      "required": false,
      "source": {
       "anchor": "a4addd97ed5add52",
       "file": "src/input/read_step_.f90",
-      "line": 570,
+      "line": 596,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -3443,7 +3443,7 @@
        "source": {
         "anchor": "41ca57bebfe935a9",
         "file": "src/input/read_step_.f90",
-        "line": 1900,
+        "line": 1936,
         "routine": "read_step"
        },
        "type": "string list",
@@ -3454,7 +3454,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 1894,
+      "line": 1930,
       "routine": "read_step"
      }
     }
@@ -3462,7 +3462,7 @@
    "dispatch": {
     "anchor": "19d1f99e96c73985",
     "file": "src/input/read_step_.f90",
-    "line": 1876,
+    "line": 1912,
     "routine": "read_step"
    },
    "display": "*Element output",
@@ -3470,7 +3470,7 @@
    "handler": {
     "anchor": "0d2f79341c81b89f",
     "file": "src/input/read_step_.f90",
-    "line": 3791,
+    "line": 4278,
     "routine": "validate_field_element_options"
    },
    "keyword": "*ELEMENT",
@@ -3488,12 +3488,12 @@
      "doc": "docs/reference/output/field.md",
      "match": "token with prefix 'elset=' (lower-cased, blanks removed), non-empty, without '='",
      "name": "ELSET",
-     "notes": "accepted and IGNORED (1891-1892); any other token -> error",
+     "notes": "accepted and IGNORED (1927-1928); any other token -> error",
      "required": false,
      "source": {
       "anchor": "f9c5ec0ba158b622",
       "file": "src/input/read_step_.f90",
-      "line": 3826,
+      "line": 4313,
       "routine": "validate_field_element_options"
      },
      "value_type": "name",
@@ -3518,7 +3518,7 @@
        "source": {
         "anchor": "fc4104375d93bd8a",
         "file": "src/input/read_step_.f90",
-        "line": 2095,
+        "line": 2176,
         "routine": "read_step"
        },
        "type": "string list",
@@ -3529,7 +3529,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 2089,
+      "line": 2170,
       "routine": "read_step"
      }
     }
@@ -3537,7 +3537,7 @@
    "dispatch": {
     "anchor": "20dc39a3d4c6158f",
     "file": "src/input/read_step_.f90",
-    "line": 2057,
+    "line": 2138,
     "routine": "read_step"
    },
    "display": "*Element output",
@@ -3545,7 +3545,7 @@
    "handler": {
     "anchor": "20dc39a3d4c6158f",
     "file": "src/input/read_step_.f90",
-    "line": 2057,
+    "line": 2138,
     "routine": "read_step"
    },
    "keyword": "*ELEMENT",
@@ -3563,12 +3563,12 @@
      "doc": "docs/reference/output/print.md#element-output",
      "match": "narg==1 and substring 'ELSET='; set name = text after the first '='",
      "name": "ELSET",
-     "notes": "existing element set required (2081-2086); narg>1 -> error (message wrongly says 'Integration point', 2099-2104); missing -> error (2107-2110)",
+     "notes": "existing element set required (2162-2167); narg>1 -> error (message wrongly says 'Integration point', 2180-2185); missing -> error (2188-2191)",
      "required": true,
      "source": {
       "anchor": "6e24166290784d3e",
       "file": "src/input/read_step_.f90",
-      "line": 2064,
+      "line": 2145,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -3593,7 +3593,7 @@
        "source": {
         "anchor": "77373b82e511cc90",
         "file": "src/input/read_step_.f90",
-        "line": 2309,
+        "line": 2390,
         "routine": "read_step"
        },
        "type": "string list",
@@ -3604,7 +3604,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 2303,
+      "line": 2384,
       "routine": "read_step"
      }
     }
@@ -3612,7 +3612,7 @@
    "dispatch": {
     "anchor": "19d1f99e96c73985",
     "file": "src/input/read_step_.f90",
-    "line": 2272,
+    "line": 2353,
     "routine": "read_step"
    },
    "display": "*Element output",
@@ -3620,7 +3620,7 @@
    "handler": {
     "anchor": "19d1f99e96c73985",
     "file": "src/input/read_step_.f90",
-    "line": 2272,
+    "line": 2353,
     "routine": "read_step"
    },
    "keyword": "*ELEMENT",
@@ -3638,12 +3638,12 @@
      "doc": "docs/reference/output/print.md#sec_user_print",
      "match": "narg==1 and substring 'ELSET='",
      "name": "ELSET",
-     "notes": "narg>1 -> error (2313); missing -> error (2320)",
+     "notes": "narg>1 -> error (2394); missing -> error (2401)",
      "required": true,
      "source": {
       "anchor": "6e24166290784d3e",
       "file": "src/input/read_step_.f90",
-      "line": 2279,
+      "line": 2360,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -4205,7 +4205,7 @@
    "dispatch": {
     "anchor": "5788ee72a784ac83",
     "file": "src/input/read_step_.f90",
-    "line": 3153,
+    "line": 3251,
     "routine": "read_step"
    },
    "display": "*End step",
@@ -4213,7 +4213,7 @@
    "handler": {
     "anchor": "0980cace4d06262d",
     "file": "src/input/read_step_.f90",
-    "line": 3154,
+    "line": 3252,
     "routine": "read_step"
    },
    "keyword": "*ENDSTEP",
@@ -4221,7 +4221,7 @@
     "*ENDSTEP",
     "*ENDSTEP,"
    ],
-   "notes": "Only terminator of step_loop (exit at 3154). Any unrecognised keyword inside the step -> report%error 'Invalid input statement or missing *END STEP statement' (default case 3160-3165). EOF before *ENDSTEP -> runtime read error at 635 (no iostat). After the loop: field-output inheritance (3175-3185), rigid-body BCs (3188), amplitude_ids collection (3191-3228).",
+   "notes": "Only terminator of step_loop (exit at 3252). Any unrecognised keyword inside the step -> report%error 'Invalid input statement or missing *END STEP statement' (default case 3258-3263). EOF before *ENDSTEP -> runtime read error at 661 (no iostat). After the loop: field-output inheritance (3273-3283), rigid-body BCs (3286), amplitude_ids collection (3289-3326).",
    "options": [],
    "parent": "*STEP",
    "public_version_restricted": false
@@ -4429,7 +4429,7 @@
    "dispatch": {
     "anchor": "121c0f7470b7ff92",
     "file": "src/input/read_step_.f90",
-    "line": 1682,
+    "line": 1708,
     "routine": "read_step"
    },
    "display": "*Equation",
@@ -4504,18 +4504,18 @@
        "source": {
         "anchor": "1e467073996f7420",
         "file": "src/input/read_step_.f90",
-        "line": 3115,
+        "line": 3213,
         "routine": "read_step"
        },
        "type": "string (256 chars; '$' removed and lower-cased at execution)",
        "unit": null
       }
      ],
-     "repeat": "lines until a line containing '*' (3109-3119)",
+     "repeat": "lines until a line containing '*' (3207-3217)",
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 3110,
+      "line": 3208,
       "routine": "read_step"
      }
     }
@@ -4523,7 +4523,7 @@
    "dispatch": {
     "anchor": "bd13a6e5e07e907a",
     "file": "src/input/read_step_.f90",
-    "line": 3102,
+    "line": 3200,
     "routine": "read_step"
    },
    "display": "*Execute command",
@@ -4531,7 +4531,7 @@
    "handler": {
     "anchor": "82f04dfb5f4882e6",
     "file": "src/input/read_step_.f90",
-    "line": 3296,
+    "line": 3397,
     "routine": "read_execution_command"
    },
    "keyword": "*EXECUTECOMMAND",
@@ -4546,7 +4546,7 @@
      "default_source": {
       "anchor": "0c6fe2ba108d4e60",
       "file": "src/input/read_step_.f90",
-      "line": 3104,
+      "line": 3202,
       "routine": "read_step"
      },
      "doc": "docs/reference/execute-command.md",
@@ -4557,7 +4557,7 @@
      "source": {
       "anchor": "8c56cab4bc9b4d4f",
       "file": "src/input/read_step_.f90",
-      "line": 3308,
+      "line": 3409,
       "routine": "read_execution_command"
      },
      "value_type": "int",
@@ -4572,7 +4572,7 @@
    "context": "step-procedure",
    "data_lines": [
     {
-     "count_rule": "narg == 2 or narg == 4 (515-525); dtmin/dtmax=0 means no limit",
+     "count_rule": "narg == 2 or narg == 4 (541-551); dtmin/dtmax=0 means no limit",
      "description": "time incrementation",
      "fields": [
       {
@@ -4582,7 +4582,7 @@
        "source": {
         "anchor": "166f2adc2940e314",
         "file": "src/input/read_step_.f90",
-        "line": 516,
+        "line": 542,
         "routine": "read_step"
        },
        "type": "real",
@@ -4595,7 +4595,7 @@
        "source": {
         "anchor": "166f2adc2940e314",
         "file": "src/input/read_step_.f90",
-        "line": 516,
+        "line": 542,
         "routine": "read_step"
        },
        "type": "real",
@@ -4606,9 +4606,9 @@
        "name": "dtmin",
        "required": false,
        "source": {
-        "anchor": "efddebe511d38703",
+        "anchor": "371a6a3ee7f1cc63",
         "file": "src/input/read_step_.f90",
-        "line": 517,
+        "line": 543,
         "routine": "read_step"
        },
        "type": "real",
@@ -4619,9 +4619,9 @@
        "name": "dtmax",
        "required": false,
        "source": {
-        "anchor": "efddebe511d38703",
+        "anchor": "371a6a3ee7f1cc63",
         "file": "src/input/read_step_.f90",
-        "line": 517,
+        "line": 543,
         "routine": "read_step"
        },
        "type": "real",
@@ -4632,7 +4632,7 @@
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 513,
+      "line": 539,
       "routine": "read_step"
      }
     },
@@ -4644,7 +4644,7 @@
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 544,
+      "line": 570,
       "routine": "read_step"
      }
     }
@@ -4652,7 +4652,7 @@
    "dispatch": {
     "anchor": "b1b8ea5c7396b1c0",
     "file": "src/input/read_step_.f90",
-    "line": 477,
+    "line": 503,
     "routine": "read_step"
    },
    "display": "*Explicit dynamic",
@@ -4660,7 +4660,7 @@
    "handler": {
     "anchor": "b1b8ea5c7396b1c0",
     "file": "src/input/read_step_.f90",
-    "line": 477,
+    "line": 503,
     "routine": "read_step"
    },
    "keyword": "*EXPLICITDYNAMIC",
@@ -4669,7 +4669,7 @@
     "*EXPLICITDYNAMICS",
     "<either>,<ignored>"
    ],
-   "notes": "public_version -> error (481-485). dtcrit=1e12 (479); calc%explicit_dynamic (487); maxIter=0 (490); mass_scaling=1 (492); solver name DIAGONAL (498, re-forced after *SOLVER 1309); maxInc>=1000000 (501-504); dt_scale_factor=1 or SCALEFACTOR of *STEP (507-511); anti_hourglass%viscous=.true. for ALL materials (528-530). Runtime dt=dtcrit*scale_factor, bounded by dtmax>1e-12 and dtmin>1e-10 (src/fem/fem_global_estimate_current_dt_.f90:165-177).",
+   "notes": "public_version -> error (507-511). dtcrit=1e12 (505); calc%explicit_dynamic (513); maxIter=0 (516); mass_scaling=1 (518); solver name DIAGONAL (524, re-forced after *SOLVER 1335); maxInc>=1000000 (527-530); dt_scale_factor=1 or SCALEFACTOR of *STEP (533-537); anti_hourglass%viscous=.true. for ALL materials (554-556). Runtime dt=dtcrit*scale_factor, bounded by dtmax>1e-12 and dtmin>1e-10 (src/fem/fem_global_estimate_current_dt_.f90:165-177).",
    "options": [],
    "parent": "*STEP",
    "public_version_restricted": true
@@ -4736,7 +4736,7 @@
    "dispatch": {
     "anchor": "13d96455139bfbb2",
     "file": "src/input/read_step_.f90",
-    "line": 645,
+    "line": 671,
     "routine": "read_step"
    },
    "display": "*Extrapolation",
@@ -4744,7 +4744,7 @@
    "handler": {
     "anchor": "13d96455139bfbb2",
     "file": "src/input/read_step_.f90",
-    "line": 645,
+    "line": 671,
     "routine": "read_step"
    },
    "keyword": "*EXTRAPOLATION",
@@ -4759,18 +4759,18 @@
      "default_source": {
       "anchor": "73b97d08949116ab",
       "file": "src/input/read_step_.f90",
-      "line": 257,
+      "line": 263,
       "routine": "read_step"
      },
      "doc": "docs/reference/extrapolation.md",
      "match": "text after the first comma of the same line; exact for FOS-LINEAR, FOS-HYPERBOLIC, LINEAR, NONE, NONE-PW; substring for QUADRATIC, COUPLED, CONSTANT (tested in this order)",
      "name": "strategy",
-     "notes": "COUPLED is stored as 'QUADRATIC' (duplicate QUADRATIC test 655/657, COUPLED->QUADRATIC 659-660): runtime 'COUPLED' (src/soe/soe_extrapolate_solution_.f90:276) unreachable. Unknown value silently ignored. FOS-* fall back to linear outside *REDUCTION (soe_extrapolate_solution_.f90:215-218).",
+     "notes": "COUPLED is stored as 'QUADRATIC' (duplicate QUADRATIC test 681/683, COUPLED->QUADRATIC 685-686): runtime 'COUPLED' (src/soe/soe_extrapolate_solution_.f90:276) unreachable. Unknown value silently ignored. FOS-* fall back to linear outside *REDUCTION (soe_extrapolate_solution_.f90:215-218).",
      "required": false,
      "source": {
       "anchor": "a6b14f702842c64d",
       "file": "src/input/read_step_.f90",
-      "line": 649,
+      "line": 675,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -4991,7 +4991,7 @@
    "dispatch": {
     "anchor": "4764005bcc399670",
     "file": "src/input/read_step_.f90",
-    "line": 1826,
+    "line": 1862,
     "routine": "read_step"
    },
    "display": "*Frequency",
@@ -4999,7 +4999,7 @@
    "handler": {
     "anchor": "4764005bcc399670",
     "file": "src/input/read_step_.f90",
-    "line": 1826,
+    "line": 1862,
     "routine": "read_step"
    },
    "keyword": "*FREQUENCY",
@@ -5013,18 +5013,18 @@
      "default_source": {
       "anchor": "6e6b6425a2ecf42f",
       "file": "src/input/read_step_.f90",
-      "line": 1816,
+      "line": 1852,
       "routine": "read_step"
      },
      "doc": "docs/reference/output/field.md",
      "match": "text after the first '=' of the line, list-directed read into integer(ik)",
      "name": "<value>",
-     "notes": "same code for PRINT (1937-1941, default 1927) and USER (2202-2206, default 2194). Non-integer text (e.g. 10.0) or a missing '=' gives a Fortran runtime read error. Values <= 1 mean every call.",
+     "notes": "same code for PRINT (2018-2022, default 2008) and USER (2283-2287, default 2275). Non-integer text (e.g. 10.0) or a missing '=' gives a Fortran runtime read error. Values <= 1 mean every call.",
      "required": false,
      "source": {
       "anchor": "8ec3d75b02229d2e",
       "file": "src/input/read_step_.f90",
-      "line": 1830,
+      "line": 1866,
       "routine": "read_step"
      },
      "value_type": "int",
@@ -5144,7 +5144,7 @@
    "dispatch": {
     "anchor": "ed7e558992f8bf5b",
     "file": "src/input/read_step_.f90",
-    "line": 364,
+    "line": 370,
     "routine": "read_step"
    },
    "display": "*Geostatic",
@@ -5152,7 +5152,7 @@
    "handler": {
     "anchor": "ed7e558992f8bf5b",
     "file": "src/input/read_step_.f90",
-    "line": 364,
+    "line": 370,
     "routine": "read_step"
    },
    "keyword": "*GEOSTATIC",
@@ -5160,7 +5160,7 @@
     "*GEOSTATIC",
     "*GEOSTATIC,<ignored>"
    ],
-   "notes": "No data line allowed: the next line must contain '*' else error (368-378). Sets calc%geostatic (365) and dt0=t_end=dtmin=dtmax=1.0 (369-372).",
+   "notes": "No data line allowed: the next line must contain '*' else error (374-384). Sets calc%geostatic (371) and dt0=t_end=dtmin=dtmax=1.0 (375-378).",
    "options": [],
    "parent": "*STEP",
    "public_version_restricted": false
@@ -5316,7 +5316,7 @@
    "dispatch": {
     "anchor": "50396716b5d788f7",
     "file": "src/input/read_step_.f90",
-    "line": 587,
+    "line": 613,
     "routine": "read_step"
    },
    "display": "*Hilber-hughes-taylor",
@@ -5324,7 +5324,7 @@
    "handler": {
     "anchor": "50396716b5d788f7",
     "file": "src/input/read_step_.f90",
-    "line": 587,
+    "line": 613,
     "routine": "read_step"
    },
    "keyword": "*HILBER-HUGHES-TAYLOR",
@@ -5332,7 +5332,7 @@
     "line containing '*HILBER-HUGHES-TAYLOR'",
     "line containing '*HHT'"
    ],
-   "notes": "Sets dyn%time_integrator='HHT' (589).",
+   "notes": "Sets dyn%time_integrator='HHT' (615).",
    "options": [
     {
      "default": null,
@@ -5340,12 +5340,12 @@
      "doc": "docs/reference/step/dynamic.md",
      "match": "values after the first '=' of the line; narg 1 -> alpha (beta=(1-alpha)^2/4, gamma=1/2-alpha); narg 3 -> alpha,beta,gamma",
      "name": "alpha[,beta,gamma]",
-     "notes": "narg==0 defaults (-0.05, 0.275625, 0.55; 593-597) unreachable; bare '*HHT' -> runtime read error; narg==2 or >3 -> error (606-609). Benchmarks use '*HHT=0'.",
+     "notes": "narg==0 defaults (-0.05, 0.275625, 0.55; 619-623) unreachable; bare '*HHT' -> runtime read error; narg==2 or >3 -> error (632-635). Benchmarks use '*HHT=0'.",
      "required": true,
      "source": {
       "anchor": "800de75682c27e7e",
       "file": "src/input/read_step_.f90",
-      "line": 598,
+      "line": 624,
       "routine": "read_step"
      },
      "value_type": "real",
@@ -5980,7 +5980,7 @@
    "context": "output-field",
    "data_lines": [
     {
-     "count_rule": "one line; error if the line contains '*' (report%error, 1940-1943); tokens = parse_string_to_array(line, ','), upper case (preprocessing), no blanks; IP, SF, MAT, SETS, EMBEDDED, SHELL-AXES, CONTACT, CONTACT_SDV, CONTACT_DIAGNOSTIC, DELTA-T, DELTA-PW, F, STRAIN-HENCKY, PHANTOM-ELASTICITY, PHANTOM-VISCOSITY -> error (1949-1959)",
+     "count_rule": "one line; error if the line contains '*' (report%error, 1963-1966); tokens = parse_string_to_array(line, ','), upper case (preprocessing), no blanks; IP, SF, MAT, SETS, EMBEDDED, SHELL-AXES, CONTACT, CONTACT_SDV, CONTACT_DIAGNOSTIC, DELTA-T, DELTA-PW, F, STRAIN-HENCKY, PHANTOM-ELASTICITY, PHANTOM-VISCOSITY -> error (1972-1982)",
      "description": "exactly ONE line with the output variables, comma separated: S, E, VOID, element variables, state variables of the materials",
      "fields": [
       {
@@ -5990,7 +5990,7 @@
        "source": {
         "anchor": "3034f6639fd0b5f8",
         "file": "src/input/read_step_.f90",
-        "line": 1945,
+        "line": 1968,
         "routine": "read_step"
        },
        "type": "string list",
@@ -6001,7 +6001,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 1939,
+      "line": 1962,
       "routine": "read_step"
      }
     }
@@ -6009,7 +6009,7 @@
    "dispatch": {
     "anchor": "aa7fe61bbd980a3e",
     "file": "src/input/read_step_.f90",
-    "line": 1917,
+    "line": 1940,
     "routine": "read_step"
    },
    "display": "*Integration point",
@@ -6017,7 +6017,7 @@
    "handler": {
     "anchor": "aa7fe61bbd980a3e",
     "file": "src/input/read_step_.f90",
-    "line": 1917,
+    "line": 1940,
     "routine": "read_step"
    },
    "keyword": "*INTEGRATIONPOINT",
@@ -6025,7 +6025,7 @@
     "*INTEGRATIONPOINT",
     "*INTEGRATIONPOINT,"
    ],
-   "notes": "numgeo-src working tree of 02.11.2026 (after 7052b69). Values at the integration points of all active elements, VTK only: dataset <job>-out/<job>-ip-<istep>-<counter>.vtu, block 'Integration points' of the .vtm (src/output/VTK_write_results_.f90:278, 1387). No options: any option -> error (1931-1937). S and E for continuum elements only; zero where an element lacks a variable; warning in the first frame of a step if no active element has a variable (src/output/VTK_write_integration_points_.f90). Taken over by following steps without *Output, field. GiD: warning, not written (src/output/output.f90).",
+   "notes": "numgeo-src working tree of 02.11.2026 (after 7052b69). Values at the integration points of all active elements, VTK only: dataset <job>-out/<job>-ip-<istep>-<counter>.vtu, block 'Integration points' of the .vtm (src/output/VTK_write_results_.f90:278, 1387). No options: any option -> error (1954-1960). S and E for continuum elements only; zero where an element lacks a variable; warning in the first frame of a step if no active element has a variable (src/output/VTK_write_integration_points_.f90). Taken over by following steps without *Output, field. GiD: warning, not written (src/output/output.f90). Line numbers of read_step_.f90 refer to the numgeo-src 1f48283.",
    "options": [],
    "parent": "*OUTPUT,FIELD",
    "public_version_restricted": false
@@ -6045,7 +6045,7 @@
        "source": {
         "anchor": "4598a7a8ec29af18",
         "file": "src/input/read_step_.f90",
-        "line": 2153,
+        "line": 2234,
         "routine": "read_step"
        },
        "type": "string list",
@@ -6056,7 +6056,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 2147,
+      "line": 2228,
       "routine": "read_step"
      }
     }
@@ -6064,7 +6064,7 @@
    "dispatch": {
     "anchor": "aa7fe61bbd980a3e",
     "file": "src/input/read_step_.f90",
-    "line": 2115,
+    "line": 2196,
     "routine": "read_step"
    },
    "display": "*Integration point",
@@ -6072,7 +6072,7 @@
    "handler": {
     "anchor": "aa7fe61bbd980a3e",
     "file": "src/input/read_step_.f90",
-    "line": 2115,
+    "line": 2196,
     "routine": "read_step"
    },
    "keyword": "*INTEGRATIONPOINT",
@@ -6088,12 +6088,12 @@
      "doc": "docs/reference/output/print.md#integration-point-output",
      "match": "narg==1 and substring 'ELSET='",
      "name": "ELSET",
-     "notes": "existing element set (2139-2144); narg>1 or missing -> error (2157-2167)",
+     "notes": "existing element set (2220-2225); narg>1 or missing -> error (2238-2248)",
      "required": true,
      "source": {
       "anchor": "6e24166290784d3e",
       "file": "src/input/read_step_.f90",
-      "line": 2122,
+      "line": 2203,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -6569,7 +6569,7 @@
    "dispatch": {
     "anchor": "260e6201a7e00b38",
     "file": "src/input/read_step_.f90",
-    "line": 1646,
+    "line": 1672,
     "routine": "read_step"
    },
    "display": "*Mass point",
@@ -6653,7 +6653,7 @@
    "dispatch": {
     "anchor": "df229c84f76fb2d4",
     "file": "src/input/read_step_.f90",
-    "line": 546,
+    "line": 572,
     "routine": "read_step"
    },
    "display": "*Mass scaling",
@@ -6661,7 +6661,7 @@
    "handler": {
     "anchor": "df229c84f76fb2d4",
     "file": "src/input/read_step_.f90",
-    "line": 546,
+    "line": 572,
     "routine": "read_step"
    },
    "keyword": "*MASSSCALING",
@@ -6675,18 +6675,18 @@
      "default_source": {
       "anchor": "13364e5acf98be5f",
       "file": "src/input/read_step_.f90",
-      "line": 492,
+      "line": 518,
       "routine": "read_step"
      },
      "doc": "docs/reference/step/explicit-dynamic.md",
      "match": "text after first '=' of the line; narg==1 read list-directed",
      "name": "factor",
-     "notes": "narg==0 branch (553) unreachable (get_num_arguments returns >=1); bare '*MASSSCALING' -> runtime read error; >1 values -> error (558-560).",
+     "notes": "narg==0 branch (579) unreachable (get_num_arguments returns >=1); bare '*MASSSCALING' -> runtime read error; >1 values -> error (584-586).",
      "required": false,
      "source": {
       "anchor": "5d5fd090602af726",
       "file": "src/input/read_step_.f90",
-      "line": 556,
+      "line": 582,
       "routine": "read_step"
      },
      "value_type": "real",
@@ -7296,7 +7296,7 @@
    "dispatch": {
     "anchor": "2dd1041bc563e892",
     "file": "src/input/read_step_.f90",
-    "line": 1730,
+    "line": 1756,
     "routine": "read_step"
    },
    "display": "*Model change",
@@ -7517,7 +7517,7 @@
    "dispatch": {
     "anchor": "eef26e64c377df9f",
     "file": "src/input/read_step_.f90",
-    "line": 3141,
+    "line": 3239,
     "routine": "read_step"
    },
    "display": "*Modify",
@@ -7533,7 +7533,7 @@
     "*MODIFY",
     "*MODIFY,"
    ],
-   "notes": "Sets modify_is_active (3147); read_step backspaces after read_modify (3149). u-T -> stop (database.f90:1228). Undocumented.",
+   "notes": "Sets modify_is_active (3245); read_step backspaces after read_modify (3247). u-T -> stop (database.f90:1228). Undocumented.",
    "options": [
     {
      "default": null,
@@ -7590,7 +7590,7 @@
    "dispatch": {
     "anchor": "f9d6851d8e9827f7",
     "file": "src/input/read_step_.f90",
-    "line": 1635,
+    "line": 1661,
     "routine": "read_step"
    },
    "display": "*Nodal dynamic force",
@@ -7720,7 +7720,7 @@
        "source": {
         "anchor": "0e13846ee9a1ef08",
         "file": "src/input/read_step_.f90",
-        "line": 1873,
+        "line": 1909,
         "routine": "read_step"
        },
        "type": "string list",
@@ -7731,7 +7731,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 1867,
+      "line": 1903,
       "routine": "read_step"
      }
     }
@@ -7739,7 +7739,7 @@
    "dispatch": {
     "anchor": "632cf529cad26029",
     "file": "src/input/read_step_.f90",
-    "line": 1843,
+    "line": 1879,
     "routine": "read_step"
    },
    "display": "*Node output",
@@ -7747,7 +7747,7 @@
    "handler": {
     "anchor": "f798a6ac708767b3",
     "file": "src/input/read_step_.f90",
-    "line": 3700,
+    "line": 4187,
     "routine": "validate_field_node_options"
    },
    "keyword": "*NODE",
@@ -7757,7 +7757,7 @@
     "*NODE",
     "*NODE,"
    ],
-   "notes": "Card dispatch: text up to and including the first comma compared exactly (1839-1843); any other line ends the *OUTPUT block (backspace, 1903-1905). Each card appends one output_set_ty and one entry of field%area_weighted (1845-1865). '*Integration point' (without options) is accepted in field output since the numgeo-src working tree of 02.11.2026 (see the output-field entry of *INTEGRATIONPOINT).",
+   "notes": "Card dispatch: text up to and including the first comma compared exactly (1875-1879); any other line ends the *OUTPUT block (backspace, 1984-1986). Each card appends one output_set_ty and one entry of field%area_weighted (1881-1901). '*Integration point' (without options) is accepted in field output since the numgeo-src working tree of 02.11.2026 (see the output-field entry of *INTEGRATIONPOINT).",
    "options": [
     {
      "default": null,
@@ -7765,12 +7765,12 @@
      "doc": "docs/reference/output/field.md",
      "match": "token (blanks/tabs removed, lower-cased) with prefix 'nset=' and a non-empty value without '='",
      "name": "NSET",
-     "notes": "accepted for backwards compatibility and IGNORED: field output is always model-wide (set_name='' and set_label=0, 1858-1859); duplicate NSET -> error",
+     "notes": "accepted for backwards compatibility and IGNORED: field output is always model-wide (set_name='' and set_label=0, 1894-1895); duplicate NSET -> error",
      "required": false,
      "source": {
       "anchor": "0053d20eeb626852",
       "file": "src/input/read_step_.f90",
-      "line": 3747,
+      "line": 4234,
       "routine": "validate_field_node_options"
      },
      "value_type": "name",
@@ -7781,18 +7781,18 @@
      "default_source": {
       "anchor": "72d2e6ca1053b8bf",
       "file": "src/input/read_step_.f90",
-      "line": 3715,
+      "line": 4202,
       "routine": "validate_field_node_options"
      },
      "doc": "docs/reference/output/field.md",
      "match": "exact token 'unweighted' (case-insensitive)",
      "name": "UNWEIGHTED",
-     "notes": "area_weighted=.false.: simple mean of the extrapolated values at the nodes; affects S, E, STRAIN-HENCKY, VOID, F, PHANTOM-*, element and material variables; VTK names change (see output_variables). Any other token -> error (3767-3771).",
+     "notes": "area_weighted=.false.: simple mean of the extrapolated values at the nodes; affects S, E, STRAIN-HENCKY, VOID, F, PHANTOM-*, element and material variables; VTK names change (see output_variables). Any other token -> error (4254-4258).",
      "required": false,
      "source": {
       "anchor": "f20ae89ca52ef01a",
       "file": "src/input/read_step_.f90",
-      "line": 3738,
+      "line": 4225,
       "routine": "validate_field_node_options"
      },
      "value_type": "flag",
@@ -7819,7 +7819,7 @@
        "source": {
         "anchor": "0d65bc3753998e8f",
         "file": "src/input/read_step_.f90",
-        "line": 1997,
+        "line": 2078,
         "routine": "read_step"
        },
        "type": "string list",
@@ -7830,7 +7830,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 1991,
+      "line": 2072,
       "routine": "read_step"
      }
     }
@@ -7838,7 +7838,7 @@
    "dispatch": {
     "anchor": "632cf529cad26029",
     "file": "src/input/read_step_.f90",
-    "line": 1954,
+    "line": 2035,
     "routine": "read_step"
    },
    "display": "*Node output",
@@ -7846,7 +7846,7 @@
    "handler": {
     "anchor": "632cf529cad26029",
     "file": "src/input/read_step_.f90",
-    "line": 1954,
+    "line": 2035,
     "routine": "read_step"
    },
    "keyword": "*NODE",
@@ -7864,12 +7864,12 @@
      "doc": "docs/reference/output/print.md#node-output",
      "match": "narg==1: substring 'NSET=' in the remainder after '*NODE,'; set name = text after the first '='",
      "name": "NSET",
-     "notes": "must name an existing node set (exact, upper case) else error (1983-1988); missing -> error (2048-2051)",
+     "notes": "must name an existing node set (exact, upper case) else error (2064-2069); missing -> error (2129-2132)",
      "required": true,
      "source": {
       "anchor": "7d16be2a8749283c",
       "file": "src/input/read_step_.f90",
-      "line": 1969,
+      "line": 2050,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -7880,18 +7880,18 @@
      "default_source": {
       "anchor": "4aad9d2c927dc528",
       "file": "src/input/read_step_.f90",
-      "line": 1971,
+      "line": 2052,
       "routine": "read_step"
      },
      "doc": null,
      "match": "narg==2: substrings 'NSET=' and 'UNWEIGHTED'; NSET must be the FIRST argument (name = text between '=' and ',')",
      "name": "UNWEIGHTED",
-     "notes": "stored in print%area_weighted but never used by the print writer (no effect). narg==2 without UNWEIGHTED or narg>2 -> error (2034-2045). '*Node,unweighted,nset=X' gives set name '' -> error",
+     "notes": "stored in print%area_weighted but never used by the print writer (no effect). narg==2 without UNWEIGHTED or narg>2 -> error (2115-2126). '*Node,unweighted,nset=X' gives set name '' -> error",
      "required": false,
      "source": {
       "anchor": "bc62e8bbd717359d",
       "file": "src/input/read_step_.f90",
-      "line": 2000,
+      "line": 2081,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -7918,7 +7918,7 @@
        "source": {
         "anchor": "30c31197bb195571",
         "file": "src/input/read_step_.f90",
-        "line": 2254,
+        "line": 2335,
         "routine": "read_step"
        },
        "type": "string list",
@@ -7929,7 +7929,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 2248,
+      "line": 2329,
       "routine": "read_step"
      }
     }
@@ -7937,7 +7937,7 @@
    "dispatch": {
     "anchor": "ecc65c1bc554e550",
     "file": "src/input/read_step_.f90",
-    "line": 2217,
+    "line": 2298,
     "routine": "read_step"
    },
    "display": "*Node output",
@@ -7945,7 +7945,7 @@
    "handler": {
     "anchor": "ecc65c1bc554e550",
     "file": "src/input/read_step_.f90",
-    "line": 2217,
+    "line": 2298,
     "routine": "read_step"
    },
    "keyword": "*NODE",
@@ -7963,12 +7963,12 @@
      "doc": "docs/reference/output/print.md#sec_user_print",
      "match": "narg==1 and substring 'NSET='",
      "name": "NSET",
-     "notes": "narg>1 -> error (2258); missing -> error (2265)",
+     "notes": "narg>1 -> error (2339); missing -> error (2346)",
      "required": true,
      "source": {
       "anchor": "7d16be2a8749283c",
       "file": "src/input/read_step_.f90",
-      "line": 2232,
+      "line": 2313,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -7983,7 +7983,7 @@
    "context": "step",
    "data_lines": [
     {
-     "count_rule": "narg values, line must not contain '*' (3490-3495)",
+     "count_rule": "narg values, line must not contain '*' (3860-3865)",
      "description": "smoothing times (only without FREQUENCY)",
      "fields": [
       {
@@ -7993,7 +7993,7 @@
        "source": {
         "anchor": "c94bca3b9002ffe8",
         "file": "src/input/read_step_.f90",
-        "line": 3497,
+        "line": 3867,
         "routine": "read_nonlocal_options"
        },
        "type": "real",
@@ -8004,7 +8004,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 3488,
+      "line": 3858,
       "routine": "read_nonlocal_options"
      }
     }
@@ -8012,7 +8012,7 @@
    "dispatch": {
     "anchor": "54a27bf4b1491436",
     "file": "src/input/read_step_.f90",
-    "line": 3132,
+    "line": 3230,
     "routine": "read_step"
    },
    "display": "*Non-local",
@@ -8020,7 +8020,7 @@
    "handler": {
     "anchor": "9e2ee6f935bfd40c",
     "file": "src/input/read_step_.f90",
-    "line": 3463,
+    "line": 3833,
     "routine": "read_nonlocal_options"
    },
    "keyword": "*NON-LOCAL",
@@ -8028,7 +8028,7 @@
     "*NON-LOCAL",
     "*NON-LOCAL,"
    ],
-   "notes": "Sets non_local%non_local (3134).",
+   "notes": "Sets non_local%non_local (3232).",
    "options": [
     {
      "default": null,
@@ -8036,12 +8036,12 @@
      "doc": "docs/reference/non-local.md",
      "match": "substring 'ELSET'; value after '='",
      "name": "ELSET",
-     "notes": "Missing/unknown -> error (3527-3535).",
+     "notes": "Missing/unknown -> error (3897-3905).",
      "required": true,
      "source": {
-      "anchor": "9ca275e768ad41f7",
+      "anchor": "dc886367d46cd3a5",
       "file": "src/input/read_step_.f90",
-      "line": 3480,
+      "line": 3850,
       "routine": "read_nonlocal_options"
      },
      "value_type": "name",
@@ -8053,12 +8053,12 @@
      "doc": "docs/reference/non-local.md",
      "match": "substring; value after '=' REAL",
      "name": "LOCAL-LEN",
-     "notes": "length unit of the model; missing -> error (3507).",
+     "notes": "length unit of the model; missing -> error (3877).",
      "required": true,
      "source": {
       "anchor": "7dd9b2cc04ed7f05",
       "file": "src/input/read_step_.f90",
-      "line": 3476,
+      "line": 3846,
       "routine": "read_nonlocal_options"
      },
      "value_type": "real",
@@ -8070,12 +8070,12 @@
      "doc": "docs/reference/non-local.md",
      "match": "substring; value after '=' INTEGER",
      "name": "STATEV",
-     "notes": "matvar number; missing -> error (3515).",
+     "notes": "matvar number; missing -> error (3885).",
      "required": true,
      "source": {
-      "anchor": "83ed44d67b0a010f",
+      "anchor": "c361519e97db9f29",
       "file": "src/input/read_step_.f90",
-      "line": 3478,
+      "line": 3848,
       "routine": "read_nonlocal_options"
      },
      "value_type": "int",
@@ -8086,7 +8086,7 @@
      "default_source": {
       "anchor": "9a6195821b474bcb",
       "file": "src/input/read_step_.f90",
-      "line": 3135,
+      "line": 3233,
       "routine": "read_step"
      },
      "doc": "docs/reference/non-local.md",
@@ -8097,7 +8097,7 @@
      "source": {
       "anchor": "8c56cab4bc9b4d4f",
       "file": "src/input/read_step_.f90",
-      "line": 3477,
+      "line": 3847,
       "routine": "read_nonlocal_options"
      },
      "value_type": "int",
@@ -8112,9 +8112,9 @@
      "notes": "The data line is read whenever FREQUENCY is absent.",
      "required": false,
      "source": {
-      "anchor": "14a134b84763475a",
+      "anchor": "6c43125779ffc17b",
       "file": "src/input/read_step_.f90",
-      "line": 3479,
+      "line": 3849,
       "routine": "read_nonlocal_options"
      },
      "value_type": "flag",
@@ -9059,7 +9059,7 @@
    "dispatch": {
     "anchor": "801cd9973684ff1c",
     "file": "src/input/read_step_.f90",
-    "line": 1739,
+    "line": 1765,
     "routine": "read_step"
    },
    "display": "*Output",
@@ -9067,7 +9067,7 @@
    "handler": {
     "anchor": "801cd9973684ff1c",
     "file": "src/input/read_step_.f90",
-    "line": 1739,
+    "line": 1765,
     "routine": "read_step"
    },
    "keyword": "*OUTPUT",
@@ -9075,7 +9075,7 @@
     "*OUTPUT",
     "*OUTPUT,"
    ],
-   "notes": "The step reader reads the line into string3_256 and splits at the first comma (read_step_.f90:635-643); the options are searched in the remainder by substring, so order and spelling of separators are free. All lines are upper-cased and blank-free (preprocessing). Each *OUTPUT block of a step sets <type>%active and resets <type>%frequency to 1 (1816/1927/2194); several blocks of the same type in one step accumulate node/element/ip cards, the last *FREQUENCY wins. If a step has no *Output, field the field definition of the previous step is copied if it was active (3170-3182); print and user output are NOT inherited. Explicit-dynamic steps: a frequency of 1 (default or explicit) is replaced by 500 for all three types (1911-1917, 2178-2184, 2335-2341).",
+   "notes": "The step reader reads the line into string3_256 and splits at the first comma (read_step_.f90:661-669); the options are searched in the remainder by substring, so order and spelling of separators are free. All lines are upper-cased and blank-free (preprocessing). Each *OUTPUT block of a step sets <type>%active and resets <type>%frequency to 1 (1852/2008/2275); several blocks of the same type in one step accumulate node/element/ip cards, the last *FREQUENCY wins. If a step has no *Output, field the field definition of the previous step is copied if it was active (3268-3280); print and user output are NOT inherited. Explicit-dynamic steps: a frequency of 1 (default or explicit) is replaced by 500 for all three types (1992-1998, 2259-2265, 2416-2422).",
    "options": [
     {
      "default": null,
@@ -9083,12 +9083,12 @@
      "doc": "docs/reference/output/field.md",
      "match": "substring 'FIELD' anywhere in the text after the first comma (index(...,'FIELD',.true.)>0); precedence FIELD > PRINT > USER",
      "name": "FIELD",
-     "notes": "selects the output type; one of FIELD/PRINT/USER is required (error read_step_.f90:2343-2346). Substring match: a set name such as NSET=FIELDNODES on the line would also select FIELD.",
+     "notes": "selects the output type; one of FIELD/PRINT/USER is required (error read_step_.f90:2424-2427). Substring match: a set name such as NSET=FIELDNODES on the line would also select FIELD.",
      "required": false,
      "source": {
       "anchor": "7262af0e867c4ee5",
       "file": "src/input/read_step_.f90",
-      "line": 1742,
+      "line": 1768,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9107,7 +9107,7 @@
      "source": {
       "anchor": "26d245c69a355fd6",
       "file": "src/input/read_step_.f90",
-      "line": 1920,
+      "line": 2001,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9126,7 +9126,7 @@
      "source": {
       "anchor": "7f11c65c3e572b52",
       "file": "src/input/read_step_.f90",
-      "line": 2187,
+      "line": 2268,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9140,12 +9140,12 @@
      "doc": "docs/reference/output/field.md",
      "match": "FIELD only: substring 'VTK'; tested after GID",
      "name": "VTK",
-     "notes": "if neither GID nor VTK occurs a warning says 'default value (VTK) will be applied' but field%format is NOT assigned (read_step_.f90:1772-1776; no default in database/output_ty_.f90:46) -> field output is not written (output.f90:127-128). Writers must always give VTK or GID.",
+     "notes": "if neither GID nor VTK occurs a warning says 'default value (VTK) will be applied' but field%format is NOT assigned (read_step_.f90:1798-1802; no default in database/output_ty_.f90:46) -> field output is not written (output.f90:127-128). Writers must always give VTK or GID.",
      "required": false,
      "source": {
       "anchor": "9e69a1022da9b0f4",
       "file": "src/input/read_step_.f90",
-      "line": 1754,
+      "line": 1780,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9157,14 +9157,14 @@
      "default": null,
      "default_source": null,
      "doc": "docs/reference/output/field.md",
-     "match": "FIELD only: substring 'GID'; precedence over VTK (the 'both' branch 1757-1770 is unreachable)",
+     "match": "FIELD only: substring 'GID'; precedence over VTK (the 'both' branch 1783-1796 is unreachable)",
      "name": "GID",
-     "notes": "GiD output is active in this source (output.f90:115-119, GiD_type.f90:116-156); the 'GiD deactivated' stop at 1762-1770 is dead code",
+     "notes": "GiD output is active in this source (output.f90:115-119, GiD_type.f90:116-156); the 'GiD deactivated' stop at 1788-1796 is dead code",
      "required": false,
      "source": {
       "anchor": "afbbed30a1428f49",
       "file": "src/input/read_step_.f90",
-      "line": 1751,
+      "line": 1777,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9177,18 +9177,18 @@
      "default_source": {
       "anchor": "fe5e96395f6df0b3",
       "file": "src/input/read_step_.f90",
-      "line": 1799,
+      "line": 1835,
       "routine": "read_step"
      },
      "doc": "docs/reference/output/field.md",
      "match": "FIELD only: substring 'ASCII'; precedence ASCII > BINARY-ZLIB > BINARY > HDF5",
      "name": "ASCII",
-     "notes": "default ASCII with warning when no data type is given (1798-1802); 'both' branch 1792 unreachable",
+     "notes": "default ASCII with warning when no data type is given (1834-1838); 'both' branch 1828 unreachable",
      "required": false,
      "source": {
       "anchor": "6b8ca804686911c0",
       "file": "src/input/read_step_.f90",
-      "line": 1779,
+      "line": 1805,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9202,12 +9202,12 @@
      "doc": "docs/reference/output/field.md",
      "match": "FIELD only: substring 'BINARY-ZLIB'; tested after ASCII, before BINARY",
      "name": "BINARY-ZLIB",
-     "notes": "numgeo-src 7052b69 (02.11.2026); line numbers of this option refer to 7052b69. VTK: binary appended data compressed with zlib (compressor=\"vtkZLibDataCompressor\", header_type UInt64, blocks of 1 MiB compressed independently; VTK_type.f90:1143-1144, VTK_AppendedData_type_.f90:380-462), same values as BINARY. GiD: warning, written as BINARY (1785-1788). As format and type, taken from the first step with field output for the whole run (output.f90:103-111, 124).",
+     "notes": "numgeo-src 7052b69 (02.11.2026); line numbers of this option refer to 7052b69, those of read_step_.f90 to 1f48283. VTK: binary appended data compressed with zlib (compressor=\"vtkZLibDataCompressor\", header_type UInt64, blocks of 1 MiB compressed independently; VTK_type.f90:1143-1144, VTK_AppendedData_type_.f90:380-462), same values as BINARY. GiD: warning, written as BINARY (1810-1813). As format and type, taken from the first step with field output for the whole run (output.f90:103-111, 124).",
      "required": false,
      "source": {
       "anchor": "11eae47c4bb926c2",
       "file": "src/input/read_step_.f90",
-      "line": 1783,
+      "line": 1808,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9226,7 +9226,7 @@
      "source": {
       "anchor": "d03ae0772d8a86af",
       "file": "src/input/read_step_.f90",
-      "line": 1782,
+      "line": 1818,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9240,12 +9240,12 @@
      "doc": null,
      "match": "FIELD only: substring 'HDF5'",
      "name": "HDF5",
-     "notes": "undocumented. GiD: writes <job>.post.h5 (GiD_type.f90:147-150). VTK+HDF5: message prepared but report%warning not called (1787-1790); run aborts at the first VTK file: the initial mesh (VTK_type.f90:1139-1142) if step 1 is VTK, else the first frame (VTK_write_results_.f90:574-577).",
+     "notes": "undocumented. GiD: writes <job>.post.h5 (GiD_type.f90:147-150). VTK+HDF5: message prepared but report%warning not called (1823-1826); run aborts at the first VTK file: the initial mesh (VTK_type.f90:1139-1142) if step 1 is VTK, else the first frame (VTK_write_results_.f90:574-577).",
      "required": false,
      "source": {
       "anchor": "0273e025aacad331",
       "file": "src/input/read_step_.f90",
-      "line": 1785,
+      "line": 1821,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9258,7 +9258,7 @@
      "default_source": {
       "anchor": "dcfdbe11a5f7baab",
       "file": "src/input/read_step_.f90",
-      "line": 1812,
+      "line": 1848,
       "routine": "read_step"
      },
      "doc": "docs/reference/output/field.md",
@@ -9269,7 +9269,7 @@
      "source": {
       "anchor": "de839d886e1d83d4",
       "file": "src/input/read_step_.f90",
-      "line": 1809,
+      "line": 1845,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9513,7 +9513,7 @@
    "context": "step",
    "data_lines": [
     {
-     "count_rule": "narg == 2 (3020), else error (3030-3037)",
+     "count_rule": "narg == 2 (3108), else error (3118-3125)",
      "description": "remeshing units",
      "fields": [
       {
@@ -9523,7 +9523,7 @@
        "source": {
         "anchor": "f718cc2f150ccef3",
         "file": "src/input/read_step_.f90",
-        "line": 3023,
+        "line": 3111,
         "routine": "read_step"
        },
        "type": "name",
@@ -9536,18 +9536,18 @@
        "source": {
         "anchor": "1f2ce6ab0031db34",
         "file": "src/input/read_step_.f90",
-        "line": 3028,
+        "line": 3116,
         "routine": "read_step"
        },
        "type": "name",
        "unit": null
       }
      ],
-     "repeat": "1..10000 lines until a line containing '*'; at least one (2997-2999)",
+     "repeat": "1..10000 lines until a line containing '*'; at least one (3085-3087)",
      "source": {
       "anchor": "65b23d9dd3889ac6",
       "file": "src/input/read_step_.f90",
-      "line": 2994,
+      "line": 3082,
       "routine": "read_step"
      }
     }
@@ -9555,7 +9555,7 @@
    "dispatch": {
     "anchor": "3ca1cbc93070efc7",
     "file": "src/input/read_step_.f90",
-    "line": 2974,
+    "line": 3062,
     "routine": "read_step"
    },
    "display": "*Pfem write",
@@ -9563,7 +9563,7 @@
    "handler": {
     "anchor": "3ca1cbc93070efc7",
     "file": "src/input/read_step_.f90",
-    "line": 2974,
+    "line": 3062,
     "routine": "read_step"
    },
    "keyword": "*PFEMWRITE",
@@ -9571,14 +9571,14 @@
     "*PFEMWRITE",
     "*PFEMWRITE,"
    ],
-   "notes": "Sets global pfem_restart%pfem_write=.true. and step write_restart (2976-2977). Not available with u-T elements (src/initial/initial_temperature_.f90:64-65). Undocumented.",
+   "notes": "Sets global pfem_restart%pfem_write=.true. and step write_restart (3064-3065). Not available with u-T elements (src/initial/initial_temperature_.f90:64-65). Undocumented.",
    "options": [
     {
      "default": false,
      "default_source": {
       "anchor": "2f433dacf087f320",
       "file": "src/input/read_step_.f90",
-      "line": 2983,
+      "line": 3071,
       "routine": "read_step"
      },
      "doc": null,
@@ -9589,7 +9589,7 @@
      "source": {
       "anchor": "29838138b39bb650",
       "file": "src/input/read_step_.f90",
-      "line": 2980,
+      "line": 3068,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -9601,12 +9601,12 @@
      "doc": null,
      "match": "substring",
      "name": "UNWEIGHTED",
-     "notes": "UNWEIGHTED -> pfem_restart%area_weighted=.false., else .true. (2986-2990, global).",
+     "notes": "UNWEIGHTED -> pfem_restart%area_weighted=.false., else .true. (3074-3078, global).",
      "required": false,
      "source": {
       "anchor": "77f4b514c6c0dec2",
       "file": "src/input/read_step_.f90",
-      "line": 2986,
+      "line": 3074,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -10114,7 +10114,7 @@
    "dispatch": {
     "anchor": "5c48b2f96fd59eed",
     "file": "src/input/read_step_.f90",
-    "line": 1621,
+    "line": 1647,
     "routine": "read_step"
    },
    "display": "*Reaction force",
@@ -10198,7 +10198,7 @@
    "dispatch": {
     "anchor": "abdca114c112f1c9",
     "file": "src/input/read_step_.f90",
-    "line": 3093,
+    "line": 3191,
     "routine": "read_step"
    },
    "display": "*Read state",
@@ -10206,7 +10206,7 @@
    "handler": {
     "anchor": "f9a5296cdb6dd31d",
     "file": "src/input/read_step_.f90",
-    "line": 3252,
+    "line": 3353,
     "routine": "read_user_state"
    },
    "keyword": "*READSTATE",
@@ -10216,14 +10216,14 @@
     "*READ STATE (dead)",
     "*READ STATE, (dead)"
    ],
-   "notes": "Sets read_initial_matvar_file (3095).",
+   "notes": "Sets read_initial_matvar_file (3193).",
    "options": [
     {
      "default": 10000000,
      "default_source": {
       "anchor": "c2ece67a4ff40498",
       "file": "src/input/read_step_.f90",
-      "line": 3096,
+      "line": 3194,
       "routine": "read_step"
      },
      "doc": "docs/reference/read-state.md",
@@ -10234,7 +10234,7 @@
      "source": {
       "anchor": "8c56cab4bc9b4d4f",
       "file": "src/input/read_step_.f90",
-      "line": 3264,
+      "line": 3365,
       "routine": "read_user_state"
      },
      "value_type": "int",
@@ -10251,7 +10251,7 @@
    "dispatch": {
     "anchor": "96622f40a93d60fa",
     "file": "src/input/read_step_.f90",
-    "line": 3043,
+    "line": 3141,
     "routine": "read_step"
    },
    "display": "*Read stress",
@@ -10259,7 +10259,7 @@
    "handler": {
     "anchor": "96622f40a93d60fa",
     "file": "src/input/read_step_.f90",
-    "line": 3043,
+    "line": 3141,
     "routine": "read_step"
    },
    "keyword": "*READSTRESS",
@@ -10267,7 +10267,7 @@
     "*READSTRESS",
     "*READ STRESS (dead: blanks are deleted)"
    ],
-   "notes": "Sets read_initial_stress_file (3045). '*READSTRESS,' (with comma) is not a case literal -> step-loop error. Undocumented.",
+   "notes": "Sets read_initial_stress_file (3143). '*READSTRESS,' (with comma) is not a case literal -> step-loop error. Undocumented.",
    "options": [],
    "parent": "*STEP",
    "public_version_restricted": false
@@ -10665,7 +10665,7 @@
    "context": "step",
    "data_lines": [
     {
-     "count_rule": "line must not contain '*' (2935); exact 'DISPLACEMENT' or 'DISPLACEMENT,STRAIN' (2944-2949)",
+     "count_rule": "line must not contain '*' (3016); exact 'DISPLACEMENT' or 'DISPLACEMENT,STRAIN' (3025-3030)",
      "description": "variables to reset",
      "fields": [
       {
@@ -10675,7 +10675,7 @@
        "source": {
         "anchor": "e3ba389d78b3b29c",
         "file": "src/input/read_step_.f90",
-        "line": 2943,
+        "line": 3024,
         "routine": "read_step"
        },
        "type": "string",
@@ -10686,7 +10686,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 2934,
+      "line": 3015,
       "routine": "read_step"
      }
     }
@@ -10694,7 +10694,7 @@
    "dispatch": {
     "anchor": "872c080c3155f192",
     "file": "src/input/read_step_.f90",
-    "line": 2929,
+    "line": 3010,
     "routine": "read_step"
    },
    "display": "*Reset",
@@ -10702,7 +10702,7 @@
    "handler": {
     "anchor": "872c080c3155f192",
     "file": "src/input/read_step_.f90",
-    "line": 2929,
+    "line": 3010,
     "routine": "read_step"
    },
    "keyword": "*RESET",
@@ -10857,7 +10857,7 @@
    "match_forms": [
     "*RESTARTWRITE"
    ],
-   "notes": "see area step. No-op at top level; only the form without comma is accepted outside a step (read_input.f90:457); inside *STEP handled by read_step (src/input/read_step_.f90:2954).",
+   "notes": "see area step. No-op at top level; only the form without comma is accepted outside a step (read_input.f90:457); inside *STEP handled by read_step (src/input/read_step_.f90:3035).",
    "options": [],
    "parent": null,
    "public_version_restricted": false
@@ -10869,7 +10869,7 @@
    "dispatch": {
     "anchor": "f35003d05ad0ef7a",
     "file": "src/input/read_step_.f90",
-    "line": 2954,
+    "line": 3035,
     "routine": "read_step"
    },
    "display": "*Restart write",
@@ -10877,7 +10877,7 @@
    "handler": {
     "anchor": "f35003d05ad0ef7a",
     "file": "src/input/read_step_.f90",
-    "line": 2954,
+    "line": 3035,
     "routine": "read_step"
    },
    "keyword": "*RESTARTWRITE",
@@ -10890,20 +10890,20 @@
     {
      "default": false,
      "default_source": {
-      "anchor": "5f438afa1f6f43f1",
+      "anchor": "283637b5fc5ab54c",
       "file": "src/input/read_step_.f90",
-      "line": 213,
+      "line": 219,
       "routine": "read_step"
      },
      "doc": "docs/reference/restart.md",
-     "match": "exact: remainder after '*RESTARTWRITE,' == 'STRESS' (empty -> complete restart; anything else -> error 2967-2970)",
+     "match": "exact: remainder after '*RESTARTWRITE,' == 'STRESS' (empty -> complete restart; anything else -> error 3055-3058)",
      "name": "STRESS",
-     "notes": "Empty form sets write_restart (2961) and the GLOBAL pfem_restart%pfem_write=.false. (2960). STRESS sets write_restart_stress (2965). Written at the end of the step (src/main.f90:342-347).",
+     "notes": "Empty form sets write_restart (3049) and the GLOBAL pfem_restart%pfem_write=.false. (3048). STRESS sets write_restart_stress (3053). Written at the end of the step (src/main.f90:342-347).",
      "required": false,
      "source": {
       "anchor": "a7e0bcbe4bb461cc",
       "file": "src/input/read_step_.f90",
-      "line": 2963,
+      "line": 3051,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -10947,7 +10947,7 @@
    "dispatch": {
     "anchor": "121c0f7470b7ff92",
     "file": "src/input/read_step_.f90",
-    "line": 1682,
+    "line": 1708,
     "routine": "read_step"
    },
    "display": "*Rigid body",
@@ -10963,7 +10963,7 @@
     "*RIGIDBODY",
     "*RIGIDBODY,"
    ],
-   "notes": "Creates 2*ndim equations (translation + 'ghost' rotational node) (l.194-196, 313-380); counter in read_step_.f90:1689-1691. *Boundary R1/R2/R3 on the REFNODE set are converted, only R3 -> U1,U2 of the ghost node implemented (add_boundary_conditions_rigid_body l.396-470). Undocumented.",
+   "notes": "Creates 2*ndim equations (translation + 'ghost' rotational node) (l.194-196, 313-380); counter in read_step_.f90:1715-1717. *Boundary R1/R2/R3 on the REFNODE set are converted, only R3 -> U1,U2 of the ghost node implemented (add_boundary_conditions_rigid_body l.396-470). Undocumented.",
    "options": [
     {
      "default": null,
@@ -11141,7 +11141,7 @@
    "dispatch": {
     "anchor": "99611b988189ec6e",
     "file": "src/input/read_step_.f90",
-    "line": 1696,
+    "line": 1722,
     "routine": "read_step"
    },
    "display": "*Robin",
@@ -11234,7 +11234,7 @@
    "dispatch": {
     "anchor": "cc2759f36627cdc7",
     "file": "src/input/read_step_.f90",
-    "line": 1607,
+    "line": 1633,
     "routine": "read_step"
    },
    "display": "*Save reaction force",
@@ -11250,7 +11250,7 @@
     "*SAVEREACTIONFORCE",
     "*SAVEREACTIONFORCE,"
    ],
-   "notes": "Options are not parsed (code commented out l.80-108); ampl_id=0, save=.true. (l.76-78). Shares the cdb%step%reaction_force array with *REACTIONFORCE (counter logic read_step_.f90:1610,1624).",
+   "notes": "Options are not parsed (code commented out l.80-108); ampl_id=0, save=.true. (l.76-78). Shares the cdb%step%reaction_force array with *REACTIONFORCE (counter logic read_step_.f90:1636,1650).",
    "options": [],
    "parent": "*STEP",
    "public_version_restricted": false
@@ -11423,7 +11423,7 @@
    "dispatch": {
     "anchor": "69f1e17604c48be3",
     "file": "src/input/read_step_.f90",
-    "line": 673,
+    "line": 699,
     "routine": "read_step"
    },
    "display": "*Solver",
@@ -11431,7 +11431,7 @@
    "handler": {
     "anchor": "69f1e17604c48be3",
     "file": "src/input/read_step_.f90",
-    "line": 673,
+    "line": 699,
     "routine": "read_step"
    },
    "keyword": "*SOLVER",
@@ -11439,7 +11439,7 @@
     "*SOLVER",
     "*SOLVER,"
    ],
-   "notes": "No data line. Reset to PARDISO/DIRECT every step (247-248).",
+   "notes": "No data line. Reset to PARDISO/DIRECT every step (253-254).",
    "options": [
     {
      "default": "PARDISO (DIAGONAL in *EXPLICITDYNAMIC)",
@@ -11450,14 +11450,14 @@
       "routine": "solver_default"
      },
      "doc": "docs/reference/solver.md",
-     "match": "first comma token after '*SOLVER,' up to '=' (solver_key, 678-682); see solver_options table for per-solver match type",
+     "match": "first comma token after '*SOLVER,' up to '=' (solver_key, 704-708); see solver_options table for per-solver match type",
      "name": "solver",
-     "notes": "Unknown key -> warning, current default kept (1299-1305). 'DIAGONAL' is not accepted from input.",
+     "notes": "Unknown key -> warning, current default kept (1325-1331). 'DIAGONAL' is not accepted from input.",
      "required": false,
      "source": {
       "anchor": "32a71f82a50bdb92",
       "file": "src/input/read_step_.f90",
-      "line": 686,
+      "line": 712,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -11540,7 +11540,7 @@
    "context": "step-procedure",
    "data_lines": [
     {
-     "count_rule": "narg == 4 (get_num_arguments, 384-389)",
+     "count_rule": "narg == 4 (get_num_arguments, 390-395)",
      "description": "time incrementation",
      "fields": [
       {
@@ -11550,7 +11550,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 390,
+        "line": 396,
         "routine": "read_step"
        },
        "type": "real",
@@ -11563,7 +11563,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 390,
+        "line": 396,
         "routine": "read_step"
        },
        "type": "real",
@@ -11576,7 +11576,7 @@
        "source": {
         "anchor": "6fde9e23a26ba59c",
         "file": "src/input/read_step_.f90",
-        "line": 391,
+        "line": 397,
         "routine": "read_step"
        },
        "type": "real",
@@ -11589,7 +11589,7 @@
        "source": {
         "anchor": "6fde9e23a26ba59c",
         "file": "src/input/read_step_.f90",
-        "line": 391,
+        "line": 397,
         "routine": "read_step"
        },
        "type": "real",
@@ -11600,7 +11600,7 @@
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 383,
+      "line": 389,
       "routine": "read_step"
      }
     }
@@ -11608,7 +11608,7 @@
    "dispatch": {
     "anchor": "2cfafd02960467e2",
     "file": "src/input/read_step_.f90",
-    "line": 381,
+    "line": 387,
     "routine": "read_step"
    },
    "display": "*Static",
@@ -11616,7 +11616,7 @@
    "handler": {
     "anchor": "2cfafd02960467e2",
     "file": "src/input/read_step_.f90",
-    "line": 381,
+    "line": 387,
     "routine": "read_step"
    },
    "keyword": "*STATIC",
@@ -11624,7 +11624,7 @@
     "*STATIC",
     "*STATIC,<ignored>"
    ],
-   "notes": "Sets calc%static (382).",
+   "notes": "Sets calc%static (388).",
    "options": [],
    "parent": "*STEP",
    "public_version_restricted": false
@@ -11644,7 +11644,7 @@
        "source": {
         "anchor": "cfba839ca43966c2",
         "file": "src/input/read_step_.f90",
-        "line": 357,
+        "line": 363,
         "routine": "read_step"
        },
        "type": "name",
@@ -11655,7 +11655,7 @@
      "source": {
       "anchor": "e163bec8317095b2",
       "file": "src/input/read_step_.f90",
-      "line": 361,
+      "line": 367,
       "routine": "read_step"
      }
     }
@@ -11671,7 +11671,7 @@
    "handler": {
     "anchor": "88d848ff0548507f",
     "file": "src/input/read_step_.f90",
-    "line": 147,
+    "line": 151,
     "routine": "read_step"
    },
    "keyword": "*STEP",
@@ -11679,7 +11679,7 @@
     "*STEP",
     "*STEP,"
    ],
-   "notes": "Unknown header options are silently ignored (keyword_indeces filled but never checked, 293-352). Steps are pre-counted and allocated with default initialisation in scanning_for_numbers (src/input/scanning_for_numbers_.f90:331-360). Procedure not recognised -> error 'The *STEP keyword has to be followed by an analysis definition' (626-628).",
+   "notes": "Unknown header options are silently ignored (keyword_indeces filled but never checked, 299-358). Steps are pre-counted and allocated with default initialisation in scanning_for_numbers (src/input/scanning_for_numbers_.f90:331-360). Procedure not recognised -> error 'The *STEP keyword has to be followed by an analysis definition' (652-654).",
    "options": [
     {
      "default": null,
@@ -11687,12 +11687,12 @@
      "doc": "docs/reference/step/index.md",
      "match": "first option only: first comma token of the remainder after '*STEP,' must contain substring 'NAME' (index back=.true.); value = text after the first '=' of that token",
      "name": "NAME",
-     "notes": "Missing/not-first NAME -> report%error 'The *STEP statement has to be followed by a name definition NAME' (275). Value is upper-cased (whole line upper-cased). `*STEP` without comma -> error.",
+     "notes": "Missing/not-first NAME -> report%error 'The *STEP statement has to be followed by a name definition NAME' (281). Value is upper-cased (whole line upper-cased). `*STEP` without comma -> error.",
      "required": true,
      "source": {
       "anchor": "71d4575e03f77156",
       "file": "src/input/read_step_.f90",
-      "line": 273,
+      "line": 279,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -11703,18 +11703,18 @@
      "default_source": {
       "anchor": "c6e8aec0550339dd",
       "file": "src/input/read_step_.f90",
-      "line": 333,
+      "line": 339,
       "routine": "read_step"
      },
      "doc": "docs/reference/step/index.md",
      "match": "substring 'INC' in any later comma token (last match wins); value after first '=' read list-directed as REAL, then int()",
      "name": "INC",
-     "notes": "Read at 327-331. Bare 'INC' (no '=') -> list-directed read of blank -> runtime error. *EXPLICITDYNAMIC raises maxInc to >= 1000000 (501-504). *REDUCTION uses maxInc for t_end and dtmin (416-417).",
+     "notes": "Read at 333-337. Bare 'INC' (no '=') -> list-directed read of blank -> runtime error. *EXPLICITDYNAMIC raises maxInc to >= 1000000 (527-530). *REDUCTION uses maxInc for t_end and dtmin (440-441).",
      "required": false,
      "source": {
       "anchor": "65c7a80d31ceb346",
       "file": "src/input/read_step_.f90",
-      "line": 299,
+      "line": 305,
       "routine": "read_step"
      },
      "value_type": "int",
@@ -11725,7 +11725,7 @@
      "default_source": {
       "anchor": "ac7b125de8985d13",
       "file": "src/input/read_step_.f90",
-      "line": 251,
+      "line": 257,
       "routine": "read_step"
      },
      "doc": "docs/reference/step/index.md",
@@ -11736,7 +11736,7 @@
      "source": {
       "anchor": "ddfa5ec85baaff22",
       "file": "src/input/read_step_.f90",
-      "line": 304,
+      "line": 310,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -11747,18 +11747,18 @@
      "default_source": {
       "anchor": "bfa67f8e3b8d69db",
       "file": "src/input/read_step_.f90",
-      "line": 254,
+      "line": 260,
       "routine": "read_step"
      },
      "doc": "docs/reference/step/index.md",
      "match": "substring 'NOCUTBACK' (doc spelling 'no cut back'; blanks are deleted)",
      "name": "NOCUTBACK",
-     "notes": "Runtime: cutbacks still occur until dt <= dtmin, then the non-converged increment is accepted (src/soe/convergence_.f90:1544-1553, src/fem/fem_global_estimate_current_dt_.f90:114-118); in *REDUCTION accepted at maxIter directly (convergence_.f90:1547). Copied to safety%no_cutback for *REDUCTION (445).",
+     "notes": "Runtime: cutbacks still occur until dt <= dtmin, then the non-converged increment is accepted (src/soe/convergence_.f90:1544-1553, src/fem/fem_global_estimate_current_dt_.f90:114-118); in *REDUCTION accepted at maxIter directly (convergence_.f90:1547). Copied to safety%no_cutback for *REDUCTION (471).",
      "required": false,
      "source": {
       "anchor": "30aee4b06c9be50f",
       "file": "src/input/read_step_.f90",
-      "line": 309,
+      "line": 315,
       "routine": "read_step"
      },
      "value_type": "flag",
@@ -11769,18 +11769,18 @@
      "default_source": {
       "anchor": "330424588f6ba667",
       "file": "src/input/read_step_.f90",
-      "line": 236,
+      "line": 242,
       "routine": "read_step"
      },
      "doc": "docs/reference/step/index.md",
      "match": "substring 'MAXITER' in a token; value after first '=' read list-directed INTEGER",
      "name": "MAXITER",
-     "notes": "Read at 337-342. *REDUCTION: 100 unless user value (443). *EXPLICITDYNAMIC: always reset to 0 (490), overriding the user value. Bare flag -> runtime read error.",
+     "notes": "Read at 343-348. *REDUCTION: 100 unless user value (469). *EXPLICITDYNAMIC: always reset to 0 (516), overriding the user value. Bare flag -> runtime read error.",
      "required": false,
      "source": {
       "anchor": "13f4a8efc857e98a",
       "file": "src/input/read_step_.f90",
-      "line": 314,
+      "line": 320,
       "routine": "read_step"
      },
      "value_type": "int",
@@ -11791,18 +11791,18 @@
      "default_source": {
       "anchor": "1c82c6018236baef",
       "file": "src/input/read_step_.f90",
-      "line": 240,
+      "line": 246,
       "routine": "read_step"
      },
      "doc": "docs/reference/step/index.md",
      "match": "substring 'MINITER' in a token; value after first '=' read list-directed INTEGER",
      "name": "MINITER",
-     "notes": "Read at 345-350. Bare flag -> runtime read error.",
+     "notes": "Read at 351-356. Bare flag -> runtime read error.",
      "required": false,
      "source": {
       "anchor": "4ceb9eb8c9c68134",
       "file": "src/input/read_step_.f90",
-      "line": 319,
+      "line": 325,
       "routine": "read_step"
      },
      "value_type": "int",
@@ -11813,18 +11813,18 @@
      "default_source": {
       "anchor": "1e60f5e453ef8e50",
       "file": "src/input/read_step_.f90",
-      "line": 507,
+      "line": 533,
       "routine": "read_step"
      },
      "doc": "docs/reference/step/index.md",
      "match": "substring 'SCALEFACTOR=' anywhere in the header remainder (after NAME token); value = list-directed read after the FIRST '=' of that remainder",
      "name": "SCALEFACTOR",
-     "notes": "Only evaluated in the *EXPLICITDYNAMIC branch (ignored otherwise). Doc spelling 'scale factor'. If another option with '=' (e.g. INC=) precedes SCALEFACTOR the value of that option is read instead (509-510) -> write SCALEFACTOR as the first '='-option after NAME.",
+     "notes": "Only evaluated in the *EXPLICITDYNAMIC branch (ignored otherwise). Doc spelling 'scale factor'. If another option with '=' (e.g. INC=) precedes SCALEFACTOR the value of that option is read instead (535-536) -> write SCALEFACTOR as the first '='-option after NAME.",
      "required": false,
      "source": {
       "anchor": "ba82cdc4914f972c",
       "file": "src/input/read_step_.f90",
-      "line": 508,
+      "line": 534,
       "routine": "read_step"
      },
      "value_type": "real",
@@ -11839,7 +11839,7 @@
    "context": "step",
    "data_lines": [
     {
-     "count_rule": "narg values, line must not contain '*' (3398-3403)",
+     "count_rule": "narg values, line must not contain '*' (3768-3773)",
      "description": "call times (only without FREQUENCY)",
      "fields": [
       {
@@ -11849,7 +11849,7 @@
        "source": {
         "anchor": "c94bca3b9002ffe8",
         "file": "src/input/read_step_.f90",
-        "line": 3405,
+        "line": 3775,
         "routine": "read_submodel_options"
        },
        "type": "real",
@@ -11860,7 +11860,7 @@
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 3396,
+      "line": 3766,
       "routine": "read_submodel_options"
      }
     }
@@ -11868,7 +11868,7 @@
    "dispatch": {
     "anchor": "11a7351ecd0960da",
     "file": "src/input/read_step_.f90",
-    "line": 3124,
+    "line": 3222,
     "routine": "read_step"
    },
    "display": "*Submodel",
@@ -11876,7 +11876,7 @@
    "handler": {
     "anchor": "9d977096e583dfb2",
     "file": "src/input/read_step_.f90",
-    "line": 3340,
+    "line": 3710,
     "routine": "read_submodel_options"
    },
    "keyword": "*SUBMODEL",
@@ -11884,14 +11884,14 @@
     "*SUBMODEL",
     "*SUBMODEL,"
    ],
-   "notes": "Sets submodel%use_submodel (3126). u-T -> stop (database.f90:1231).",
+   "notes": "Sets submodel%use_submodel (3224). u-T -> stop (database.f90:1231).",
    "options": [
     {
      "default": 0,
      "default_source": {
       "anchor": "2f66bccd531f5ed4",
       "file": "src/input/read_step_.f90",
-      "line": 3390,
+      "line": 3760,
       "routine": "read_submodel_options"
      },
      "doc": "docs/reference/submodel.md",
@@ -11902,7 +11902,7 @@
      "source": {
       "anchor": "8c56cab4bc9b4d4f",
       "file": "src/input/read_step_.f90",
-      "line": 3357,
+      "line": 3727,
       "routine": "read_submodel_options"
      },
      "value_type": "int",
@@ -11914,12 +11914,12 @@
      "doc": null,
      "match": "substring token (whole token stored)",
      "name": "STATEV",
-     "notes": "At least one of STATEV/STRESS/DISP required (3435-3440). Stored in submodel%variables, not used at runtime.",
+     "notes": "At least one of STATEV/STRESS/DISP required (3805-3810). Stored in submodel%variables, not used at runtime.",
      "required": false,
      "source": {
-      "anchor": "83ed44d67b0a010f",
+      "anchor": "c361519e97db9f29",
       "file": "src/input/read_step_.f90",
-      "line": 3358,
+      "line": 3728,
       "routine": "read_submodel_options"
      },
      "value_type": "flag",
@@ -11934,9 +11934,9 @@
      "notes": "",
      "required": false,
      "source": {
-      "anchor": "5b3560a4e06da8f1",
+      "anchor": "09bd39b304717fbc",
       "file": "src/input/read_step_.f90",
-      "line": 3359,
+      "line": 3729,
       "routine": "read_submodel_options"
      },
      "value_type": "flag",
@@ -11951,9 +11951,9 @@
      "notes": "",
      "required": false,
      "source": {
-      "anchor": "e88859954d8fdc60",
+      "anchor": "24b5fa1464b38963",
       "file": "src/input/read_step_.f90",
-      "line": 3360,
+      "line": 3730,
       "routine": "read_submodel_options"
      },
      "value_type": "flag",
@@ -11965,12 +11965,12 @@
      "doc": null,
      "match": "substring (index computed, value ignored)",
      "name": "NUMGEO",
-     "notes": "numgeo_name fixed to 'numgeo_submodel' (3363); reader commented out (3366-3376).",
+     "notes": "numgeo_name fixed to 'numgeo_submodel' (3733); reader commented out (3736-3746).",
      "required": false,
      "source": {
-      "anchor": "af1e88db0034d688",
+      "anchor": "d11b95bed6d98d44",
       "file": "src/input/read_step_.f90",
-      "line": 3355,
+      "line": 3725,
       "routine": "read_submodel_options"
      },
      "value_type": "string",
@@ -11982,12 +11982,12 @@
      "doc": null,
      "match": "substring (index computed, value ignored)",
      "name": "INP",
-     "notes": "inp_name fixed to <job>_submodel (3364).",
+     "notes": "inp_name fixed to <job>_submodel (3734).",
      "required": false,
      "source": {
-      "anchor": "c18dfc881188e679",
+      "anchor": "a9c2faacaa5fdcc4",
       "file": "src/input/read_step_.f90",
-      "line": 3356,
+      "line": 3726,
       "routine": "read_submodel_options"
      },
      "value_type": "string",
@@ -12236,7 +12236,7 @@
    "context": "step",
    "data_lines": [
     {
-     "count_rule": "narg == 3 (2363-2368); quantity checked by substring of 'E11,E22,E33,E12,E13,E23,S11,S22,S33,S12,S13,S23' (2379); elset must exist (2386-2391)",
+     "count_rule": "narg == 3 (2444-2449); quantity checked by substring of 'E11,E22,E33,E12,E13,E23,S11,S22,S33,S12,S13,S23' (2460); elset must exist (2467-2472)",
      "description": "criterion",
      "fields": [
       {
@@ -12246,7 +12246,7 @@
        "source": {
         "anchor": "d821a815ccc319cc",
         "file": "src/input/read_step_.f90",
-        "line": 2370,
+        "line": 2451,
         "routine": "read_step"
        },
        "type": "name",
@@ -12259,7 +12259,7 @@
        "source": {
         "anchor": "bc837f53659ebc43",
         "file": "src/input/read_step_.f90",
-        "line": 2371,
+        "line": 2452,
         "routine": "read_step"
        },
        "type": "string(3)",
@@ -12272,18 +12272,18 @@
        "source": {
         "anchor": "bc837f53659ebc43",
         "file": "src/input/read_step_.f90",
-        "line": 2371,
+        "line": 2452,
         "routine": "read_step"
        },
        "type": "real",
        "unit": "stress or strain unit of the model"
       }
      ],
-     "repeat": "exactly one line per *TERMINATION; several *TERMINATION blocks allowed (append_termination 2356)",
+     "repeat": "exactly one line per *TERMINATION; several *TERMINATION blocks allowed (append_termination 2437)",
      "source": {
       "anchor": "cfba839ca43966c2",
       "file": "src/input/read_step_.f90",
-      "line": 2361,
+      "line": 2442,
       "routine": "read_step"
      }
     }
@@ -12291,7 +12291,7 @@
    "dispatch": {
     "anchor": "4e5ae59bd5768396",
     "file": "src/input/read_step_.f90",
-    "line": 2352,
+    "line": 2433,
     "routine": "read_step"
    },
    "display": "*Termination",
@@ -12299,7 +12299,7 @@
    "handler": {
     "anchor": "4e5ae59bd5768396",
     "file": "src/input/read_step_.f90",
-    "line": 2352,
+    "line": 2433,
     "routine": "read_step"
    },
    "keyword": "*TERMINATION",
@@ -12484,7 +12484,7 @@
    "dispatch": {
     "anchor": "f5ae8436658c9f5b",
     "file": "src/input/read_step_.f90",
-    "line": 3049,
+    "line": 3147,
     "routine": "read_step"
    },
    "display": "*Time integration",
@@ -12492,7 +12492,7 @@
    "handler": {
     "anchor": "f5ae8436658c9f5b",
     "file": "src/input/read_step_.f90",
-    "line": 3049,
+    "line": 3147,
     "routine": "read_step"
    },
    "keyword": "*TIMEINTEGRATION",
@@ -12500,7 +12500,7 @@
     "*TIMEINTEGRATION",
     "*TIMEINTEGRATION,"
    ],
-   "notes": "Sets mdb%instance(1)%switch_time_integration (global) and dyn BWE alpha=0, beta=1, gamma=1 (3084-3087).",
+   "notes": "Sets mdb%instance(1)%switch_time_integration (global) and dyn BWE alpha=0, beta=1, gamma=1 (3182-3185).",
    "options": [
     {
      "default": null,
@@ -12508,12 +12508,12 @@
      "doc": "docs/reference/step/explicit-dynamic.md",
      "match": "substring 'INSTANCE='; value after the first '='",
      "name": "INSTANCE",
-     "notes": "Must be the first instance (3069-3073); unknown instance indexes mdb%instance(0) before the check (3061 vs 3063). Requires time%dtmin >= 1e-10 (3076-3081). Without INSTANCE= the keyword is silently ignored.",
+     "notes": "Must be the first instance (3167-3171); unknown instance indexes mdb%instance(0) before the check (3159 vs 3161). Requires time%dtmin >= 1e-10 (3174-3179). Without INSTANCE= the keyword is silently ignored.",
      "required": false,
      "source": {
       "anchor": "3a4e7436a4893687",
       "file": "src/input/read_step_.f90",
-      "line": 3054,
+      "line": 3152,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -12528,7 +12528,7 @@
    "context": "step-procedure",
    "data_lines": [
     {
-     "count_rule": "narg == 4 (451-456)",
+     "count_rule": "narg == 4 (477-482)",
      "description": "time incrementation",
      "fields": [
       {
@@ -12538,7 +12538,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 457,
+        "line": 483,
         "routine": "read_step"
        },
        "type": "real",
@@ -12551,7 +12551,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 457,
+        "line": 483,
         "routine": "read_step"
        },
        "type": "real",
@@ -12564,7 +12564,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 457,
+        "line": 483,
         "routine": "read_step"
        },
        "type": "real",
@@ -12577,7 +12577,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 457,
+        "line": 483,
         "routine": "read_step"
        },
        "type": "real",
@@ -12588,7 +12588,7 @@
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 450,
+      "line": 476,
       "routine": "read_step"
      }
     }
@@ -12596,7 +12596,7 @@
    "dispatch": {
     "anchor": "6980f92bf0a792fc",
     "file": "src/input/read_step_.f90",
-    "line": 448,
+    "line": 474,
     "routine": "read_step"
    },
    "display": "*Transient",
@@ -12604,7 +12604,7 @@
    "handler": {
     "anchor": "6980f92bf0a792fc",
     "file": "src/input/read_step_.f90",
-    "line": 448,
+    "line": 474,
     "routine": "read_step"
    },
    "keyword": "*TRANSIENT",
@@ -12612,7 +12612,7 @@
     "*TRANSIENT",
     "*TRANSIENT,<ignored>"
    ],
-   "notes": "Sets calc%transient (449).",
+   "notes": "Sets calc%transient (475).",
    "options": [],
    "parent": "*STEP",
    "public_version_restricted": false
@@ -12622,7 +12622,7 @@
    "context": "step-procedure",
    "data_lines": [
     {
-     "count_rule": "narg == 4 (467-472)",
+     "count_rule": "narg == 4 (493-498)",
      "description": "time incrementation",
      "fields": [
       {
@@ -12632,7 +12632,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 473,
+        "line": 499,
         "routine": "read_step"
        },
        "type": "real",
@@ -12645,7 +12645,7 @@
        "source": {
         "anchor": "43a78a8476e42cd2",
         "file": "src/input/read_step_.f90",
-        "line": 473,
+        "line": 499,
         "routine": "read_step"
        },
        "type": "real",
@@ -12658,7 +12658,7 @@
        "source": {
         "anchor": "6fde9e23a26ba59c",
         "file": "src/input/read_step_.f90",
-        "line": 474,
+        "line": 500,
         "routine": "read_step"
        },
        "type": "real",
@@ -12671,7 +12671,7 @@
        "source": {
         "anchor": "6fde9e23a26ba59c",
         "file": "src/input/read_step_.f90",
-        "line": 474,
+        "line": 500,
         "routine": "read_step"
        },
        "type": "real",
@@ -12682,7 +12682,7 @@
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 466,
+      "line": 492,
       "routine": "read_step"
      }
     }
@@ -12690,7 +12690,7 @@
    "dispatch": {
     "anchor": "777167ef9b27362e",
     "file": "src/input/read_step_.f90",
-    "line": 461,
+    "line": 487,
     "routine": "read_step"
    },
    "display": "*Transient-critical",
@@ -12698,7 +12698,7 @@
    "handler": {
     "anchor": "777167ef9b27362e",
     "file": "src/input/read_step_.f90",
-    "line": 461,
+    "line": 487,
     "routine": "read_step"
    },
    "keyword": "*TRANSIENT-CRITICAL",
@@ -12706,7 +12706,7 @@
     "*TRANSIENT-CRITICAL",
     "*TRANSIENT-CRITICAL,<ignored>"
    ],
-   "notes": "Sets calc%transient_crit (462), dtcrit=1e-12 (464). Runtime dtmin = f_tmin*dtcrit (src/fem/fem_global_estimate_current_dt_.f90:80-89). Error text names *TRANSIENT-UNSAT.",
+   "notes": "Sets calc%transient_crit (488), dtcrit=1e-12 (490). Runtime dtmin = f_tmin*dtcrit (src/fem/fem_global_estimate_current_dt_.f90:80-89). Error text names *TRANSIENT-UNSAT.",
    "options": [],
    "parent": "*STEP",
    "public_version_restricted": false
@@ -12829,9 +12829,9 @@
        "name": "nset",
        "required": true,
        "source": {
-        "anchor": "3fac0d79c8aef02d",
+        "anchor": "47837b9ffd026f57",
         "file": "src/input/read_step_.f90",
-        "line": 1544,
+        "line": 1570,
         "routine": "read_step"
        },
        "type": "name",
@@ -12842,9 +12842,9 @@
        "name": "dof",
        "required": true,
        "source": {
-        "anchor": "3fac0d79c8aef02d",
+        "anchor": "47837b9ffd026f57",
         "file": "src/input/read_step_.f90",
-        "line": 1544,
+        "line": 1570,
         "routine": "read_step"
        },
        "type": "string(len=3)",
@@ -12857,7 +12857,7 @@
        "source": {
         "anchor": "cdb9c052b3edb2db",
         "file": "src/input/read_step_.f90",
-        "line": 1545,
+        "line": 1571,
         "routine": "read_step"
        },
        "type": "real",
@@ -12868,7 +12868,7 @@
      "source": {
       "anchor": "8b54427936ee9cfa",
       "file": "src/input/read_step_.f90",
-      "line": 1502,
+      "line": 1528,
       "routine": "read_step"
      }
     }
@@ -12876,7 +12876,7 @@
    "dispatch": {
     "anchor": "cb8b89487cefd4ef",
     "file": "src/input/read_step_.f90",
-    "line": 1315,
+    "line": 1341,
     "routine": "read_step"
    },
    "display": "*Uboundary",
@@ -12884,7 +12884,7 @@
    "handler": {
     "anchor": "009db902def49a80",
     "file": "src/input/read_step_.f90",
-    "line": 1332,
+    "line": 1358,
     "routine": "read_step"
    },
    "keyword": "*UBOUNDARY",
@@ -12892,25 +12892,25 @@
     "*UBOUNDARY",
     "*UBOUNDARY,"
    ],
-   "notes": "user=.true. (l.1333). On first use runs ./user_boundary_conditions.sh (chmod +x) or requires user_boundary_conditions.so (Windows: .bat/.dll) in the working directory, else error (l.1342-1373). The user routine receives bc_value=(u,v,a) current solution values and the result replaces u (type 0), v,a (type 1) or a (type 2); the data-line magnitude is NOT used (soe_apply_boundary_conditions_.f90:288-353). Types 3-6 are parsed but have no effect for user BCs. TT rejected (database.f90:1267).",
+   "notes": "user=.true. (l.1359). On first use runs ./user_boundary_conditions.sh (chmod +x) or requires user_boundary_conditions.so (Windows: .bat/.dll) in the working directory, else error (l.1368-1399). The user routine receives bc_value=(u,v,a) current solution values and the result replaces u (type 0), v,a (type 1) or a (type 2); the data-line magnitude is NOT used (soe_apply_boundary_conditions_.f90:288-353). Types 3-6 are parsed but have no effect for user BCs. TT rejected (database.f90:1267).",
    "options": [
     {
      "default": 0,
      "default_source": {
       "anchor": "a4064f64d0961b18",
       "file": "src/input/read_step_.f90",
-      "line": 1399,
+      "line": 1425,
       "routine": "read_step"
      },
      "doc": "docs/reference/boundary-conditions/boundary.md",
      "match": "substring search (index(...,back=.true.)) on the whole option string, in this priority: 'VELOCITY'->1, 'ACCELERATION'->2, 'HYDROSTATIC' whose last occurrence starts at position <10 ->3, 'CONTACTPRESSURE'->4, 'INCREMENT'->5, 'MOVING-HYDROSTATIC'->6, else 0. The prefix 'TYPE=' is not required (bare 'INCREMENT' works).",
      "name": "TYPE",
-     "notes": "TYPE=HYDROSTATIC must be the first option (position check l.1389), e.g. 'AMPLITUDE=A,TYPE=HYDROSTATIC' -> type 0 -> error 'type not supported'. Any option text containing one of the substrings (also inside an amplitude name, e.g. AMPLITUDE=INCREMENTAL) changes the type. With type 0: narg==2 without OP=NEW/OP=MOD -> error, narg==3 -> error (l.1401-1413); a single unknown option (e.g. TYPE=DISPLACEMENT) is accepted silently as type 0.",
+     "notes": "TYPE=HYDROSTATIC must be the first option (position check l.1415), e.g. 'AMPLITUDE=A,TYPE=HYDROSTATIC' -> type 0 -> error 'type not supported'. Any option text containing one of the substrings (also inside an amplitude name, e.g. AMPLITUDE=INCREMENTAL) changes the type. With type 0: narg==2 without OP=NEW/OP=MOD -> error, narg==3 -> error (l.1427-1439); a single unknown option (e.g. TYPE=DISPLACEMENT) is accepted silently as type 0.",
      "required": false,
      "source": {
       "anchor": "a1db001b047a5435",
       "file": "src/input/read_step_.f90",
-      "line": 1384,
+      "line": 1410,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -12928,18 +12928,18 @@
      "default_source": {
       "anchor": "e980edcba70e2ffd",
       "file": "src/input/read_step_.f90",
-      "line": 1473,
+      "line": 1499,
       "routine": "read_step"
      },
      "doc": "docs/reference/boundary-conditions/boundary.md",
      "match": "substring 'AMPL' anywhere in the option string; the name is the text after the first '=' of the option that contains 'AMPL'",
      "name": "AMPLITUDE",
-     "notes": "At most 2 options when AMPL is present (narg>2 -> error l.1465). Name must be a defined amplitude (error). Comment at l.1472 says 'default amplitude is ramp' but ampl_id=0 means factor 1 in soe_apply_boundary_conditions_.f90:104-106. For *UBOUNDARY: warning, amplitude not used (l.1422-1426).",
+     "notes": "At most 2 options when AMPL is present (narg>2 -> error l.1491). Name must be a defined amplitude (error). Comment at l.1498 says 'default amplitude is ramp' but ampl_id=0 means factor 1 in soe_apply_boundary_conditions_.f90:104-106. For *UBOUNDARY: warning, amplitude not used (l.1448-1452).",
      "required": false,
      "source": {
       "anchor": "10af939df02a3a80",
       "file": "src/input/read_step_.f90",
-      "line": 1419,
+      "line": 1445,
       "routine": "read_step"
      },
      "value_type": "name",
@@ -12956,7 +12956,7 @@
      "source": {
       "anchor": "f7da3b1b98f329bf",
       "file": "src/input/read_step_.f90",
-      "line": 1404,
+      "line": 1430,
       "routine": "read_step"
      },
      "value_type": "enum",
@@ -15285,7 +15285,7 @@
      "keyword": "*BOUNDARY/*UBOUNDARY",
      "meaning": "total value of the dof: u = value*amp(1), v = value*amp(2), a = value*amp(3)",
      "model_level": true,
-     "source": "src/input/read_step_.f90:1399; src/soe/soe_apply_boundary_conditions_.f90:140-144",
+     "source": "src/input/read_step_.f90:1425; src/soe/soe_apply_boundary_conditions_.f90:140-144",
      "step_level": true,
      "type": "(none) -> 0",
      "user": "u, v, a from user routine"
@@ -15296,7 +15296,7 @@
      "keyword": "*BOUNDARY/*UBOUNDARY",
      "meaning": "v = value*amp(1), a = value*amp(2), u = u0 + (v0+v)*dt/2 (u0 = last converged increment)",
      "model_level": false,
-     "source": "src/input/read_step_.f90:1385-1386; src/soe/soe_apply_boundary_conditions_.f90:149-153; model level: error only when it is the 2nd+ option, src/input/read_boundary_condition_.f90:77-80",
+     "source": "src/input/read_step_.f90:1411-1412; src/soe/soe_apply_boundary_conditions_.f90:149-153; model level: error only when it is the 2nd+ option, src/input/read_boundary_condition_.f90:77-80",
      "step_level": true,
      "type": "VELOCITY",
      "user": "v,a from user routine"
@@ -15307,7 +15307,7 @@
      "keyword": "*BOUNDARY/*UBOUNDARY",
      "meaning": "a = value*amp(1), v = v0 + dt*(a0+a)/2, u = u0 + (v0+v)*dt/2",
      "model_level": false,
-     "source": "src/input/read_step_.f90:1387-1388; src/soe/soe_apply_boundary_conditions_.f90:158-162",
+     "source": "src/input/read_step_.f90:1413-1414; src/soe/soe_apply_boundary_conditions_.f90:158-162",
      "step_level": true,
      "type": "ACCELERATION",
      "user": "a from user routine"
@@ -15318,7 +15318,7 @@
      "keyword": "*BOUNDARY",
      "meaning": "u = dz*slope*amp(1) with dz = zero_level - x_v if |zero_level| > 1e-7, else dz = +x_v (x_v = y in 2D, z in 3D)",
      "model_level": false,
-     "source": "src/input/read_step_.f90:1389-1391,1517-1518; src/soe/soe_apply_boundary_conditions_.f90:167-189",
+     "source": "src/input/read_step_.f90:1415-1417,1543-1544; src/soe/soe_apply_boundary_conditions_.f90:167-189",
      "step_level": true,
      "type": "HYDROSTATIC (must start before column 10 of the option string, i.e. be the first option)",
      "user": "no effect"
@@ -15329,7 +15329,7 @@
      "keyword": "*BOUNDARY",
      "meaning": "pore water pressure taken from the water contact of the contact surfaces containing the node (value unused); error if no contact pair",
      "model_level": false,
-     "source": "src/input/read_step_.f90:1392-1393; src/soe/soe_apply_boundary_conditions_.f90:194-228",
+     "source": "src/input/read_step_.f90:1418-1419; src/soe/soe_apply_boundary_conditions_.f90:194-228",
      "step_level": true,
      "type": "CONTACTPRESSURE",
      "user": "no effect"
@@ -15340,7 +15340,7 @@
      "keyword": "*BOUNDARY",
      "meaning": "du = value*amp(1) per increment relative to the last converged increment u0 (value 0 = hold current position)",
      "model_level": false,
-     "source": "src/input/read_step_.f90:1394-1395; src/soe/soe_apply_boundary_conditions_.f90:233-237; u0 update src/soe/soe_.f90:870 (soe_save_converged_state)",
+     "source": "src/input/read_step_.f90:1420-1421; src/soe/soe_apply_boundary_conditions_.f90:233-237; u0 update src/soe/soe_.f90:870 (soe_save_converged_state)",
      "step_level": true,
      "type": "INCREMENT",
      "user": "no effect"
@@ -15351,7 +15351,7 @@
      "keyword": "*BOUNDARY",
      "meaning": "u = (z(t) - x_dir)*slope*amp(1), z linear between (t0,z0) and (t1,z1) in step time, constant outside",
      "model_level": false,
-     "source": "src/input/read_step_.f90:1396-1397,1520-1541; src/soe/soe_apply_boundary_conditions_.f90:242-265",
+     "source": "src/input/read_step_.f90:1422-1423,1546-1567; src/soe/soe_apply_boundary_conditions_.f90:242-265",
      "step_level": true,
      "type": "MOVING-HYDROSTATIC",
      "user": "no effect"
@@ -16118,8 +16118,8 @@
    "persistence": {
     "docs": "docs/reference/boundary-conditions/index.md 'Loads in a sequence of steps' states the same rule (consistent)",
     "evidence": [
-     "per-step counters reset at the start of read_step: src/input/read_step_.f90:186-198; activity flags reset: 205-223",
-     "the only copy from the previous step in read_step is the field output: src/input/read_step_.f90:3180",
+     "per-step counters reset at the start of read_step: src/input/read_step_.f90:192-204; activity flags reset: 211-229",
+     "the only copy from the previous step in read_step is the field output: src/input/read_step_.f90:3278",
      "BCs applied from cdb%step(istep)%bcs only: src/soe/soe_initialize_boundary_conditions_.f90:103; src/soe/soe_apply_boundary_conditions_.f90:92",
      "f_ext zeroed every iteration and rebuilt from the current step's loads: src/soe/soe_.f90:825; src/load/load_library.f90 get_load_at_time",
      "database.f90:990-1075 compares BC sets of consecutive steps only to decide whether the sparsity pattern must be rebuilt"
@@ -53665,7 +53665,7 @@
      ],
      "key": "SF",
      "location": "dataset",
-     "notes": "numgeo-src 7052b69 (02.11.2026). VTK only, *Element output only: skipped in node lists (879) and as cell data (1033). All active beam and truss elements, embedded ones included; trusses give N only; with tension-only or a tensile strength the station values are limited to the range of the integration point values. A step with an *Output, field of its own writes the dataset only if its list contains SF. Not available under *Integration point (error, read_step_.f90:1949-1959 of the working tree of 02.11.2026). ParaView filter 'numgeo Diagram' (tools/paraview).",
+     "notes": "numgeo-src 7052b69 (02.11.2026). VTK only, *Element output only: skipped in node lists (879) and as cell data (1033). All active beam and truss elements, embedded ones included; trusses give N only; with tension-only or a tensile strength the station values are limited to the range of the integration point values. A step with an *Output, field of its own writes the dataset only if its list contains SF. Not available under *Integration point (error, read_step_.f90:1972-1982 of numgeo-src 1f48283). ParaView filter 'numgeo Diagram' (tools/paraview).",
      "requires": "active beam or truss elements (otherwise no dataset)",
      "source": {
       "anchor": "171bf9d980a2e354",
@@ -53897,7 +53897,7 @@
     {
      "format": "formatted ASCII, one value per line E18.8 (node/element), E18.10 (RHS, F_DYN) (restart_.f90:217-260, 299, 335, 1622-1630)",
      "name_pattern": "<job>_restart/ (or <job>_mastermodel_restart/): _node_<i>_step_<n>[_submodel].dat, _element_<i>_step_<n>[_submodel].dat, _RHS_step_<n>.dat, _F_DYN_step_<n>.dat, _embedded_plates_step_<n>.dat, _embedded_interactions_step_<n>.dat, general_information.dat",
-     "notes": "*Restart write (read_step_.f90:2954-2961)",
+     "notes": "*Restart write (read_step_.f90:3035-3049)",
      "reader_needed": false,
      "writer": {
       "anchor": "617a0bae7b612846",
@@ -53909,7 +53909,7 @@
     {
      "format": "unformatted stream binary with header, node/element metadata, CRC64 checksum",
      "name_pattern": "<job>_restart/stress_step_<n>.bin",
-     "notes": "*Restart write, stress (read_step_.f90:2962-2965)",
+     "notes": "*Restart write, stress (read_step_.f90:3050-3053)",
      "reader_needed": false,
      "writer": {
       "anchor": "0f18e3b708737a03",
@@ -53921,7 +53921,7 @@
     {
      "format": "formatted ASCII",
      "name_pattern": "<restart dir>/PFEM_general_information.dat, <ELSET>_info.dat, _nodal_values.dat, _contact.dat, _mapped_igp_values.dat, _mapped_elvar_values.dat, _igp_values.dat, _elvar_values.dat, _elements.dat",
-     "notes": "*PFEM write (read_step_.f90:2974-2985)",
+     "notes": "*PFEM write (read_step_.f90:3062-3073)",
      "reader_needed": false,
      "writer": {
       "anchor": "bd8ca15049f25051",
@@ -54702,7 +54702,7 @@
      "condition": "USER options of *MATERIAL, *DLOAD, *AMPLITUDE, *INTERACTION, *BOUNDARY (step), *INITIAL CONDITIONS",
      "direction": "execute",
      "form": "shell script",
-     "notes": "'chmod +x user_x.sh' then './user_x.sh' via execute_command_line (also read_dload_.f90:194-197, read_amplitude_.f90:185-188, read_interaction_.f90:531-534, read_step_.f90:1350-1353, read_initial_condition_.f90:402-405, 632-635)",
+     "notes": "'chmod +x user_x.sh' then './user_x.sh' via execute_command_line (also read_dload_.f90:194-197, read_amplitude_.f90:185-188, read_interaction_.f90:531-534, read_step_.f90:1376-1379, read_initial_condition_.f90:402-405, 632-635)",
      "pattern": "user_<routine>.sh (Linux) / user_<routine>.bat (Windows) in cwd",
      "phase": "input",
      "source": {
@@ -55746,8 +55746,8 @@
       "template": "The *VISCOUSDAMPING definition has to be followed by a line containing the viscous damping coefficient alpha "
      },
      {
-      "id": "src/input/read_step_.f90:1788",
-      "note": "assigned without a report call in its branch; only an unrelated later call at line 1871 would print it (suspected source bug: message never reported in its context)",
+      "id": "src/input/read_step_.f90:1824",
+      "note": "assigned without a report call in its branch; only an unrelated later call at line 1907 would print it (suspected source bug: message never reported in its context)",
       "raw": "'Output definition in step ' // trim(cdb%step(istep)%name) // ' ' //                                'uses the combination VTK + HDF5 which is currently not supported.'",
       "routine": "read_step",
       "template": "Output definition in step {cdb%step(istep)%name} uses the combination VTK + HDF5 which is currently not supported."
@@ -55930,7 +55930,7 @@
      {
       "behaviour": "increment_loop 'do while (iinc <= maxinc)' ends without message; the step is reported as 'Step sucessfully terminated' and the next step starts / the run ends normally",
       "case": "maximum number of increments exhausted",
-      "notes": "maxInc default 1000000 (src/input/read_step_.f90:333); the loop actually admits maxinc+1 increment numbers (iinc incremented at the top, :578); docs/reference/step/index.md:24 claims the analysis stops",
+      "notes": "maxInc default 1000000 (src/input/read_step_.f90:339); the loop actually admits maxinc+1 increment numbers (iinc incremented at the top, :578); docs/reference/step/index.md:24 claims the analysis stops",
       "source": {
        "anchor": "dd49bf08a26d7e47",
        "file": "src/main.f90",
@@ -55983,9 +55983,9 @@
       "GLOBAL,"
      ],
      "modes": {
-      "ACTIVATE": "modify=.false., active=.true. (2438-2447)",
-      "DEACTIVATE": "modify=.true., active=.false. (2427-2436)",
-      "MODIFY": "global%modify=active=.true.; data line narg==3, no '*' (2414-2425)",
+      "ACTIVATE": "modify=.false., active=.true. (2519-2528)",
+      "DEACTIVATE": "modify=.true., active=.false. (2508-2517)",
+      "MODIFY": "global%modify=active=.true.; data line narg==3, no '*' (2495-2506)",
       "other": "silently ignored"
      },
      "modify_fields_in_order": [
@@ -55997,14 +55997,14 @@
      "source": {
       "anchor": "500e355862bfb259",
       "file": "src/input/read_step_.f90",
-      "line": 2410,
+      "line": 2491,
       "routine": "read_step"
      }
     },
     {
      "block": "U",
      "defaults": {
-      "REDUCTION": "1e3, 1e-12, 1e-3, 1e-6, 1e-6, 1 (src/input/read_step_.f90:432-439)",
+      "REDUCTION": "1e3, 1e-12, 1e-3, 1e-6, 1e-6, 1 (src/input/read_step_.f90:458-465)",
       "active": true,
       "max_energy_ratio": 0.01,
       "max_flux_ratio": 0.01,
@@ -56019,9 +56019,9 @@
       "U,"
      ],
      "modes": {
-      "ACTIVATE": "modify=.false., active=.true. (2486-2495)",
-      "DEACTIVATE": "modify=active=.false.; next line must contain '*' (2475-2484)",
-      "MODIFY": "u%modify=active=.true.; narg 6, or 5 with relaxation=2.0 (2454-2472)",
+      "ACTIVATE": "modify=.false., active=.true. (2567-2576)",
+      "DEACTIVATE": "modify=active=.false.; next line must contain '*' (2556-2565)",
+      "MODIFY": "u%modify=active=.true.; narg 6, or 5 with relaxation=2.0 (2535-2553)",
       "other": "error"
      },
      "modify_fields_in_order": [
@@ -56036,7 +56036,7 @@
      "source": {
       "anchor": "18001945a1c8c051",
       "file": "src/input/read_step_.f90",
-      "line": 2450,
+      "line": 2531,
       "routine": "read_step"
      }
     },
@@ -56052,9 +56052,9 @@
       "R,"
      ],
      "modes": {
-      "ACTIVATE": "(2768-2777)",
-      "DEACTIVATE": "(2757-2766)",
-      "MODIFY": "narg 6/5 (2737-2755)",
+      "ACTIVATE": "(2849-2858)",
+      "DEACTIVATE": "(2838-2847)",
+      "MODIFY": "narg 6/5 (2818-2836)",
       "other": "error"
      },
      "modify_fields_in_order": [
@@ -56069,7 +56069,7 @@
      "source": {
       "anchor": "9629a5151d6b4353",
       "file": "src/input/read_step_.f90",
-      "line": 2733,
+      "line": 2814,
       "routine": "read_step"
      }
     },
@@ -56090,9 +56090,9 @@
       "PW,"
      ],
      "modes": {
-      "ACTIVATE": "(2538-2547)",
-      "DEACTIVATE": "(2527-2536)",
-      "MODIFY": "narg 6/5 (2507-2525)",
+      "ACTIVATE": "(2619-2628)",
+      "DEACTIVATE": "(2608-2617)",
+      "MODIFY": "narg 6/5 (2588-2606)",
       "other": "error"
      },
      "modify_fields_in_order": [
@@ -56107,7 +56107,7 @@
      "source": {
       "anchor": "f399cd259981ea8f",
       "file": "src/input/read_step_.f90",
-      "line": 2503,
+      "line": 2584,
       "routine": "read_step"
      }
     },
@@ -56128,9 +56128,9 @@
       "TT,"
      ],
      "modes": {
-      "ACTIVATE": "(2590-2599)",
-      "DEACTIVATE": "(2579-2588)",
-      "MODIFY": "narg 6/5 (2559-2577)",
+      "ACTIVATE": "(2671-2680)",
+      "DEACTIVATE": "(2660-2669)",
+      "MODIFY": "narg 6/5 (2640-2658)",
       "other": "error"
      },
      "modify_fields_in_order": [
@@ -56145,7 +56145,7 @@
      "source": {
       "anchor": "afe2c61b73bd5f71",
       "file": "src/input/read_step_.f90",
-      "line": 2555,
+      "line": 2636,
       "routine": "read_step"
      }
     },
@@ -56166,9 +56166,9 @@
       "PA,"
      ],
      "modes": {
-      "ACTIVATE": "(2642-2651)",
-      "DEACTIVATE": "(2631-2640)",
-      "MODIFY": "narg 6, or 5 with relaxation=0.0 (2621) -> 2.0 at runtime (convergence_.f90:494)",
+      "ACTIVATE": "(2723-2732)",
+      "DEACTIVATE": "(2712-2721)",
+      "MODIFY": "narg 6, or 5 with relaxation=0.0 (2702) -> 2.0 at runtime (convergence_.f90:494)",
       "other": "error"
      },
      "modify_fields_in_order": [
@@ -56183,7 +56183,7 @@
      "source": {
       "anchor": "71b97f5c301244d0",
       "file": "src/input/read_step_.f90",
-      "line": 2607,
+      "line": 2688,
       "routine": "read_step"
      }
     },
@@ -56204,9 +56204,9 @@
       "W,"
      ],
      "modes": {
-      "ACTIVATE": "(2716-2725)",
-      "DEACTIVATE": "(2705-2714)",
-      "MODIFY": "narg 6/5 (2685-2703)",
+      "ACTIVATE": "(2797-2806)",
+      "DEACTIVATE": "(2786-2795)",
+      "MODIFY": "narg 6/5 (2766-2784)",
       "other": "error"
      },
      "modify_fields_in_order": [
@@ -56221,7 +56221,7 @@
      "source": {
       "anchor": "5c25754600b24859",
       "file": "src/input/read_step_.f90",
-      "line": 2681,
+      "line": 2762,
       "routine": "read_step"
      }
     },
@@ -56236,7 +56236,7 @@
       "MAX-DPW,"
      ],
      "modes": {
-      "ACTIVATE": "max_dpw%active=.true.; data line narg==2, no '*' (2663-2672)",
+      "ACTIVATE": "max_dpw%active=.true.; data line narg==2, no '*' (2744-2753)",
       "other": "error ('DEACTIVATE' also matches ACTIVATE)"
      },
      "modify_fields_in_order": [
@@ -56247,7 +56247,7 @@
      "source": {
       "anchor": "93a660cf8a68c7e4",
       "file": "src/input/read_step_.f90",
-      "line": 2659,
+      "line": 2740,
       "routine": "read_step"
      }
     },
@@ -56264,7 +56264,7 @@
      "source": {
       "anchor": "683e32c5be68ac69",
       "file": "src/input/read_step_.f90",
-      "line": 2785,
+      "line": 2866,
       "routine": "read_step"
      }
     },
@@ -56273,7 +56273,7 @@
      "defaults": {
       "maxIter": 24,
       "minIter": 1,
-      "source": "src/input/read_step_.f90:236,240"
+      "source": "src/input/read_step_.f90:242,246"
      },
      "literal": [],
      "modes": {},
@@ -56285,7 +56285,7 @@
      "source": {
       "anchor": "330424588f6ba667",
       "file": "src/input/read_step_.f90",
-      "line": 236,
+      "line": 242,
       "routine": "read_step"
      }
     }
@@ -56297,16 +56297,16 @@
      "notes": "No solution (correction = 0, src/solver/solver.f90:279-281).",
      "options": [],
      "solver": "NONE",
-     "source": "src/input/read_step_.f90:686-690",
+     "source": "src/input/read_step_.f90:712-716",
      "strategy": "DIRECT"
     },
     {
      "build_dependency": null,
      "match": "substring 'SIMPLE'",
-     "notes": "If mdb%nelems > 10: warning and PARDISO (697-702).",
+     "notes": "If mdb%nelems > 10: warning and PARDISO (723-728).",
      "options": [],
      "solver": "SIMPLE",
-     "source": "src/input/read_step_.f90:694-705",
+     "source": "src/input/read_step_.f90:720-731",
      "strategy": "DIRECT"
     },
     {
@@ -56317,11 +56317,11 @@
       {
        "allowed": "flag",
        "default": "strategy DIRECT",
-       "default_source": "src/input/read_step_.f90:3575",
+       "default_source": "src/input/read_step_.f90:4062",
        "match": "exact token",
        "notes": "",
        "option": "DIRECT",
-       "source": "src/input/read_step_.f90:3592"
+       "source": "src/input/read_step_.f90:4079"
       },
       {
        "allowed": "flag (reuse of factorization, GMRES)",
@@ -56330,7 +56330,7 @@
        "match": "exact token",
        "notes": "",
        "option": "ITERATIVE",
-       "source": "src/input/read_step_.f90:3596"
+       "source": "src/input/read_step_.f90:4083"
       },
       {
        "allowed": "flag, no effect",
@@ -56339,47 +56339,47 @@
        "match": "exact token",
        "notes": "",
        "option": "FACTORIZATION",
-       "source": "src/input/read_step_.f90:3600"
+       "source": "src/input/read_step_.f90:4087"
       },
       {
        "allowed": "CPU|GPU (MUMPS only, else error)",
        "default": "CPU",
-       "default_source": "src/input/read_step_.f90:3578",
+       "default_source": "src/input/read_step_.f90:4065",
        "match": "prefix",
        "notes": "",
        "option": "DEVICE=",
-       "source": "src/input/read_step_.f90:3604-3611"
+       "source": "src/input/read_step_.f90:4091-4098"
       },
       {
        "allowed": "int >= 1",
        "default": 30,
-       "default_source": "src/input/read_step_.f90:3577",
+       "default_source": "src/input/read_step_.f90:4064",
        "match": "prefix",
        "notes": "",
        "option": "MAX_ITER=",
-       "source": "src/input/read_step_.f90:3613-3620"
+       "source": "src/input/read_step_.f90:4100-4107"
       },
       {
        "allowed": "0 < tol < 1",
        "default": 1e-08,
-       "default_source": "src/input/read_step_.f90:3576",
+       "default_source": "src/input/read_step_.f90:4063",
        "match": "prefix",
        "notes": "",
        "option": "TOL=",
-       "source": "src/input/read_step_.f90:3622-3629"
+       "source": "src/input/read_step_.f90:4109-4116"
       },
       {
        "allowed": "PARDISO|MUMPS|NO",
        "default": "DEFAULT",
-       "default_source": "src/input/read_step_.f90:3579",
+       "default_source": "src/input/read_step_.f90:4066",
        "match": "prefix (cuDSS only; other solvers: warning 'not known and ignored')",
        "notes": "",
        "option": "FALLBACK=",
-       "source": "src/input/read_step_.f90:3631-3638"
+       "source": "src/input/read_step_.f90:4118-4125"
       }
      ],
      "solver": "PARDISO",
-     "source": "src/input/read_step_.f90:709-719",
+     "source": "src/input/read_step_.f90:735-745",
      "strategy": "DIRECT|ITERATIVE"
     },
     {
@@ -56390,11 +56390,11 @@
       {
        "allowed": "flag",
        "default": "strategy DIRECT",
-       "default_source": "src/input/read_step_.f90:3575",
+       "default_source": "src/input/read_step_.f90:4062",
        "match": "exact token",
        "notes": "",
        "option": "DIRECT",
-       "source": "src/input/read_step_.f90:3592"
+       "source": "src/input/read_step_.f90:4079"
       },
       {
        "allowed": "flag (reuse of factorization, GMRES)",
@@ -56403,7 +56403,7 @@
        "match": "exact token",
        "notes": "",
        "option": "ITERATIVE",
-       "source": "src/input/read_step_.f90:3596"
+       "source": "src/input/read_step_.f90:4083"
       },
       {
        "allowed": "flag, no effect",
@@ -56412,47 +56412,47 @@
        "match": "exact token",
        "notes": "",
        "option": "FACTORIZATION",
-       "source": "src/input/read_step_.f90:3600"
+       "source": "src/input/read_step_.f90:4087"
       },
       {
        "allowed": "CPU|GPU (MUMPS only, else error)",
        "default": "CPU",
-       "default_source": "src/input/read_step_.f90:3578",
+       "default_source": "src/input/read_step_.f90:4065",
        "match": "prefix",
        "notes": "",
        "option": "DEVICE=",
-       "source": "src/input/read_step_.f90:3604-3611"
+       "source": "src/input/read_step_.f90:4091-4098"
       },
       {
        "allowed": "int >= 1",
        "default": 30,
-       "default_source": "src/input/read_step_.f90:3577",
+       "default_source": "src/input/read_step_.f90:4064",
        "match": "prefix",
        "notes": "",
        "option": "MAX_ITER=",
-       "source": "src/input/read_step_.f90:3613-3620"
+       "source": "src/input/read_step_.f90:4100-4107"
       },
       {
        "allowed": "0 < tol < 1",
        "default": 1e-08,
-       "default_source": "src/input/read_step_.f90:3576",
+       "default_source": "src/input/read_step_.f90:4063",
        "match": "prefix",
        "notes": "",
        "option": "TOL=",
-       "source": "src/input/read_step_.f90:3622-3629"
+       "source": "src/input/read_step_.f90:4109-4116"
       },
       {
        "allowed": "PARDISO|MUMPS|NO",
        "default": "DEFAULT",
-       "default_source": "src/input/read_step_.f90:3579",
+       "default_source": "src/input/read_step_.f90:4066",
        "match": "prefix (cuDSS only; other solvers: warning 'not known and ignored')",
        "notes": "",
        "option": "FALLBACK=",
-       "source": "src/input/read_step_.f90:3631-3638"
+       "source": "src/input/read_step_.f90:4118-4125"
       }
      ],
      "solver": "MUMPS",
-     "source": "src/input/read_step_.f90:723-727",
+     "source": "src/input/read_step_.f90:749-753",
      "strategy": "DIRECT|ITERATIVE"
     },
     {
@@ -56463,11 +56463,11 @@
       {
        "allowed": "flag",
        "default": "strategy DIRECT",
-       "default_source": "src/input/read_step_.f90:3575",
+       "default_source": "src/input/read_step_.f90:4062",
        "match": "exact token",
        "notes": "",
        "option": "DIRECT",
-       "source": "src/input/read_step_.f90:3592"
+       "source": "src/input/read_step_.f90:4079"
       },
       {
        "allowed": "flag (reuse of factorization, GMRES)",
@@ -56476,7 +56476,7 @@
        "match": "exact token",
        "notes": "",
        "option": "ITERATIVE",
-       "source": "src/input/read_step_.f90:3596"
+       "source": "src/input/read_step_.f90:4083"
       },
       {
        "allowed": "flag, no effect",
@@ -56485,53 +56485,53 @@
        "match": "exact token",
        "notes": "",
        "option": "FACTORIZATION",
-       "source": "src/input/read_step_.f90:3600"
+       "source": "src/input/read_step_.f90:4087"
       },
       {
        "allowed": "CPU|GPU (MUMPS only, else error)",
        "default": "CPU",
-       "default_source": "src/input/read_step_.f90:3578",
+       "default_source": "src/input/read_step_.f90:4065",
        "match": "prefix",
        "notes": "",
        "option": "DEVICE=",
-       "source": "src/input/read_step_.f90:3604-3611"
+       "source": "src/input/read_step_.f90:4091-4098"
       },
       {
        "allowed": "int >= 1",
        "default": 30,
-       "default_source": "src/input/read_step_.f90:3577",
+       "default_source": "src/input/read_step_.f90:4064",
        "match": "prefix",
        "notes": "",
        "option": "MAX_ITER=",
-       "source": "src/input/read_step_.f90:3613-3620"
+       "source": "src/input/read_step_.f90:4100-4107"
       },
       {
        "allowed": "0 < tol < 1",
        "default": 1e-08,
-       "default_source": "src/input/read_step_.f90:3576",
+       "default_source": "src/input/read_step_.f90:4063",
        "match": "prefix",
        "notes": "",
        "option": "TOL=",
-       "source": "src/input/read_step_.f90:3622-3629"
+       "source": "src/input/read_step_.f90:4109-4116"
       },
       {
        "allowed": "PARDISO|MUMPS|NO",
        "default": "DEFAULT",
-       "default_source": "src/input/read_step_.f90:3579",
+       "default_source": "src/input/read_step_.f90:4066",
        "match": "prefix (cuDSS only; other solvers: warning 'not known and ignored')",
        "notes": "",
        "option": "FALLBACK=",
-       "source": "src/input/read_step_.f90:3631-3638"
+       "source": "src/input/read_step_.f90:4118-4125"
       }
      ],
      "solver": "CUDSS",
-     "source": "src/input/read_step_.f90:733-737",
+     "source": "src/input/read_step_.f90:759-763",
      "strategy": "DIRECT|ITERATIVE"
     },
     {
      "build_dependency": null,
      "match": "substring 'EXTERNAL'",
-     "notes": "Options are taken after the LAST occurrence of 'EXTERNAL' in the line (763); unknown options silently ignored.",
+     "notes": "Options are taken after the LAST occurrence of 'EXTERNAL' in the line (789); unknown options silently ignored.",
      "options": [
       {
        "allowed": "string",
@@ -56540,48 +56540,48 @@
        "match": "substring in comma token; value after '=', '$' removed, lower-cased",
        "notes": "",
        "option": "EXE=",
-       "source": "src/input/read_step_.f90:777-784"
+       "source": "src/input/read_step_.f90:803-810"
       },
       {
        "allowed": "string",
        "default": "''",
-       "default_source": "src/input/read_step_.f90:829",
+       "default_source": "src/input/read_step_.f90:855",
        "match": "substring; value after '=', '$' removed, lower-cased",
        "notes": "",
        "option": "ARG=",
-       "source": "src/input/read_step_.f90:786-793"
+       "source": "src/input/read_step_.f90:812-819"
       },
       {
        "allowed": ">= 2 (else error)",
        "default": 1,
-       "default_source": "src/input/read_step_.f90:755",
+       "default_source": "src/input/read_step_.f90:781",
        "match": "substring; int",
        "notes": "also sets ncpus",
        "option": "MPI=",
-       "source": "src/input/read_step_.f90:795-805"
+       "source": "src/input/read_step_.f90:821-831"
       },
       {
        "allowed": ">= 1",
        "default": 1,
-       "default_source": "src/input/read_step_.f90:760",
+       "default_source": "src/input/read_step_.f90:786",
        "match": "substring; int",
        "notes": "",
        "option": "OMP=",
-       "source": "src/input/read_step_.f90:807-816"
+       "source": "src/input/read_step_.f90:833-842"
       },
       {
        "allowed": "flag",
        "default": false,
-       "default_source": "src/input/read_step_.f90:749",
+       "default_source": "src/input/read_step_.f90:775",
        "match": "substring flag",
        "notes": "",
        "option": "ONEAPI",
-       "source": "src/input/read_step_.f90:818-821"
+       "source": "src/input/read_step_.f90:844-847"
       }
      ],
      "solver": "EXTERNAL",
-     "source": "src/input/read_step_.f90:742-829",
-     "strategy": "'' (746)"
+     "source": "src/input/read_step_.f90:768-855",
+     "strategy": "'' (772)"
     },
     {
      "build_dependency": "_lis_ (else stop in solver_solve, src/solver/solver.f90:565-576)",
@@ -56595,218 +56595,218 @@
        "match": "everything after the first '=' of the line, '$' removed, lower-cased, stored in iterative%preconditioner",
        "notes": "",
        "option": "=<options>",
-       "source": "src/input/read_step_.f90:842-847"
+       "source": "src/input/read_step_.f90:868-873"
       }
      ],
      "solver": "LIS",
-     "source": "src/input/read_step_.f90:834-847",
+     "source": "src/input/read_step_.f90:860-873",
      "strategy": "ITERATIVE"
     },
     {
      "build_dependency": null,
      "match": "substring 'BICGSTAB' and not 'BICGSTAB(L)'",
-     "notes": "Unknown option -> error (943-947).",
+     "notes": "Unknown option -> error (969-973).",
      "options": [
       {
        "allowed": "> 0",
        "default": 1000,
-       "default_source": "src/input/read_step_.f90:868",
+       "default_source": "src/input/read_step_.f90:894",
        "match": "substring; int",
        "notes": "",
        "option": "MAX_ITER",
-       "source": "src/input/read_step_.f90:878-886"
+       "source": "src/input/read_step_.f90:904-912"
       },
       {
        "allowed": "> 0",
        "default": 0.001,
-       "default_source": "src/input/read_step_.f90:870",
+       "default_source": "src/input/read_step_.f90:896",
        "match": "substring; real",
        "notes": "",
        "option": "TOL",
-       "source": "src/input/read_step_.f90:888-896"
+       "source": "src/input/read_step_.f90:914-922"
       },
       {
        "allowed": "NONE|DIAGONAL|LS-DIAGONAL|ILU0",
        "default": "LS-DIAGONAL",
-       "default_source": "src/input/read_step_.f90:871",
+       "default_source": "src/input/read_step_.f90:897",
        "match": "substring; value exact",
        "notes": "",
        "option": "PC",
-       "source": "src/input/read_step_.f90:898-915"
+       "source": "src/input/read_step_.f90:924-941"
       },
       {
        "allowed": "convergence check",
        "default": "CHECK_REL_RESIDUUM",
-       "default_source": "src/input/read_step_.f90:869",
+       "default_source": "src/input/read_step_.f90:895",
        "match": "substring flag",
        "notes": "",
        "option": "CHECK_SOLUTION|CHECK_REL_SOLUTION|CHECK_RESIDUUM|CHECK_REL_RESIDUUM",
-       "source": "src/input/read_step_.f90:917-941"
+       "source": "src/input/read_step_.f90:943-967"
       }
      ],
      "solver": "BICGSTAB",
-     "source": "src/input/read_step_.f90:851-952",
+     "source": "src/input/read_step_.f90:877-978",
      "strategy": "ITERATIVE"
     },
     {
      "build_dependency": null,
      "match": "substring 'BICGSTAB(L)'",
-     "notes": "Unknown option -> error (1034-1038).",
+     "notes": "Unknown option -> error (1060-1064).",
      "options": [
       {
        "allowed": "> 0",
        "default": 1000,
-       "default_source": "src/input/read_step_.f90:973",
+       "default_source": "src/input/read_step_.f90:999",
        "match": "substring",
        "notes": "",
        "option": "MAX_ITER=",
-       "source": "src/input/read_step_.f90:983-991"
+       "source": "src/input/read_step_.f90:1009-1017"
       },
       {
        "allowed": "> 0",
        "default": 0.001,
-       "default_source": "src/input/read_step_.f90:975",
+       "default_source": "src/input/read_step_.f90:1001",
        "match": "substring",
        "notes": "",
        "option": "TOL=",
-       "source": "src/input/read_step_.f90:993-1001"
+       "source": "src/input/read_step_.f90:1019-1027"
       },
       {
        "allowed": "2..8 (name BICGSTAB(<l>))",
        "default": 2,
-       "default_source": "src/input/read_step_.f90:959",
+       "default_source": "src/input/read_step_.f90:985",
        "match": "substring",
        "notes": "",
        "option": "L=",
-       "source": "src/input/read_step_.f90:1003-1013"
+       "source": "src/input/read_step_.f90:1029-1039"
       },
       {
        "allowed": "NONE|DIAGONAL|LS-DIAGONAL|ILU0",
        "default": "NONE",
-       "default_source": "src/input/read_step_.f90:976",
+       "default_source": "src/input/read_step_.f90:1002",
        "match": "substring; value exact",
        "notes": "",
        "option": "PC=",
-       "source": "src/input/read_step_.f90:1015-1032"
+       "source": "src/input/read_step_.f90:1041-1058"
       }
      ],
      "solver": "BICGSTAB(L)",
-     "source": "src/input/read_step_.f90:956-1043",
+     "source": "src/input/read_step_.f90:982-1069",
      "strategy": "ITERATIVE"
     },
     {
      "build_dependency": "fallback solver build-dependent (src/solver/solver.f90:1505-1518)",
      "match": "exact solver_key == 'GMRES'",
-     "notes": "Preconditioner ILUT fixed (1068). Unknown option -> error (1112-1117).",
+     "notes": "Preconditioner ILUT fixed (1094). Unknown option -> error (1138-1143).",
      "options": [
       {
        "allowed": "0 <= x < 1",
        "default": 0.001,
-       "default_source": "src/input/read_step_.f90:1069",
+       "default_source": "src/input/read_step_.f90:1095",
        "match": "prefix",
        "notes": "",
        "option": "DROPTOL=",
-       "source": "src/input/read_step_.f90:1091-1095"
+       "source": "src/input/read_step_.f90:1117-1121"
       },
       {
        "allowed": ">= 1",
        "default": 3.0,
-       "default_source": "src/input/read_step_.f90:1070",
+       "default_source": "src/input/read_step_.f90:1096",
        "match": "prefix",
        "notes": "",
        "option": "FILL=",
-       "source": "src/input/read_step_.f90:1097-1100"
+       "source": "src/input/read_step_.f90:1123-1126"
       },
       {
        "allowed": ">= 1",
        "default": 100,
-       "default_source": "src/input/read_step_.f90:1071",
+       "default_source": "src/input/read_step_.f90:1097",
        "match": "prefix",
        "notes": "",
        "option": "RESTART=",
-       "source": "src/input/read_step_.f90:1086-1089"
+       "source": "src/input/read_step_.f90:1112-1115"
       },
       {
        "allowed": ">= 1",
        "default": 300,
-       "default_source": "src/input/read_step_.f90:1065",
+       "default_source": "src/input/read_step_.f90:1091",
        "match": "prefix",
        "notes": "",
        "option": "MAX_ITER=",
-       "source": "src/input/read_step_.f90:1081-1084"
+       "source": "src/input/read_step_.f90:1107-1110"
       },
       {
        "allowed": "0 < tol < 1",
        "default": 1e-08,
-       "default_source": "src/input/read_step_.f90:1067",
+       "default_source": "src/input/read_step_.f90:1093",
        "match": "prefix",
        "notes": "",
        "option": "TOL=",
-       "source": "src/input/read_step_.f90:1102-1106"
+       "source": "src/input/read_step_.f90:1128-1132"
       },
       {
        "allowed": "PARDISO|MUMPS|NO",
        "default": "DEFAULT",
-       "default_source": "src/input/read_step_.f90:1072",
+       "default_source": "src/input/read_step_.f90:1098",
        "match": "prefix",
        "notes": "",
        "option": "FALLBACK=",
-       "source": "src/input/read_step_.f90:1108-1110"
+       "source": "src/input/read_step_.f90:1134-1136"
       }
      ],
      "solver": "GMRES",
-     "source": "src/input/read_step_.f90:1049-1128",
+     "source": "src/input/read_step_.f90:1075-1154",
      "strategy": "ITERATIVE"
     },
     {
      "build_dependency": "_amgcl_ (else stop, src/solver/solver.f90:897-921)",
      "match": "exact solver_key == 'AMGCL'",
-     "notes": "Unknown option -> error (1205-1210).",
+     "notes": "Unknown option -> error (1231-1236).",
      "options": [
       {
        "allowed": "CPU|GPU",
        "default": "CPU",
-       "default_source": "src/input/read_step_.f90:1156",
+       "default_source": "src/input/read_step_.f90:1182",
        "match": "prefix; value exact",
        "notes": "",
        "option": "DEVICE=",
-       "source": "src/input/read_step_.f90:1182-1191"
+       "source": "src/input/read_step_.f90:1208-1217"
       },
       {
        "allowed": "0 < tol < 1",
        "default": 1e-08,
-       "default_source": "src/input/read_step_.f90:1153",
+       "default_source": "src/input/read_step_.f90:1179",
        "match": "prefix",
        "notes": "",
        "option": "TOL=",
-       "source": "src/input/read_step_.f90:1176-1180"
+       "source": "src/input/read_step_.f90:1202-1206"
       },
       {
        "allowed": ">= 1",
        "default": 300,
-       "default_source": "src/input/read_step_.f90:1151",
+       "default_source": "src/input/read_step_.f90:1177",
        "match": "prefix",
        "notes": "",
        "option": "MAX_ITER=",
-       "source": "src/input/read_step_.f90:1166-1169"
+       "source": "src/input/read_step_.f90:1192-1195"
       },
       {
        "allowed": ">= 1",
        "default": 50,
-       "default_source": "src/input/read_step_.f90:1155",
+       "default_source": "src/input/read_step_.f90:1181",
        "match": "prefix",
        "notes": "",
        "option": "RESTART=",
-       "source": "src/input/read_step_.f90:1171-1174"
+       "source": "src/input/read_step_.f90:1197-1200"
       },
       {
        "allowed": "PARDISO|MUMPS|NO",
        "default": "DEFAULT",
-       "default_source": "src/input/read_step_.f90:1157",
+       "default_source": "src/input/read_step_.f90:1183",
        "match": "prefix",
        "notes": "",
        "option": "FALLBACK=",
-       "source": "src/input/read_step_.f90:1201-1203"
+       "source": "src/input/read_step_.f90:1227-1229"
       },
       {
        "allowed": "rejected with error",
@@ -56815,57 +56815,57 @@
        "match": "prefix",
        "notes": "replaced by *Assign material, ..., amgcl=direct",
        "option": "DIRECTSET= | DIRECT_SET=",
-       "source": "src/input/read_step_.f90:1193-1199"
+       "source": "src/input/read_step_.f90:1219-1225"
       }
      ],
      "solver": "AMGCL",
-     "source": "src/input/read_step_.f90:1134-1221",
+     "source": "src/input/read_step_.f90:1160-1247",
      "strategy": "ITERATIVE"
     },
     {
      "build_dependency": "_fgmres_ (Intel MKL; else stop in solver_solve, src/solver/solver.f90:692-701)",
      "match": "substring 'FGMRES'",
-     "notes": "Unknown option -> error (1286-1291).",
+     "notes": "Unknown option -> error (1312-1317).",
      "options": [
       {
        "allowed": "> 0",
        "default": 1000,
-       "default_source": "src/input/read_step_.f90:1241",
+       "default_source": "src/input/read_step_.f90:1267",
        "match": "substring",
        "notes": "",
        "option": "MAX_ITER=",
-       "source": "src/input/read_step_.f90:1251-1259"
+       "source": "src/input/read_step_.f90:1277-1285"
       },
       {
        "allowed": "> 0",
        "default": 1e-06,
-       "default_source": "src/input/read_step_.f90:1243",
+       "default_source": "src/input/read_step_.f90:1269",
        "match": "substring",
        "notes": "",
        "option": "TOL=",
-       "source": "src/input/read_step_.f90:1261-1269"
+       "source": "src/input/read_step_.f90:1287-1295"
       },
       {
        "allowed": "ILU0|ILUT",
        "default": "ILU0",
-       "default_source": "src/input/read_step_.f90:1244",
+       "default_source": "src/input/read_step_.f90:1270",
        "match": "substring; value exact",
        "notes": "",
        "option": "PC=",
-       "source": "src/input/read_step_.f90:1271-1284"
+       "source": "src/input/read_step_.f90:1297-1310"
       }
      ],
      "solver": "FGMRES",
-     "source": "src/input/read_step_.f90:1225-1295",
+     "source": "src/input/read_step_.f90:1251-1321",
      "strategy": "ITERATIVE"
     },
     {
      "build_dependency": null,
      "match": "not selectable from input",
-     "notes": "Set automatically for *EXPLICITDYNAMIC (498, 1309).",
+     "notes": "Set automatically for *EXPLICITDYNAMIC (524, 1335).",
      "options": [],
      "solver": "DIAGONAL",
-     "source": "src/input/read_step_.f90:498",
+     "source": "src/input/read_step_.f90:524",
      "strategy": "-"
     },
     {
@@ -56874,7 +56874,7 @@
      "notes": "Warning; current solver kept (PARDISO / DIAGONAL).",
      "options": [],
      "solver": "<unknown>",
-     "source": "src/input/read_step_.f90:1299-1305",
+     "source": "src/input/read_step_.f90:1325-1331",
      "strategy": "-"
     }
    ],
@@ -56884,7 +56884,7 @@
      "match": "must be first option; substring 'NAME' in first token",
      "option": "NAME",
      "required": true,
-     "source": "src/input/read_step_.f90:273-280",
+     "source": "src/input/read_step_.f90:279-286",
      "type": "name"
     },
     {
@@ -56892,7 +56892,7 @@
      "match": "substring 'INC' in token, value after '=' as real -> int",
      "option": "INC",
      "required": false,
-     "source": "src/input/read_step_.f90:299,327-334",
+     "source": "src/input/read_step_.f90:305,333-340",
      "type": "int"
     },
     {
@@ -56900,7 +56900,7 @@
      "match": "substring flag",
      "option": "NLGEOM",
      "required": false,
-     "source": "src/input/read_step_.f90:251,304-307",
+     "source": "src/input/read_step_.f90:257,310-313",
      "type": "flag"
     },
     {
@@ -56908,7 +56908,7 @@
      "match": "substring flag",
      "option": "NOCUTBACK",
      "required": false,
-     "source": "src/input/read_step_.f90:254,309-312",
+     "source": "src/input/read_step_.f90:260,315-318",
      "type": "flag"
     },
     {
@@ -56916,7 +56916,7 @@
      "match": "substring, value after '=' int",
      "option": "MAXITER",
      "required": false,
-     "source": "src/input/read_step_.f90:236,314-317,337-342,443,490",
+     "source": "src/input/read_step_.f90:242,320-323,343-348,469,516",
      "type": "int"
     },
     {
@@ -56924,7 +56924,7 @@
      "match": "substring, value after '=' int",
      "option": "MINITER",
      "required": false,
-     "source": "src/input/read_step_.f90:240,319-322,345-350",
+     "source": "src/input/read_step_.f90:246,325-328,351-356",
      "type": "int"
     },
     {
@@ -56932,7 +56932,7 @@
      "match": "substring 'SCALEFACTOR=' in header remainder; value after FIRST '=' of remainder",
      "option": "SCALEFACTOR",
      "required": false,
-     "source": "src/input/read_step_.f90:507-511 (only *EXPLICITDYNAMIC)",
+     "source": "src/input/read_step_.f90:533-537 (only *EXPLICITDYNAMIC)",
      "type": "real"
     }
    ],
@@ -56940,37 +56940,37 @@
     {
      "behaviour": "INHERITED: copied from step istep-1 if the step defines none and the previous one is active (warning)",
      "setting": "field output (*OUTPUT,FIELD)",
-     "source": "src/input/read_step_.f90:3175-3185"
+     "source": "src/input/read_step_.f90:3273-3283"
     },
     {
      "behaviour": "not inherited (flags set but unused)",
      "setting": "print / user output",
-     "source": "src/input/read_step_.f90:201-202"
+     "source": "src/input/read_step_.f90:207-208"
     },
     {
      "behaviour": "reset every step to PARDISO/DIRECT (explicit: DIAGONAL)",
      "setting": "solver (*SOLVER)",
-     "source": "src/input/read_step_.f90:247-248; src/database/solver_ty_.f90:94-107"
+     "source": "src/input/read_step_.f90:253-254; src/database/solver_ty_.f90:94-107"
     },
     {
      "behaviour": "reset to LINEAR (REDUCTION: FOS-LINEAR)",
      "setting": "extrapolation",
-     "source": "src/input/read_step_.f90:257,429"
+     "source": "src/input/read_step_.f90:263,455"
     },
     {
      "behaviour": "reset to .false.",
      "setting": "NLGEOM, NOCUTBACK",
-     "source": "src/input/read_step_.f90:251,254"
+     "source": "src/input/read_step_.f90:257,260"
     },
     {
      "behaviour": "reset to 24 / 1 / 1000000",
      "setting": "MAXITER / MINITER / INC",
-     "source": "src/input/read_step_.f90:236,240,333"
+     "source": "src/input/read_step_.f90:242,246,339"
     },
     {
      "behaviour": "reset to .false.",
      "setting": "*CONTROLS modify flags",
-     "source": "src/input/read_step_.f90:226-232"
+     "source": "src/input/read_step_.f90:232-238"
     },
     {
      "behaviour": "not reset by reader but each step element is freshly default-initialised (field active=.true., max_dpw/global .false.)",
@@ -56980,12 +56980,12 @@
     {
      "behaviour": "active reset to .false.; parameters type defaults",
      "setting": "*ACCELERATOR / *LINESEARCH",
-     "source": "src/input/read_step_.f90:220; src/database/controls_ty_.f90:87-100"
+     "source": "src/input/read_step_.f90:226; src/database/controls_ty_.f90:87-100"
     },
     {
      "behaviour": "reset each step",
      "setting": "load/BC flags, write_restart(_stress), submodel, read_initial_*, execute_command",
-     "source": "src/input/read_step_.f90:205-223"
+     "source": "src/input/read_step_.f90:211-229"
     },
     {
      "behaviour": "per-step components with type defaults (.false./unallocated)",
@@ -56995,27 +56995,27 @@
     {
      "behaviour": "per step from the procedure; no carry-over",
      "setting": "time (dt0,t_end,dtmin,dtmax), dyn (HHT)",
-     "source": "src/input/read_step_.f90:361-629"
+     "source": "src/input/read_step_.f90:367-655"
     },
     {
      "behaviour": "GLOBAL module state set while reading: the last *PFEMWRITE or *RESTARTWRITE in the file wins for all steps",
      "setting": "pfem_restart%pfem_write / write_igp_as_node_data / area_weighted / remeshing_units",
-     "source": "src/input/read_step_.f90:2960,2976-2990,3012-3013; src/output/restart_.f90:180"
+     "source": "src/input/read_step_.f90:3048,3064-3078,3100-3101; src/output/restart_.f90:180"
     },
     {
      "behaviour": "GLOBAL: set to the last *REDUCTION step for all materials",
      "setting": "material%mechanical%reduction_step",
-     "source": "src/input/read_step_.f90:424-426"
+     "source": "src/input/read_step_.f90:450-452"
     },
     {
      "behaviour": "GLOBAL: any *EXPLICITDYNAMIC step sets it for all materials (all steps)",
      "setting": "material%anti_hourglass%viscous",
-     "source": "src/input/read_step_.f90:528-530"
+     "source": "src/input/read_step_.f90:554-556"
     },
     {
      "behaviour": "GLOBAL: any *TIMEINTEGRATION sets it",
      "setting": "instance(1)%switch_time_integration",
-     "source": "src/input/read_step_.f90:3061"
+     "source": "src/input/read_step_.f90:3159"
     },
     {
      "behaviour": "continues across steps (physical state); *RESET zeroes displacement/strain; *RESTARTREAD skips steps <= STEP",
@@ -57036,7 +57036,7 @@
       "dt0": 1.0,
       "dtmax": 1.0,
       "dtmin": 1.0,
-      "source": "src/input/read_step_.f90:369-372",
+      "source": "src/input/read_step_.f90:375-378",
       "t_end": 1.0
      },
      "doc": "docs/reference/step/geostatic.md",
@@ -57048,7 +57048,7 @@
      "source": {
       "anchor": "ed7e558992f8bf5b",
       "file": "src/input/read_step_.f90",
-      "line": 364,
+      "line": 370,
       "routine": "read_step"
      }
     },
@@ -57070,7 +57070,7 @@
      "source": {
       "anchor": "2cfafd02960467e2",
       "file": "src/input/read_step_.f90",
-      "line": 381,
+      "line": 387,
       "routine": "read_step"
      }
     },
@@ -57137,7 +57137,7 @@
      "source": {
       "anchor": "6980f92bf0a792fc",
       "file": "src/input/read_step_.f90",
-      "line": 448,
+      "line": 474,
       "routine": "read_step"
      }
     },
@@ -57151,7 +57151,7 @@
      ],
      "defaults_set_by_solver": {
       "dtcrit(initial)": 1e-12,
-      "source": "src/input/read_step_.f90:464"
+      "source": "src/input/read_step_.f90:490"
      },
      "doc": "docs/reference/step/transient-critical.md",
      "flags_set": [
@@ -57162,7 +57162,7 @@
      "source": {
       "anchor": "777167ef9b27362e",
       "file": "src/input/read_step_.f90",
-      "line": 461,
+      "line": 487,
       "routine": "read_step"
      }
     },
@@ -57182,7 +57182,7 @@
       "maxInc": ">= 1000000",
       "maxIter": 0,
       "solver": "DIAGONAL",
-      "source": "src/input/read_step_.f90:479-530"
+      "source": "src/input/read_step_.f90:505-556"
      },
      "doc": "docs/reference/step/explicit-dynamic.md",
      "flags_set": [
@@ -57193,7 +57193,7 @@
      "source": {
       "anchor": "b1b8ea5c7396b1c0",
       "file": "src/input/read_step_.f90",
-      "line": 477,
+      "line": 503,
       "routine": "read_step"
      }
     },
@@ -57209,7 +57209,7 @@
      "defaults_set_by_solver": {
       "BWE": "alpha=0, beta=1, gamma=1",
       "HHT (1 value)": "beta=(1-alpha)^2/4, gamma=1/2-alpha",
-      "source": "src/input/read_step_.f90:585-623"
+      "source": "src/input/read_step_.f90:611-649"
      },
      "doc": "docs/reference/step/dynamic.md",
      "flags_set": [
@@ -57221,7 +57221,7 @@
      "source": {
       "anchor": "d11e8d1d983c6a15",
       "file": "src/input/read_step_.f90",
-      "line": 567,
+      "line": 593,
       "routine": "read_step"
      }
     }
@@ -57533,7 +57533,7 @@
    "id": "U28",
    "literal": "1e-6 (u increment), 1e-5 (u energy), 1e-3 (pw, pa, tt, cc increment), 1e-10 (pw, pa, tt, cc energy), 1e-5 (w, J, pmean)",
    "note": "",
-   "overridable": "yes for u, pw, tt, pa, w: *Controls, field=..., modify (src/input/read_step_.f90:2450-2732); no for J, pmean, cc",
+   "overridable": "yes for u, pw, tt, pa, w: *Controls, field=..., modify (src/input/read_step_.f90:2531-2813); no for J, pmean, cc",
    "presupposes": "m, kN m, kPa, K",
    "quantity": "zero-solution and zero-energy thresholds of the convergence checks",
    "where": "src/soe/convergence_.f90:304-365 (set_criteria); compared absolutely at :685-686"
@@ -57547,7 +57547,7 @@
    "overridable": "yes: *Controls, field=u, modify",
    "presupposes": "m, kN m",
    "quantity": "zero-solution increment (m) and zero-energy threshold (kN m) of strength-reduction steps",
-   "where": "src/input/read_step_.f90:437-438 (read_step)"
+   "where": "src/input/read_step_.f90:463-464 (read_step)"
   },
   {
    "affects": "U3PMEAN3-SOLID(-MINI)(-AX) with *PPP-stabilisation, method elementwise (branch :490-517)",

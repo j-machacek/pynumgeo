@@ -20,7 +20,8 @@ History
 13.11.2026, J. Machacek - Results of a strength reduction with arc-length control
 14.11.2026, J. Machacek - Factor of safety of the plateau at the end of the step (fos_basis)
 15.11.2026, J. Machacek - Include lines and lines that are too long as numgeo reads them since 31.10.2026
-20.11.2026, J. Machacek - Factor of safety undetermined without a plateau (numgeo of 18.11.2026)
+20.11.2026, J. Machacek - Factor of safety undetermined without a plateau (numgeo of 18.11.2026); line
+                          numbers of read_step_.f90 of numgeo-src 1f48283
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -149,7 +150,7 @@ print(r.severity, "|", r.title, "|", r.source)
 ```
 
 ```text
-warning | a step should have a *Boundary | src/input/read_step_.f90:3192,3202; src/soe/soe_apply_boundary_conditions_.f90:92
+warning | a step should have a *Boundary | src/input/read_step_.f90:3290,3300; src/soe/soe_apply_boundary_conditions_.f90:92
 ```
 
 The validator targets a numgeo build. The default, `BuildProfile.full()`, is the current developer

@@ -18,6 +18,7 @@
 # 03.11.2026, J. Machacek - *Assign material, from-file (NG-READ-SEC-004, NG-READ-SEC-005) (with help of
 #                           Claude Opus 5.5)
 # 15.11.2026, J. Machacek - Severity of the reader quirks (lines that are too long stop numgeo)
+# 20.11.2026, J. Machacek - Line numbers of read_step_.f90 of numgeo-src 1f48283
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Read a numgeo input file into a :class:`~pynumgeo.deck.Deck`.
 
@@ -792,7 +793,7 @@ class _Reader:
                 "error",
                 "name= must be the first option of *Step",
                 b,
-                source="src/input/read_step_.f90:273-280",
+                source="src/input/read_step_.f90:279-286",
             )
         name = (opts[0].value_cased or "") if opts else ""
         st: dict[str, object] = {}
@@ -807,7 +808,7 @@ class _Reader:
                         "error",
                         "scalefactor= must be the second option of *Step",
                         b,
-                        source="src/input/read_step_.f90:507-511",
+                        source="src/input/read_step_.f90:533-537",
                     )
             elif "MAXITER" in t:
                 st["maxiter"] = int(parse_real(o.value or "")) if o.value else None
