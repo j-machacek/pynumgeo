@@ -21,6 +21,7 @@
 #                           (with help of Claude Opus 5.5)
 # 07.11.2026, J. Machacek - Version 2026.2.0.dev6
 # 15.11.2026, J. Machacek - Version 2026.2.0.dev7
+# 20.11.2026, J. Machacek - Version 2026.2.0.dev8; reference pages of the numgeo documentation d6e7aa8a
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Version of pynumgeo and of the numgeo source it was derived from.
 
@@ -28,11 +29,11 @@ pynumgeo follows the numgeo version: numgeo ``numgeo2026-v2`` corresponds to pyn
 (``.devN`` until it is released together with numgeo).
 """
 
-__version__ = "2026.2.0.dev7"
+__version__ = "2026.2.0.dev8"
 
 #: numgeo version string this pynumgeo was derived from (console banner of the solver).
 NUMGEO_VERSION = "numgeo2026-v2"
 #: numgeo-src commit the catalogue was generated from.
 NUMGEO_SOURCE_COMMIT = "834564ed77c2aa9ce5f6cdeabc03293c331520af"
 #: numgeo documentation commit the bundled reference pages come from.
-NUMGEO_DOCS_COMMIT = "f903d1a1b9a8180207038255875dcbb9e8f75b79"
+NUMGEO_DOCS_COMMIT = "d6e7aa8a681f406b25ba2bb414a65be146352204"

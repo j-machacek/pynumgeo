@@ -15,6 +15,8 @@
 # History
 # 13.11.2026, J. Machacek - Initial version
 # 14.11.2026, J. Machacek - Data and summary of the numgeo-src of 14.11.2026 (plateau at the end, first plateau)
+# 20.11.2026, J. Machacek - numgeo-src e15b379 (18.11.2026): finite positive option values, data line and
+#                           iteration limits of the step, summary without a plateau
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Strength reduction with arc-length control (``*Reduction, arc-length``) and strength reduction of embedded
 interfaces (``*Embedded region, interaction, ..., reduction``), uncommitted numgeo-src of 13.11.2026: catalogue,
@@ -26,6 +28,12 @@ The files in ``data/arc-length-reduction`` were written by numgeo (``pruska-no-a
 end after consecutive rejections, notes of contact and embedded interfaces) keep only some rows of the reduction
 step; ``byun`` (first plateau, rejected arc-length increments) and ``pruska-no-arc`` (the model of ``pruska``
 without arc-length control) keep all of them together with the history file numgeo wrote for the step.
+
+The files in ``data/arc-length-reduction/numgeo-e15b379`` were written by numgeo of 19.11.2026 (numgeo-src 1f48283,
+which has the arc-length control of e15b379; build 4178bf46) on 20.11.2026 and shortened in the same way: ``pruska``
+(tutorial deck ``mc2-arc``, plateau at the end of the step), ``pruska-short`` (the same deck with
+``arc-increments=3``: no plateau, factor of safety undetermined) and ``wall-int`` (tutorial deck
+``wall-segmental-interfaces`` with ``arc-length``: first plateau, notes of contact and embedded interfaces).
 """
 
 from __future__ import annotations
@@ -48,14 +56,15 @@ from pynumgeo.solver.logs import parse_sta, read_lines
 from pynumgeo.solver.messages import classify, rules_for_source
 
 ARC = DATA / "arc-length-reduction"
-ARC_RULES = ("NG-STEP-132", "NG-STEP-133", "NG-KW-011", "NG-KW-014")
+ARC_RULES = ("NG-STEP-132", "NG-STEP-133", "NG-STEP-135", "NG-KW-011", "NG-KW-014")
+NEW = ARC / "numgeo-e15b379"
 
 
-def _reduction_deck(*options, items=(), nocutback: bool = False) -> ng.Deck:
+def _reduction_deck(*options, items=(), nocutback: bool = False, data=(1.0, 0.01, 0.05, 1.0e-4)) -> ng.Deck:
     """small_deck with its step turned into a strength reduction step (*Reduction with ``options``)."""
     d = small_deck()
     st = d.steps[0]
-    st.procedure = Keyword.make("*Reduction", options=list(options), data=[[1.0, 0.01, 0.05, 1.0e-4]])
+    st.procedure = Keyword.make("*Reduction", options=list(options), data=[list(data)])
     st.inc = 1000
     st.nocutback = nocutback
     for kw in items:
@@ -80,12 +89,15 @@ def test_catalogue_reduction_options():
     ]  # fmt: skip
     for o in opts.values():
         assert o.source is not None and o.source["routine"] == "read_reduction_options"
-        assert "uncommitted numgeo-src of 14.11.2026" in o.notes
+        assert "numgeo-src e15b379" in o.notes
+    assert "finite and > 0" in opts["MAX-DISPLACEMENT"].notes and "dFoS_min <= dFoS_0 <= dFoS_max" in spec.notes
     assert "arc-length" in cat.describe("*Reduction", with_docs=False)
     page = cat.load().doc_page(spec.doc)
     assert page is not None and "## Arc-length control" in page and "`plateau-increments=<N>`" in page
     proc = next(p for p in cat.load().section("step", "step_procedures") if p["keyword"] == "*REDUCTION")
     assert proc["arc_length"]["defaults"]["ARC-INCREMENTS"] == 100
+    assert "MAXITER >= MINITER" in proc["arc_length"]["requires"]
+    assert "undetermined" in page and "finite and positive" in page
 
 
 def test_catalogue_embedded_reduction_and_output():
@@ -129,6 +141,8 @@ def test_arc_length_options_are_accepted():
             "perturbation=1d-3")  # fmt: skip
     assert _found(_reduction_deck(*opts), *ARC_RULES) == []
     assert _found(_reduction_deck("arc-length"), *ARC_RULES) == []
+    for value in ("+0.5", ".5", "5", "1.d-3", "2E-3"):
+        assert _found(_reduction_deck("arc-length", f"max-displacement={value}"), *ARC_RULES) == []
 
 
 @pytest.mark.parametrize(
@@ -143,10 +157,17 @@ def test_arc_length_options_are_accepted():
         ("arc-increments=abc", "arc-increments=abc must be a positive integer; numgeo stops"),
         ("arc-increments=0", "arc-increments=0 must be a positive integer; numgeo stops"),
         ("arc-increments=0.5", "arc-increments=0.5 must be a positive integer; numgeo stops"),
-        ("max-displacement=-0.5", "max-displacement=-0.5 must be a positive number"),
-        ("max-displacement=large", "max-displacement=large must be a positive number"),
-        ("plateau-tolerance=0.0", "plateau-tolerance=0.0 must be a positive number"),
-        ("perturbation=0", "perturbation=0 must be a positive number"),
+        ("max-displacement=-0.5", "max-displacement=-0.5 must be a finite positive number"),
+        ("max-displacement=large", "max-displacement=large must be a finite positive number"),
+        ("plateau-tolerance=0.0", "plateau-tolerance=0.0 must be a finite positive number"),
+        ("perturbation=0", "perturbation=0 must be a finite positive number"),
+        # numgeo-src e15b379: digits, sign, point and exponent letter only; the value must be finite
+        ("max-displacement=inf", "max-displacement=inf must be a finite positive number"),
+        ("max-displacement=infinity", "max-displacement=infinity must be a finite positive number"),
+        ("plateau-tolerance=nan", "plateau-tolerance=nan must be a finite positive number"),
+        ("perturbation=1q-3", "perturbation=1q-3 must be a finite positive number"),
+        ("max-displacement=1e400", "max-displacement=1e400 must be a finite positive number"),
+        ("max-displacement=1.2.3", "max-displacement=1.2.3 must be a finite positive number"),
         (
             "max-disp=0.5",
             "unknown option max-disp=0.5 (options: max-displacement=, plateau-tolerance=, "
@@ -172,6 +193,44 @@ def test_options_without_arc_length_are_ignored():
     found = _found(_reduction_deck("arc-length=yes", "arc-increments=0"), *ARC_RULES)
     assert [i.id for i in found] == ["NG-KW-011", "NG-KW-011"]
     assert _found(_reduction_deck(), *ARC_RULES) == []
+
+
+# ---------------------------------------------------------------------------------------- data line of *Reduction
+@pytest.mark.parametrize(
+    "data",
+    [(1.0, 0.01, 0.05, 1.0e-4), (1.0, 0.05, 0.05, 0.05), (0.9, "5d-2", 0.05, "1e-4")],
+)
+def test_arc_length_data_line_accepted(data):
+    assert _found(_reduction_deck("arc-length", data=data), *ARC_RULES) == []
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        (1.0, 0.01, 0.05, 0.02),  # dFoS_min > dFoS_0
+        (1.0, 0.06, 0.05, 1.0e-4),  # dFoS_0 > dFoS_max
+        (1.0, 0.01, 0.05, 0.0),
+        (1.0, -0.01, 0.05, 1.0e-4),
+        (0.0, 0.01, 0.05, 1.0e-4),
+        (1.0, 0.01, "inf", 1.0e-4),
+    ],
+)
+def test_arc_length_data_line_rejected(data):
+    found = _found(_reduction_deck("arc-length", data=data), *ARC_RULES)
+    assert [(i.id, i.severity) for i in found] == [("NG-STEP-135", "error")]
+    assert "needs finite positive values with dFoS_min <= dFoS_0 <= dFoS_max" in found[0].message
+    # without arc-length numgeo reads the values as they are
+    assert _found(_reduction_deck(data=data), *ARC_RULES) == []
+
+
+def test_reduction_data_line_needs_numbers():
+    for options in ((), ("arc-length",)):
+        found = _found(_reduction_deck(*options, data=(1.0, "abc", 0.05, 1.0e-4)), *ARC_RULES)
+        assert [(i.id, i.severity) for i in found] == [("NG-STEP-135", "error")]
+        assert "1.0, abc, 0.05, 0.0001 (FoS_0, dFoS_0, dFoS_max, dFoS_min) must be four numbers" in found[0].message
+    # another number of values is reported by the rule on the data of the procedures
+    d = _reduction_deck("arc-length", data=(1.0, 0.01, 0.05))
+    assert [i.id for i in ng.validate(d) if i.id in ("NG-STEP-010", "NG-STEP-135")] == ["NG-STEP-010"]
 
 
 # ------------------------------------------------------------------------------------- *Reduction, arc-length set-up
@@ -210,6 +269,31 @@ def test_arc_length_setup_errors(items, nocutback, texts):
 )
 def test_arc_length_setup_accepted(items):
     assert _found(_reduction_deck("arc-length", items=items), "NG-STEP-133") == []
+
+
+@pytest.mark.parametrize(
+    "maxiter, miniter, text",
+    [
+        (5, 10, "(maxiter=5, miniter=10)"),
+        (0, None, "(maxiter=0, miniter=1)"),
+        (None, 150, "(maxiter=100, miniter=150)"),  # a reduction step without maxiter= iterates up to 100 times
+    ],
+)
+def test_arc_length_iteration_limits(maxiter, miniter, text):
+    d = _reduction_deck("arc-length")
+    d.steps[0].maxiter, d.steps[0].miniter = maxiter, miniter
+    found = _found(d, "NG-STEP-133")
+    assert len(found) == 1 and "needs maxiter >= 1 and maxiter >= miniter" in found[0].message
+    assert text in found[0].message
+    d.steps[0].procedure = Keyword.make("*Reduction", data=[[1.0, 0.01, 0.05, 1.0e-4]])
+    assert _found(d, "NG-STEP-133") == []
+
+
+@pytest.mark.parametrize("maxiter, miniter", [(None, None), (10, 10), (None, 100), (30, 2)])
+def test_arc_length_iteration_limits_accepted(maxiter, miniter):
+    d = _reduction_deck("arc-length")
+    d.steps[0].maxiter, d.steps[0].miniter = maxiter, miniter
+    assert _found(d, "NG-STEP-133") == []
 
 
 def test_setup_is_not_checked_without_arc_length():
@@ -295,12 +379,42 @@ def test_embedded_reduction_written_and_read_back():
             "repeats increments; NOCUTBACK in the *Step command is not supported.",
             "NG-STEP-133",
         ),
+        # numgeo-src e15b379
+        (
+            "MAX-DISPLACEMENT of the *REDUCTION, ARC-LENGTH command in step SAFETY has to be a finite positive "
+            "number: INF",
+            "NG-STEP-132",
+        ),
+        (
+            "*REDUCTION, ARC-LENGTH requires finite positive values with dFoS_min <= dFoS_0 <= dFoS_max in step "
+            "SAFETY.",
+            "NG-STEP-135",
+        ),
+        ("Invalid numeric data for *REDUCTION in step SAFETY.", "NG-STEP-135"),
+        ("Arc-length strength reduction needs MAXITER >= 1 and MAXITER >= MINITER in step SAFETY.", "NG-STEP-133"),
     ],
 )
 def test_numgeo_messages(text, rule):
     m = classify(text, "error")
     assert m is not None and m.terminates
     assert rule in rules_for_source(m.file, m.line, m.candidates)
+
+
+def test_numgeo_messages_of_e15b379():
+    m = classify(
+        "Strength reduction in step SAFETY: limiting factor of safety undetermined. No displacement plateau was "
+        "confirmed.",
+        "warning",
+    )
+    assert m is not None and m.file == "src/fem/arc_length_.f90" and not m.terminates
+    old = "PERTURBATION of the *REDUCTION, ARC-LENGTH command in step {cdb%step(istep)%name} has to be a positive"
+    assert not any((t["template"] or "").startswith(old) for t in cat.load().messages())
+    m = classify(
+        "The *REDUCTION statement has to be followed by one line containing four entries: FoS_0, dFoS_0, dFoS_max, "
+        "dFoS_min. Check step SAFETY",
+        "error",
+    )
+    assert m is not None and m.message_id.startswith("src/input/read_step_.f90:")
 
 
 # -------------------------------------------------------------------------------------------------------------- .sta
@@ -397,6 +511,54 @@ def test_sta_summary_without_plateau(tmp_path):
         "no plateau", 2.442746, 2.356032, 2.484315, False,
     )  # fmt: skip
     assert (s.first_plateau_increment, s.peak_exceeds_plateau, s.peak_increment) == (None, False, 159)
+
+
+def test_sta_summary_of_e15b379_plateau_at_the_end():
+    (s,) = read_arc_length_summaries(NEW / "pruska/pruska-2009-case1.sta")
+    assert (s.plateau_tolerance, s.plateau_increments, s.arc_increments, s.perturbation) == (0.002, 5, 100, 0.001)
+    assert s.notes == () and s.end_reason == "arc-increments = 100 arc-length increments accepted"
+    assert (s.engaged, s.switch_increment, s.switch_fos, s.accepted, s.rejected) == (True, 9, 1.216667, 100, 0)
+    assert (s.window_u, s.window_means, s.window_counts, s.windows_agree) == (
+        375.26, (1.2222, 1.222214), (10, 10), True,
+    )  # fmt: skip
+    assert (s.fos_basis, s.fos, s.fos_min, s.fos_max) == ("plateau at the end", 1.222207, 1.22219, 1.222219)
+    assert (s.first_plateau_increment, s.first_plateau_fos) == (29, 1.219633)
+    assert (s.peak_fos, s.peak_increment, s.peak_exceeds_plateau) == (1.222219, 108, False)
+    assert (s.fos_error, s.constraint_error) == (2.204e-09, 1.504e-14)  # "FoS correction |dFoS|" since e15b379
+    rows = [r for r in read_sta(NEW / "pruska/pruska-2009-case1.sta") if r.step_type == "REDUCTION"]
+    assert {r.control for r in rows} == {"F", "A"} and rows[-1].accepted is True and rows[-1].increment == 108
+
+
+def test_sta_summary_of_e15b379_undetermined():
+    # three arc-length increments: no plateau is confirmed, numgeo gives no factor of safety
+    (s,) = read_arc_length_summaries(NEW / "pruska-short/pruska-2009-case1.sta")
+    assert s.end_reason == "arc-increments = 3 arc-length increments accepted"
+    assert (s.engaged, s.switch_increment, s.accepted, s.rejected) == (True, 9, 3, 0)
+    assert (s.fos_basis, s.fos, s.fos_min, s.fos_max) == ("undetermined", None, None, None)
+    assert (s.windows_agree, s.window_means, s.window_counts) == (False, (0.0, 1.217645), (0, 3))
+    assert (s.last_fos, s.last_max_disp) == (1.218037, 0.4512)
+    assert (s.arc_mean, s.arc_min, s.arc_max) == (1.217645, 1.217224, 1.218037)
+    assert (s.first_plateau_increment, s.peak_fos, s.peak_increment, s.peak_exceeds_plateau) == (
+        None, 1.218037, 11, False,
+    )  # fmt: skip
+    assert (s.fos_error, s.constraint_error) == (2.761e-08, 1.361e-16)
+    rows = [r for r in read_sta(NEW / "pruska-short/pruska-2009-case1.sta") if r.step_type == "REDUCTION"]
+    assert [(r.increment, r.control, r.accepted) for r in rows[-4:]] == [
+        (9, "F", False), (9, "A", True), (10, "A", True), (11, "A", True),
+    ]  # fmt: skip
+
+
+def test_sta_summary_of_e15b379_first_plateau_and_notes():
+    (s,) = read_arc_length_summaries(NEW / "wall-int/wall-segmental-interfaces.sta")
+    assert s.step == "REDUCTION-INTERFACES" and (s.accepted, s.rejected) == (100, 64)
+    assert len(s.notes) == 2
+    assert s.notes[0].startswith("Contact friction reduction enters the equilibrium residual. Its FoS derivative is")
+    assert s.notes[1].startswith("embedded interfaces with *Embedded region, interaction, reduction enter the pseudo")
+    assert (s.windows_agree, s.window_means, s.window_counts) == (False, (2.193252, 2.187986), (12, 66))
+    assert (s.first_plateau_increment, s.first_plateau_u) == (80, 5.4337)
+    assert (s.fos_basis, s.fos, s.fos_min, s.fos_max) == ("first plateau", 2.192402, 2.184277, 2.195867)
+    assert (s.peak_fos, s.peak_max_disp, s.peak_increment, s.peak_exceeds_plateau) == (2.195867, 3.2743, 58, False)
+    assert (s.fos_error, s.constraint_error) == (8.152e-07, 8.617e-15)
 
 
 def test_sta_without_arc_length_is_unchanged():
@@ -516,6 +678,20 @@ def test_runner_reads_the_rows_and_the_summary(tmp_path):
     )
     shutil.copy(ARC / "pruska/pruska-2009-case1.sta", tmp_path / "job.sta")
     assert "factor of safety (plateau at the end of the step, u = 3.7526E+02; mean over its windows): 1.222207" in (
+        assess(tmp_path, "job", exit_code=0).steps[-1].note or ""
+    )
+
+
+def test_runner_note_of_e15b379_without_plateau(tmp_path):
+    shutil.copy(NEW / "pruska-short/pruska-2009-case1.sta", tmp_path / "job.sta")
+    (tmp_path / "job.log").write_text("-> NUMGEO *START*\n-> PREPROCESSING *END* \n-> NUMGEO *END*\n")
+    report = assess(tmp_path, "job", exit_code=0).steps[-1]
+    assert report.completed and report.note == (
+        "strength reduction with arc-length control: end of the step: arc-increments = 3 arc-length increments "
+        "accepted; limiting factor of safety undetermined. No displacement plateau was confirmed; last FoS = 1.218"
+    )
+    shutil.copy(NEW / "wall-int/wall-segmental-interfaces.sta", tmp_path / "job.sta")
+    assert "factor of safety (first plateau, increment 80, u = 5.4337E+00; the windows at the end of the step do " in (
         assess(tmp_path, "job", exit_code=0).steps[-1].note or ""
     )
 

@@ -1,0 +1,322 @@
+** Small sliding of IPS contact pairs from the beginning of a step (*Model change, contact pair, sliding=small)
+** after a staged construction. Plane strain, kN and m. All nodes are displacement-controlled, so that the
+** resultants follow from the penalty and Coulomb laws: N = eps_N * penetration * L, |T| <= tan(delta) * N.
+**
+** SUPPORT: 4.0 m x 0.25 m; BLOCK_A (x = 0.5 ... 1.5 m) is present from the start, BLOCK_B (x = 2.5 ... 3.5 m) is
+** placed in step 3 on the support, which has settled by 0.5 mm in step 2 (gap=activation: in contact from the start).
+*Node
+1, 0, -0.25
+2, 0.25, -0.25
+3, 0.5, -0.25
+4, 0.75, -0.25
+5, 1, -0.25
+6, 1.25, -0.25
+7, 1.5, -0.25
+8, 1.75, -0.25
+9, 2, -0.25
+10, 2.25, -0.25
+11, 2.5, -0.25
+12, 2.75, -0.25
+13, 3, -0.25
+14, 3.25, -0.25
+15, 3.5, -0.25
+16, 3.75, -0.25
+17, 4, -0.25
+18, 0, 0
+19, 0.25, 0
+20, 0.5, 0
+21, 0.75, 0
+22, 1, 0
+23, 1.25, 0
+24, 1.5, 0
+25, 1.75, 0
+26, 2, 0
+27, 2.25, 0
+28, 2.5, 0
+29, 2.75, 0
+30, 3, 0
+31, 3.25, 0
+32, 3.5, 0
+33, 3.75, 0
+34, 4, 0
+35, 0.5, 0
+36, 0.75, 0
+37, 1, 0
+38, 1.25, 0
+39, 1.5, 0
+40, 0.5, 0.25
+41, 0.75, 0.25
+42, 1, 0.25
+43, 1.25, 0.25
+44, 1.5, 0.25
+45, 0.5, 0.5
+46, 0.75, 0.5
+47, 1, 0.5
+48, 1.25, 0.5
+49, 1.5, 0.5
+50, 2.5, 0
+51, 2.75, 0
+52, 3, 0
+53, 3.25, 0
+54, 3.5, 0
+55, 2.5, 0.25
+56, 2.75, 0.25
+57, 3, 0.25
+58, 3.25, 0.25
+59, 3.5, 0.25
+60, 2.5, 0.5
+61, 2.75, 0.5
+62, 3, 0.5
+63, 3.25, 0.5
+64, 3.5, 0.5
+*Element, type=U4-SOLID
+1, 1, 2, 19, 18
+2, 2, 3, 20, 19
+3, 3, 4, 21, 20
+4, 4, 5, 22, 21
+5, 5, 6, 23, 22
+6, 6, 7, 24, 23
+7, 7, 8, 25, 24
+8, 8, 9, 26, 25
+9, 9, 10, 27, 26
+10, 10, 11, 28, 27
+11, 11, 12, 29, 28
+12, 12, 13, 30, 29
+13, 13, 14, 31, 30
+14, 14, 15, 32, 31
+15, 15, 16, 33, 32
+16, 16, 17, 34, 33
+17, 35, 36, 41, 40
+18, 36, 37, 42, 41
+19, 37, 38, 43, 42
+20, 38, 39, 44, 43
+21, 40, 41, 46, 45
+22, 41, 42, 47, 46
+23, 42, 43, 48, 47
+24, 43, 44, 49, 48
+25, 50, 51, 56, 55
+26, 51, 52, 57, 56
+27, 52, 53, 58, 57
+28, 53, 54, 59, 58
+29, 55, 56, 61, 60
+30, 56, 57, 62, 61
+31, 57, 58, 63, 62
+32, 58, 59, 64, 63
+*Nset, nset=SUPPORT
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+25, 26, 27, 28, 29, 30, 31, 32, 33, 34
+*Nset, nset=SUPPORT_BOTTOM
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+13, 14, 15, 16, 17
+*Nset, nset=SUPPORT_TOP
+18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
+30, 31, 32, 33, 34
+*Nset, nset=SUPPORT_LEFT
+1, 18
+*Nset, nset=SUPPORT_RIGHT
+17, 34
+*Nset, nset=BLOCK_A
+35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46
+47, 48, 49
+*Nset, nset=BLOCK_A_BOTTOM
+35, 36, 37, 38, 39
+*Nset, nset=BLOCK_A_TOP
+45, 46, 47, 48, 49
+*Nset, nset=BLOCK_A_LEFT
+35, 40, 45
+*Nset, nset=BLOCK_A_RIGHT
+39, 44, 49
+*Nset, nset=BLOCK_B
+50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61
+62, 63, 64
+*Nset, nset=BLOCK_B_BOTTOM
+50, 51, 52, 53, 54
+*Nset, nset=BLOCK_B_TOP
+60, 61, 62, 63, 64
+*Nset, nset=BLOCK_B_LEFT
+50, 55, 60
+*Nset, nset=BLOCK_B_RIGHT
+54, 59, 64
+*Elset, elset=SUPPORT
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+13, 14, 15, 16
+*Elset, elset=SUPPORT_BOTTOM
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+13, 14, 15, 16
+*Elset, elset=SUPPORT_TOP
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+13, 14, 15, 16
+*Elset, elset=SUPPORT_LEFT
+1
+*Elset, elset=SUPPORT_RIGHT
+16
+*Elset, elset=SUPPORT_A_TOP
+1, 2, 3, 4, 5, 6, 7, 8
+*Elset, elset=SUPPORT_B_TOP
+10, 11, 12, 13, 14, 15, 16
+*Elset, elset=BLOCK_A
+17, 18, 19, 20, 21, 22, 23, 24
+*Elset, elset=BLOCK_A_BOTTOM
+17, 18, 19, 20
+*Elset, elset=BLOCK_A_TOP
+21, 22, 23, 24
+*Elset, elset=BLOCK_A_LEFT
+17, 21
+*Elset, elset=BLOCK_A_RIGHT
+20, 24
+*Elset, elset=BLOCK_B
+25, 26, 27, 28, 29, 30, 31, 32
+*Elset, elset=BLOCK_B_BOTTOM
+25, 26, 27, 28
+*Elset, elset=BLOCK_B_TOP
+29, 30, 31, 32
+*Elset, elset=BLOCK_B_LEFT
+25, 29
+*Elset, elset=BLOCK_B_RIGHT
+28, 32
+** master surfaces: two parts of the top of the support without common nodes
+*Surface, type=element, name=SUPPORT_A
+SUPPORT_A_TOP, S3
+*Surface, type=element, name=SUPPORT_B
+SUPPORT_B_TOP, S3
+** slave surfaces: bottom faces of the blocks
+*Surface, type=element, name=BLOCK_A_SURFACE
+BLOCK_A_BOTTOM, S1
+*Surface, type=element, name=BLOCK_B_SURFACE
+BLOCK_B_BOTTOM, S1
+*Material, name=ELASTIC, phases=1
+*Mechanical=Linear_Elasticity
+10000, 0.25
+*Density
+1
+*Solid Section, elset=BLOCK_A, material=ELASTIC
+*Solid Section, elset=BLOCK_B, material=ELASTIC
+*Solid Section, elset=SUPPORT, material=ELASTIC
+*Interaction, name=FRICTION
+*Normal, mechanical=penalty
+1e+06
+*Friction, model=Coulomb
+100000, 0.3, 0
+** two contact pairs with the same interaction; both start with finite sliding (default)
+*Contact pair, interaction=FRICTION, discretisation=IPS, gap=activation
+BLOCK_A_SURFACE, SUPPORT_A
+*Contact pair, interaction=FRICTION, discretisation=IPS, gap=activation
+BLOCK_B_SURFACE, SUPPORT_B
+** displacement histories (value at the beginning and at the end of the step)
+*Amplitude, name=A_PRESS, type=ramp
+0, 0, 1, -0.001
+*Amplitude, name=SETTLE, type=ramp
+0, 0, 1, -0.0005
+*Amplitude, name=A_FOLLOW, type=ramp
+0, -0.001, 1, -0.0015
+*Amplitude, name=B_PRESS, type=ramp
+0, 0, 1, -0.0015
+*Amplitude, name=SLIDE, type=ramp
+0, 0, 1, 0.02
+**
+** Step 1: BLOCK_B does not exist yet; BLOCK_A is pressed into the support by 1 mm
+*Step, name=initial, inc=1000, maxiter=35
+*Static
+0.1, 1, 1e-6, 0.1
+*Solver, MUMPS
+*Model change, remove
+BLOCK_B
+*Boundary
+SUPPORT, u1, 0
+SUPPORT, u2, 0
+BLOCK_A, u1, 0
+*Boundary, amplitude=A_PRESS
+BLOCK_A, u2, 1.0
+*Output, print
+*Frequency=1
+*Node output, nset=BLOCK_A
+U, RF
+*Node output, nset=BLOCK_B
+U, RF
+*Node output, nset=SUPPORT
+U, RF
+*Controls, global, deactivate
+*Controls, u, activate
+*End step
+**
+** Step 2: the support settles by 0.5 mm, BLOCK_A follows
+*Step, name=settle, inc=1000, maxiter=35
+*Static
+0.1, 1, 1e-6, 0.1
+*Solver, MUMPS
+*Boundary
+SUPPORT, u1, 0
+BLOCK_A, u1, 0
+*Boundary, amplitude=SETTLE
+SUPPORT, u2, 1.0
+*Boundary, amplitude=A_FOLLOW
+BLOCK_A, u2, 1.0
+*Output, print
+*Frequency=1
+*Node output, nset=BLOCK_A
+U, RF
+*Node output, nset=BLOCK_B
+U, RF
+*Node output, nset=SUPPORT
+U, RF
+*Controls, global, deactivate
+*Controls, u, activate
+*End step
+**
+** Step 3: BLOCK_B is placed at its mesh position (0.5 mm above the settled support) and pushed down by 1.5 mm
+*Step, name=place, inc=1000, maxiter=35
+*Static
+0.1, 1, 1e-6, 0.1
+*Solver, MUMPS
+*Model change, add
+BLOCK_B
+*Boundary
+SUPPORT, u1, 0
+SUPPORT, u2, -0.0005
+BLOCK_A, u1, 0
+BLOCK_A, u2, -0.0015
+BLOCK_B, u1, 0
+*Boundary, amplitude=B_PRESS
+BLOCK_B, u2, 1.0
+*Output, print
+*Frequency=1
+*Node output, nset=BLOCK_A
+U, RF
+*Node output, nset=BLOCK_B
+U, RF
+*Node output, nset=SUPPORT
+U, RF
+*Controls, global, deactivate
+*Controls, u, activate
+*End step
+**
+** Step 4: both pairs use small sliding from the beginning of this step on (reference: end of step 3);
+**         both blocks are slid by 20 mm
+*Step, name=slide, inc=1000, maxiter=35
+*Static
+0.1, 1, 1e-6, 0.1
+*Solver, MUMPS
+*Model change, contact pair, sliding=small
+BLOCK_A_SURFACE, SUPPORT_A
+BLOCK_B_SURFACE, SUPPORT_B
+*Boundary
+SUPPORT, u1, 0
+SUPPORT, u2, -0.0005
+BLOCK_A, u2, -0.0015
+BLOCK_B, u2, -0.0015
+*Boundary, amplitude=SLIDE
+BLOCK_A, u1, 1.0
+BLOCK_B, u1, 1.0
+*Output, print
+*Frequency=1
+*Node output, nset=BLOCK_A
+U, RF
+*Node output, nset=BLOCK_B
+U, RF
+*Node output, nset=SUPPORT
+U, RF
+*Controls, global, deactivate
+*Controls, u, activate
+*End step
+*End input

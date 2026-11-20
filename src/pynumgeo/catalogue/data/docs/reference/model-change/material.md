@@ -16,6 +16,8 @@ Note that:
 
 * Changing the stress-strain relation model (`*Mechanical` model) requires careful consideration, particularly when failure criteria are involved, as admissible stress states may change. This can cause numerical difficulties if the current stress state is invalid under the new model, potentially resulting in sudden plastic strain jumps.
 
+* In a [restart analysis](../restart.md) the material changes of the skipped steps are applied when the analysis is restarted (log message `Model change of the skipped step ... replayed (restart)`); the state variables are read from the restart files.
+
 * For challenging material transitions, consider a two-step approach:
     1. First `*Step`: Change the material model while constraining all displacements of nodes in the `<element set>` using `*Boundary, increment` and record reaction forces with `*Save reaction forces`.
     2. Second `*Step`: Gradually release these reaction forces using `*Reaction force, amplitude = ...` to establish a new equilibrium that finds an admissible stress state through controlled plastic deformations.

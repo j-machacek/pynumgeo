@@ -17,6 +17,7 @@
 # 27.10.2026, J. Machacek - Names of interactions; words standing with blanks in a name
 # 07.11.2026, J. Machacek - Line numbers of read_interaction_.f90 (uncommitted numgeo-src of 06.11.2026)
 # 15.11.2026, J. Machacek - The word INCLUDE in a name is no longer read as an include (numgeo-src aa15af6)
+# 19.11.2026, J. Machacek - Line numbers of read_contact_pairing_.f90 (numgeo-src 1f48283)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Names that numgeo reads as options, and renaming them throughout a deck.
 
@@ -31,7 +32,7 @@ set, ``*Nset, nset=BodenInstance.All`` as a set of an instance whose name is the
   ``read_material_``, ``read_amplitude_``);
 * interactions: their name stands in ``*Interaction, name=``, ``*Contact pair, interaction=`` and
   ``*Contact options, name=``, and each of these readers searches its own words in it
-  (``read_interaction_.f90:494-581``, ``read_contact_pairing_.f90:80-154``, ``read_contact_options_.f90:99-123``).
+  (``read_interaction_.f90:494-581``, ``read_contact_pairing_.f90:84-158``, ``read_contact_options_.f90:99-123``).
 
 Sets that pynumgeo creates when it flattens parts and instances are named ``<instance>.<set>`` like
 numgeo's internal names; written as a flat deck, an instance name such as ``BodenInstance`` puts the

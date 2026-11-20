@@ -20,6 +20,7 @@ History
 13.11.2026, J. Machacek - Results of a strength reduction with arc-length control
 14.11.2026, J. Machacek - Factor of safety of the plateau at the end of the step (fos_basis)
 15.11.2026, J. Machacek - Include lines and lines that are too long as numgeo reads them since 31.10.2026
+20.11.2026, J. Machacek - Factor of safety undetermined without a plateau (numgeo of 18.11.2026)
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -185,8 +186,11 @@ end of the step (`ArcLengthSummary`): why the step ended, the increment and fact
 to the arc-length control, the first plateau (`first_plateau_*`), the factor of safety of the step (`fos`,
 with `fos_min` and `fos_max`) and the peak. `fos_basis` says what `fos` is: the mean over the windows at
 the end of the step if they agree (`"plateau at the end"`, the normal case), else the first plateau
-(`"first plateau"`) or, without plateau, the mean over the windows at the end of the step (`"no plateau"`).
-The factor of safety of the step is `fos`, not the factor of the last increment.
+(`"first plateau"`). If no plateau was confirmed, numgeo gives no factor of safety: `fos_basis` is
+`"undetermined"` and `fos` is `None`; the factor of the last increment (`last_fos`) and the means of the
+windows remain for inspection. (numgeo before 18.11.2026 wrote the mean over the windows at the end of the
+step in this case, `"no plateau"`.) The factor of safety of the step is `fos`, not the factor of the last
+increment.
 
 ## The catalogue
 

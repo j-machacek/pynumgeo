@@ -15,7 +15,7 @@ To define the interaction between two or more bodies in numgeo
 2. Use the defined interaction in a [contact pair](./contact-pair.md):
 
     ```numgeo
-    *Contact pair, Interaction=<interaction name>, Discretisation=<Discretisation type> [,Adjust] [, Perturbation] [,General]
+    *Contact pair, Interaction=<interaction name>, Discretisation=<Discretisation type> [,Adjust] [, Perturbation] [,General] [,nigp=<n>]
     <Slave Surface>, <Master Surface>
     ```
 

@@ -11,7 +11,7 @@ This option defines a contact pair. The sub-keywords `Interaction` and `Discreti
 * The interaction ([*Interaction](./interaction.md)) as well as the surfaces ([*Surface](../surface.md)) have to be defined beforehand. 
 * The sub-keyword `Adjust` can be added to resolve initial over-closures. Any normal stresses due to initial penetrations are not considered.
 * `Perturbation ` can be used to calculate the stiffness contribution of the contact by means of numerical differentiation. 
-* `Sliding=...`
+* `Sliding=finite|small`: contact kinematics in the current configuration (default) or in a reference configuration ([see below](#sliding))
 * `Gap=...` (see below)
 * `nigp=<n>`: only for `discretisation=IPS` (see below)
 * `nlgeom`: only for `discretisation=IPS` (see below)
@@ -58,11 +58,11 @@ Note that contact in 3D models is currently limited to the
 ## Integration-point-to-surface (IPS)
 
 ```numgeo
-*Contact pair, Interaction=<interaction name>, Discretisation=IPS [,nigp=<n>] [,doublepass] [,nlgeom] [,Adjust] [,Gap=...]
+*Contact pair, Interaction=<interaction name>, Discretisation=IPS [,nigp=<n>] [,doublepass] [,nlgeom] [,Adjust] [,Gap=...] [,Sliding=...]
 <Slave Surface>, <Master Surface>
 ```
 
-With `discretisation=IPS`, the integration points of the element faces (element edges in 2D) of the slave surface are projected onto the master surface. The gap is measured at the foot point of each integration point, the contact traction is evaluated by the interaction and integrated over the current (deformed) area of the slave face. The complete contact state (gap, contact stress, state variables of the friction model, contact status) is stored at the integration points. The method is available for 2D, axisymmetric and 3D analyses; see the [Theory Manual](../../theory/contacts/contact-ips.md) for the formulation.
+With `discretisation=IPS`, the integration points of the element faces (element edges in 2D) of the slave surface are projected onto the master surface. The gap is measured at the foot point of each integration point, the contact traction is evaluated by the interaction and integrated over the current (deformed) area of the slave face (with [`sliding=small`](#small-sliding-with-ips): projection, normals and area of a reference configuration). The complete contact state (gap, contact stress, state variables of the friction model, contact status) is stored at the integration points. The method is available for 2D, axisymmetric and 3D analyses; see the [Theory Manual](../../theory/contacts/contact-ips.md) for the formulation.
 
 * `nigp=<n>`: number of integration points per element face of the surfaces. If omitted, the number follows from the element type:
 
@@ -78,7 +78,7 @@ With `discretisation=IPS`, the integration points of the element faces (element 
 
     In 2D, `nigp` can take any value between 1 and 20 (Gauss rule); 2 points for linear and 3 points for quadratic edges are recommended, more points resolve a partially closed face (e.g. below the edge of a footing or the tip of a pile) more smoothly at little additional cost. In 3D, `nigp` must be a number for which a face rule exists: 1, 3, 6, 7 or 13 on triangular and 1, 4, 8, 9 or 16 on quadrilateral faces. The value applies to all faces of both surfaces of the contact pair.
 
-* `nlgeom`: active by default; the keyword is accepted and changes nothing. In every analysis, with and without `nlgeom` of [*Step](../step/index.md), the contact tractions are integrated over the current area of the slave face, and the geometric part of the contact tangent (variation of the normal, of the tangent, of the projection point and of the area with the nodal displacements) is included. In a geometrically linear analysis the contact force therefore differs from traction times reference area by the strain of the slave face along the contact; the forces on the two surfaces are equal and opposite in any case.
+* `nlgeom`: active by default; the keyword is accepted and changes nothing. With finite sliding, in every analysis, with and without `nlgeom` of [*Step](../step/index.md), the contact tractions are integrated over the current area of the slave face, and the geometric part of the contact tangent (variation of the normal, of the tangent, of the projection point and of the area with the nodal displacements) is included. In a geometrically linear analysis the contact force therefore differs from traction times reference area by the strain of the slave face along the contact; the forces on the two surfaces are equal and opposite in any case.
 
 
 The IPS discretisation can be combined with the normal contact `Penalty` (with `no separation`, `stiffness_factor`, `non constant` and adhesion) and with the friction models `Coulomb` and `Mohr-Coulomb` of [*Interaction](./interaction.md). The option [`water-filled gap`](./interaction.md#normal-contact-settings) of `*Normal` is available with `IPS`, but not together with `doublepass`. Fluid contact ([*Fluid interaction](./fluid_interaction.md)) and multi-phase contact are not available with `IPS`.
@@ -92,16 +92,57 @@ The IPS discretisation can be combined with the normal contact `Penalty` (with `
 ## Sliding
 
 !!! info ""
-    Only for `discretisation=element mortar`, 3D, without `perturbation`.
+    For `discretisation=IPS` (2D, axisymmetric and 3D, not with `doublepass` or `General`) and for `discretisation=element mortar` (3D, without `perturbation`).
 
 Control the kinematics of the contact pair:
 
-* `finite` (**default**): the paired nodes are searched, the integration points are projected and the normals, tangents and integration areas are evaluated in the current configuration.
-* `small`: all of these are evaluated once in the reference configuration and kept; the gap vector is the distance of the paired points in the reference configuration plus their relative displacement, and the normal gap and the slip are its components in the reference normal and tangents. The normal at an integration point is interpolated from nodal normals (at each node the mean of the reference normals of the faces that share it), so that a faceted surface acts as the smooth surface it approximates.
+* `finite` (**default**): the paired points are searched, the integration points are projected and the normals, tangents and integration areas are evaluated in the current configuration.
+* `small`: all of these are evaluated once in a reference configuration and kept; the gap is the gap in the reference configuration plus the relative displacement of the paired points, and the normal gap and the slip are its components in the reference normal and tangents.
 
-Use `sliding=small` with geometrically linear continua (all analyses without `nlgeom`) when the surfaces may slide past each other by more than a small fraction of an element face: the paired points then stay paired, as in the small-displacement theory, and the faces do not overlap in the current configuration. 
+Use `sliding=small` with geometrically linear continua (all analyses without `nlgeom`) when the surfaces may slide past each other by more than a small fraction of an element face: the paired points then stay paired, as in the small-displacement theory, and the faces do not overlap in the current configuration.
 
-With `sliding=finite` and geometrically linear continua, curved or faceted surfaces that slide past each other overlap in the current configuration, and the continua take the overlap by compression.
+With `sliding=finite` and geometrically linear continua, curved or faceted surfaces that slide past each other overlap in the current configuration, and the continua take the overlap by compression; the contact search, the force directions and the integration areas follow displacements which the continua do not see (e.g. a footing that rotates during a strength reduction to large displacements).
+
+A contact pair with `discretisation=IPS` can also start with finite sliding and change to small sliding at the beginning of a step, with the configuration at the beginning of that step as reference: [`*Model change, contact pair, sliding=small`](../model-change/contact-pair.md).
+
+### Small sliding with IPS
+
+Each integration point of the slave surface gets a *reference*, which is captured once and kept for the rest of the analysis (also through equilibrium iterations, rejected increments, later steps and a [restart](../restart.md)):
+
+| Taken from the reference configuration, constant | Follows the displacements |
+|---|---|
+| partner of the integration point: master face and natural coordinates of its closest-point projection (search and admissible distance `check_dist` as in finite sliding) | normal gap $g_N = g_{N,\text{ref}} + \mathbf n\cdot\left[(\mathbf u_s - \mathbf u_m) - (\mathbf u_s - \mathbf u_m)_\text{ref}\right]$ |
+| normal $\mathbf n$ and tangents $\mathbf t$ of the master face at the partner | slip increment $\Delta g_T = \mathbf t\cdot(\Delta\mathbf u_m - \Delta\mathbf u_s)$ of the paired points |
+| integration measure of the slave face at the integration point (axisymmetric: with the radius of the point in the reference configuration) | opening and closure, penalty pressure, stick and slip, friction strength (also reduced in a [strength reduction](../step/reduction.md)), pore water pressure of a `water-filled gap` |
+
+$\mathbf u_s$ is the displacement of the integration point, $\mathbf u_m$ that of its partner (interpolated with the shape functions of the master face at the fixed natural coordinates). The interaction is evaluated with $g_N$ and $\Delta g_T$ as in finite sliding. The contact forces act on the two paired points along $\mathbf n$ and $\mathbf t$; since these do not depend on the displacements, the contact tangent has no geometric part and is the exact linearisation of the contact forces.
+
+**Reference configuration.** The reference of an integration point is the converged configuration at the beginning of the step in which the point gets its partner:
+
+* the first step, i.e. the mesh, for the faces that are active from the start of the analysis (`sliding=small` of `*Contact pair`);
+* the step of [`*Model change, contact pair, sliding=small`](../model-change/contact-pair.md) for a pair that is changed during the analysis;
+* the activation step for faces activated later by [`*Model change, add`](../model-change/elements.md): the integration points of an activated slave face, and the points that find their partner on an activated master face, take the configuration at the beginning of the activation step, after the activated nodes have been placed (`position=design` or `deformed`).
+
+An integration point without admissible projection in its reference configuration has no partner and stays out of contact, also if the surfaces approach each other later. At the beginning of every step that removes or activates elements, the points without partner — none found so far, or partner removed with its element — are projected again; points with a partner keep it. The log file gives, per contact pair and step, the number of integration points whose reference was captured, with and without partner.
+
+**Normal gap of the reference.** For a reference on the mesh, $g_{N,\text{ref}}$ is the gap of the mesh (`Adjust` removes an initial overclosure as usual). The reference zero gap of [`gap=activation`](#gap) is set for activated faces as in finite sliding. A pair changed during the analysis starts from the converged state: each point keeps its normal gap (with clearance, `Adjust` and `gap=activation` offsets), its contact stresses and its state variables (e.g. the accumulated plastic slip), so that the change itself leaves the contact tractions and forces unchanged.
+
+**Normals, facets and corners.** $\mathbf n$ is the normal of the master face at the partner in the reference configuration: the normal of the facet for linear faces, the normal of the curved face at the partner for quadratic faces. Nodal normals are not averaged (the integration points lie inside the faces, where the normal is unique). A faceted approximation of a smooth curved surface therefore acts as the polygon or polyhedron it is, as with IPS and finite sliding: a slip along the curved surface changes the normal gap in proportion to the slip and to the angle between the facet and the smooth surface. Where such slip matters (rotation of a body in a curved seat), use quadratic elements or a finer mesh. Corners are treated as in finite sliding, in the reference configuration (2D): a point whose projection lies beyond the end of the faces at a convex corner is paired with the corner node, with the normal of the face at the node; a point in the wedge of a concave corner is paired with the corner node, the penalty acting along its reference distance to the node, without friction.
+
+**Several contact pairs.** The sliding formulation belongs to the surface pair (data line), not to the interaction: pairs with small and with finite sliding can use the same interaction. If contact pairs are [merged](#several-contact-pairs-on-one-slave-surface), the integration points of the faces of a slave surface with small sliding are paired with the merged master surface, as in finite sliding. A face that belongs to the slave surfaces of several pairs must have the same sliding formulation in all of them (error otherwise).
+
+Not available: `doublepass`, `General`, a change back to finite sliding, steps with `*PFEM remeshing` (the reference belongs to the mesh).
+
+Example (base of a footing, paired points fixed on the mesh):
+
+```
+*Contact pair, interaction=footing-soil, discretisation=IPS, sliding=small
+footing-base, soil-surface
+```
+
+### Small sliding with element mortar
+
+The paired nodes are searched and the integration points are projected in the reference configuration (the mesh). The normal at an integration point is interpolated from nodal normals (at each node the mean of the reference normals of the faces that share it), so that a faceted surface acts as the smooth surface it approximates.
 
 The interpolated normal matters for faceted surfaces with large slip: a slip along the smooth surface has a component normal to a facet wherever the facet deviates from the smooth surface, towards the facet on one side of each corner and away from it on the other. With the normal of the facet, this component would close the gap at one end of every facet and open it at the other; with the unilateral normal law the closed ends carry pressure that grows with the slip
 (for a pile modelled with a faceted solid wall, spurious pressures at the flanks and behind the pile).

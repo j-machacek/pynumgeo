@@ -103,6 +103,7 @@
  "reference/material/thermal-conductivity.md": "Thermal conductivity",
  "reference/material/thermal-stabilisation.md": "Thermal stabilisation",
  "reference/material/truss-properties.md": "Truss properties",
+ "reference/model-change/contact-pair.md": "Change a contact pair to small sliding",
  "reference/model-change/friction.md": "Change friction",
  "reference/model-change/index.md": "Model change",
  "reference/model-change/material.md": "Change Material",

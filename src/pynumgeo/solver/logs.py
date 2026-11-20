@@ -17,6 +17,7 @@
 # 27.10.2026, J. Machacek - Console lines without any message word are skipped before the patterns are searched
 # 13.11.2026, J. Machacek - .sta of a strength reduction with arc-length control: column Ctrl, summary of the step
 # 14.11.2026, J. Machacek - Line numbers of arc_length_.f90 (uncommitted numgeo-src of 14.11.2026)
+# 20.11.2026, J. Machacek - Line numbers of arc_length_.f90 (numgeo-src e15b379)
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Parsers for numgeo's report files (``.log``, ``.sta``, ``.msg``) and console output.
 
@@ -44,7 +45,7 @@ Only what decides the outcome of a run is parsed; the formats are those of the s
     (:142). A strength reduction step with arc-length control (``*Reduction, arc-length``, uncommitted
     numgeo-src of 13.11.2026) adds the column ``Ctrl`` (``F`` or ``A``) before the rejection text (format6,
     :248, :333) and writes a summary after the last increment that starts with ``Strength reduction with
-    arc-length control`` (src/fem/arc_length_.f90:1149-1222).
+    arc-length control`` (src/fem/arc_length_.f90:1158-1225).
 
 Examples:
     >>> log = parse_log(["-> NUMGEO *START*", " ", "-> ERROR:", "   The following material was not defin-",
@@ -118,7 +119,7 @@ _INC = re.compile(
 )  # src/report/report_statistics.f90:207 (format2), :210 (format5), :248 (format6, arc-length control)
 _ARC_SUMMARY = re.compile(
     r"^\s{3}Strength reduction with arc-length control\s*$"
-)  # src/fem/arc_length_.f90:1150 (uncommitted numgeo-src of 14.11.2026)
+)  # src/fem/arc_length_.f90:1159 (numgeo-src e15b379)
 _INC_EXPLICIT = re.compile(
     r"^\s*(?P<inc>\d+|\*+)\s+(?P<cpu>\S+)\s+(?P<total>\S+)\s+(?P<step>\S+)\s+(?P<dt>\S+)\s*$"
 )  # src/report/report_statistics.f90:208 (format3)

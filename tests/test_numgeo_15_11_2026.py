@@ -14,6 +14,7 @@
 #
 # History
 # 15.11.2026, J. Machacek - Initial version
+# 19.11.2026, J. Machacek - Message of the water-filled gap told from the one of sliding=small with doublepass
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """numgeo-src working tree of 15.11.2026 and features of earlier commits which the catalogue did not have yet:
 
@@ -348,7 +349,7 @@ def test_catalogue_anchors_match_the_source():
         entries += [o["default_source"] for o in cat.material_model(model).optional_parameters]
     new = {
         "src/input/read_dload_.f90": ("the pressure",),
-        "src/input/read_contact_pairing_.f90": ("IPS, element mortar and NTN only", "with the option doublepass"),
+        "src/input/read_contact_pairing_.f90": ("IPS, element mortar and NTN only", "with the option doublepass of"),
         "src/input/read_step_.f90": ("PFEM REMESHING",),
         "src/input/read_material_.f90": ("optimisation process: Eiref",),
         "src/input/input_create_internal_input_.f90": ("An input line has",),

@@ -20,6 +20,9 @@
 #                           numgeo-src of 06.11.2026)
 # 13.11.2026, J. Machacek - *Reduction, arc-length: its options are checked by NG-STEP-132 (arc_length_reduction)
 # 15.11.2026, J. Machacek - Options of *PFEM remeshing (numgeo-src ab1f76b)
+# 19.11.2026, J. Machacek - Option contact pair of *Model change (its other options are checked by NG-CONT-131);
+#                           line numbers of numgeo-src 1f48283 for *Contact pair and *Model change
+# 20.11.2026, J. Machacek - Line numbers of numgeo-src 1f48283 for *PFEM remeshing
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Catalogue-driven checks of every generic keyword of a deck.
 
@@ -73,6 +76,7 @@ __all__ = [
     "is_int_token",
     "is_real_token",
     "line_text",
+    "model_change_branch",
     "output_type",
     "sites",
     "spec_for",
@@ -362,6 +366,25 @@ def _head(kw: Keyword, ctx: str) -> str:
     return head
 
 
+def model_change_branch(kw: Keyword) -> str:
+    """What numgeo reads a ``*Model change`` as: ``CONTACTPAIR``, ``MATERIAL``, ``FRICTION`` or ``ELEMENTS`` (remove,
+    add), the first of these words found in its options in this order; ``""`` for another keyword or none of them
+    (src/input/read_model_change_.f90:98,232,286,379, numgeo-src 1f48283).
+
+    >>> model_change_branch(Keyword.make("*Model change", options=["contact pair", ("sliding", "small")]))
+    'CONTACTPAIR'
+    >>> model_change_branch(Keyword.make("*Model change", options=["add", ("position", "deformed")]))
+    'ELEMENTS'
+    """
+    if kw.keyword != "*MODELCHANGE":
+        return ""
+    text = line_text(kw).partition(",")[2]
+    for word in ("CONTACTPAIR", "MATERIAL", "FRICTION"):
+        if word in text:
+            return word
+    return "ELEMENTS" if "REMOVE" in text or "ADD" in text else ""
+
+
 def is_real_token(t: Token) -> bool:
     """True if numgeo's list-directed read of a real accepts the token."""
     return not isinstance(t, str) or (t != "" and is_number(t))
@@ -580,7 +603,7 @@ _NORMAL_WORDS = (
     "WATER-FILLEDGAP",
     "WATERFILLEDGAP",
 )
-# Substrings read_contact_pairing recognises (src/input/read_contact_pairing_.f90:80-154).
+# Substrings read_contact_pairing recognises (src/input/read_contact_pairing_.f90:84-158).
 _PAIR_WORDS = (
     "INTERACTION",
     "DISCRETISATION=ELEMENTMORTAR",
@@ -623,8 +646,8 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
     ("step", "*MODELCHANGE"): _Policy(
         "substring",
         "warning",
-        "src/input/read_model_change_.f90:85,139,232,344-349",
-        ("MATERIAL", "FRICTION", "REMOVE", "ADD"),
+        "src/input/read_model_change_.f90:98,232,286,379,492-498",
+        ("CONTACTPAIR", "MATERIAL", "FRICTION", "REMOVE", "ADD"),
     ),
     ("step", "*EQUATION"): _Policy("substring", "warning", "src/input/read_equation_.f90:46-120"),
     ("step", "*EXECUTECOMMAND"): _Policy("substring", "warning", "src/input/read_step_.f90:3296-3330"),
@@ -635,7 +658,7 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
     ("step", "*RIGIDBODY"): _Policy("substring", "warning", "src/input/read_equation_.f90:276-310"),
     ("step", "*PFEMWRITE"): _Policy("substring", "warning", "src/input/read_step_.f90:2974-3040"),
     # every option is option=value, compared exactly; unknown options stop numgeo
-    ("step", "*PFEMREMESHING"): _Policy("exact", "error", "src/input/read_step_.f90:3423-3544"),
+    ("step", "*PFEMREMESHING"): _Policy("exact", "error", "src/input/read_step_.f90:3444-3565"),
     ("step", "*ROBIN"): _Policy("substring", "warning", "src/input/read_robin_.f90:60-80"),
     ("step", "*BOUNDARY-FLEXIBLE"): _Policy("substring", "warning", "src/input/read_flexible_bc_.f90:60-80"),
     ("step", "*CONNECTORELEMENT"): _Policy("ignored", "warning", "src/input/read_connector_element_.f90:72"),
@@ -646,7 +669,7 @@ _OPTION_POLICY: dict[tuple[str, str], _Policy] = {
         "substring", "error", "src/input/read_interaction_.f90:494-598", names=_NORMAL_WORDS
     ),
     ("model", "*CONTACTPAIR"): _Policy(
-        "substring", "error", "src/input/read_contact_pairing_.f90:80-198", names=_PAIR_WORDS
+        "substring", "error", "src/input/read_contact_pairing_.f90:84-219", names=_PAIR_WORDS
     ),
     ("interaction", "*NORMAL"): _Policy(
         "substring", "error", "src/input/read_interaction_.f90:494-598", names=_NORMAL_WORDS
@@ -721,7 +744,11 @@ def _option_findings(ctx: Context, severity: str) -> Iterator[Finding]:
                     s.loc,
                 )
             continue
+        if model_change_branch(s.kw) == "CONTACTPAIR":  # numgeo stops at an unknown option (NG-CONT-131)
+            continue
         names = _known_names(spec, pol)
+        if spec.keyword == "*MODELCHANGE":  # sliding is read together with contact pair only
+            names = [n for n in names if n not in ("CONTACTPAIR", "SLIDING")]
         for k, v in opts:
             if _recognised(k, v, names, pol.match) is None:
                 what = "numgeo stops" if severity == "error" else "numgeo ignores it"
@@ -841,6 +868,8 @@ _VALUES_ELSEWHERE = frozenset(
         "*PPP-STABILISATION",
     }
 )
+# Single options whose values are checked by a specific rule: sliding of *Model change, contact pair (NG-CONT-131).
+_OPTION_VALUES_ELSEWHERE = frozenset({("*MODELCHANGE", "SLIDING")})
 # Numeric option values read only in some cases, checked by a specific rule: the options of *Reduction are read
 # only together with arc-length (NG-STEP-132).
 _TYPES_ELSEWHERE = frozenset({"*REDUCTION"})
@@ -882,6 +911,8 @@ def option_values(ctx: Context) -> Iterator[Finding]:
             if not allowed:
                 continue
             n = _bare(o.name)
+            if (spec.keyword, n) in _OPTION_VALUES_ELSEWHERE:
+                continue
             if n.startswith("VALUE"):  # '*Keyword=<value>'
                 if s.kw.value is not None and _norm(s.kw.value) not in allowed:
                     yield (

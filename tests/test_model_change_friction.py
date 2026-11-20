@@ -14,6 +14,7 @@
 #
 # History
 # 30.10.2026, J. Machacek - Initial version
+# 19.11.2026, J. Machacek - Options contact pair and sliding of *Model change in the option list
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """*Model change, friction (numgeo-src 60fca8b5): catalogue, check of the options and of the data lines
 (src/input/read_model_change_.f90:136-217), messages and the bundled reference page."""
@@ -55,7 +56,8 @@ def test_catalogue_knows_the_option():
     spec = cat.keyword("*Model change", "step")
     option = spec.option("friction")
     assert option is not None and option.value_type == "flag" and "60fca8b5" in option.notes
-    assert [o.name for o in spec.options] == ["MATERIAL", "FRICTION", "REMOVE", "ADD", "POSITION"]
+    names = ["MATERIAL", "FRICTION", "REMOVE", "ADD", "POSITION", "CONTACTPAIR", "SLIDING"]
+    assert [o.name for o in spec.options] == names
     page = cat.load().doc_page("docs/reference/model-change/friction.md")
     assert page is not None and page.startswith("# Change friction")
 

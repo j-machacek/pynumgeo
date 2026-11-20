@@ -1,0 +1,95 @@
+~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~
+|                                numgeo                                     |
+|                                                                           |
+|                      Jan Machacek, Patrick Staubach                       |
+|          numgeo is to be used only in accordance with the terms           |
+|     specified in the license file shipped together with this program      |
+|                                                                           |
+|                             www.numgeo.de                                 |
+|                                                                           |
+|                    Version: numgeo2026-v2 (Nov 14 2026)                   |
+|                                                                           |
+~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~
+ 
+-> NUMGEO *START*
+   Date: 20.11.2026   time: 11:40:40
+   Number of CPUs:           1
+ 
+ 
+   =========================================================================
+-> Step = STEP1
+   =========================================================================
+   Type = STATIC
+   dt0 =   0.010000, t_end =   1.000000, dtmin =   0.001000, dtmax =   0.100000
+   -
+   Solver = MUMPS
+   The system of equations has 16526 equations with 362058 non-zero entries. 
+   The sparsity is 1.325692047952369E-003
+   -------------------------------------------------------------------------
+     Inc  Equil. Iters   Total time     Step time    Inc of time
+   -------------------------------------------------------------------------
+         1        1        0.1000E-01     0.1000E-01     0.1000E-01  
+         2        1        0.2000E-01     0.2000E-01     0.1000E-01  
+        24        5         1.000          1.000         0.7417E-01  
+   -------------------------------------------------------------------------
+   Step sucessfully terminated, Date: 20.11.2026, Time: 11:40: 53
+   Total number of iterations  = 61
+ 
+ 
+   MUMPS device: requested=CPU selected=CPU
+   MUMPS statistics: factorizations=85 gpu_factorizations=0 gpu_flops= 0.0000000000000000E+000 gpu_seconds= 0.0000000000000000E+000
+   =========================================================================
+-> Step = STEP2
+   =========================================================================
+   Type = REDUCTION
+    FoS_0 =   0.900000, dFos_0 =   0.050000, dFos_max =   0.050000, dFos_min =   0.000100
+   -
+   Solver = MUMPS
+   -
+   Arc-length control of the factor of safety (*Reduction, arc-length): plateau-tolerance = 2.00E-03, plateau-increments = 5, arc-increments = 3, perturbation = 1.00E-03
+   Arc-length increments: Jacobian of the input factorized in every iteration, force tolerance of the step, at most 60 iterations
+   FoS correction tolerance relative to FoS: plateau-tolerance; relative normal-plane tolerance: 1.490E-08
+   The system of equations has 16526 equations with 362058 non-zero entries. 
+   The sparsity is 1.325692047952369E-003
+   -------------------------------------------------------------------------
+     Inc  Equil. Iters          FoS          dFoS   Max. |u-u_0|    Ctrl
+   -------------------------------------------------------------------------
+         1        1        0.9000         0.5000E-01     0.2210E-03    F  
+         2        2        0.9500         0.5000E-01     0.2210E-03    F  
+         3        5         1.000         0.5000E-01     0.2026E-02    F  
+         4        7         1.050         0.5000E-01     0.2314E-01    F  
+         5        6         1.100         0.5000E-01     0.5786E-01    F  
+         6        6         1.150         0.5000E-01     0.1194        F  
+         7        6         1.200         0.5000E-01     0.2341        F  
+         8        5         1.250         0.5000E-01     0.1101E+08    F  rejected (divergence)
+         8        8         1.217         0.1667E-01     0.3704        F  
+         9        8         1.233         0.1667E-01     0.1257E+08    F  rejected (divergence)
+         9       14         1.222         0.5556E-02     0.1702E+27    F  rejected (divergence)
+         9        3         1.217         0.5574E-03     0.3929        A  
+        10        2         1.218         0.4502E-03     0.4210        A  
+        11        2         1.218         0.3624E-03     0.4512        A  
+   -------------------------------------------------------------------------
+   Strength reduction with arc-length control
+   End of the step: arc-increments = 3 arc-length increments accepted
+   Arc-length control engaged at increment 9 (last converged FoS   1.216667); 3 increments accepted and 0 rejected under arc-length control
+   Limiting factor of safety undetermined. No displacement plateau was confirmed.
+   FoS of the last accepted increment:        1.218037   (max. |u-u_0| =  4.5120E-01)
+   Displacement windows at the end of the step, (u/4,u/2] and (u/2,u], u = 4.5120E-01: mean  0.000000 (0 increments),  1.217645 (3 increments)
+   The final windows did not satisfy all displacement, sample count and FoS criteria.
+   All 3 accepted arc-length increments: mean  1.217645, min  1.217224, max  1.218037
+   Peak FoS of the step:                     1.218037   (max. |u-u_0| =  4.5120E-01, increment 11)
+   FoS correction |dFoS| of the last accepted iteration: 2.761E-08
+   Largest constraint error |b.(du-du_pred)|/|b|^2 of the accepted increments: 1.361E-16
+   -------------------------------------------------------------------------
+   Step sucessfully terminated, Date: 20.11.2026, Time: 11:41: 20
+   Total number of iterations  = 75
+ 
+ 
+   MUMPS device: requested=CPU selected=CPU
+   MUMPS statistics: factorizations=89 gpu_factorizations=0 gpu_flops= 0.0000000000000000E+000 gpu_seconds= 0.0000000000000000E+000
+  =========================================================================
+-> Time Statistics
+  =========================================================================
+ 
+-> NUMGEO *END*
+   Date: 20.11.2026   time: 11:41:20

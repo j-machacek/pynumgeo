@@ -12,3 +12,4 @@ This option allows you to modify essential model settings during analysis, such 
 * [Material](./material.md)
 * [Remove](./elements.md) and [Add](./elements.md) elements
 * [Friction](./friction.md): parameters of the friction model of an interaction
+* [Contact pair](./contact-pair.md): small sliding of an IPS contact pair from the beginning of a step on

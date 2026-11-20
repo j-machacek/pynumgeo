@@ -18,6 +18,8 @@ History
 13.11.2026, J. Machacek - Factor of safety of a strength reduction with arc-length control
 14.11.2026, J. Machacek - fos_basis of the factor of safety with arc-length control
 15.11.2026, J. Machacek - Pressure HPi/HP and water-filled gap
+19.11.2026, J. Machacek - Small sliding of IPS contact pairs
+20.11.2026, J. Machacek - Arc-length control of numgeo of 18.11.2026: factor of safety undetermined, data line
 =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 -->
 
@@ -102,11 +104,19 @@ file).
 - **Build profile.** The default validates for the current numgeo developer build; for a public numgeo
   build use `ng.validate(deck, profile=ng.BuildProfile.public_build())`.
 - **Factor of safety with arc-length control.** With `*Reduction, arc-length` the factor of safety of the
-  step is `open_results(...).arc_length_summaries()[i].fos` (`fos_basis`: plateau at the end of the step,
-  first plateau or no plateau), not the factor of the last increment. The options of `*Reduction` are read only together
-  with `arc-length`.
+  step is `open_results(...).arc_length_summaries()[i].fos` (`fos_basis`: plateau at the end of the step or
+  first plateau), not the factor of the last increment. Without a confirmed plateau `fos` is `None` and
+  `fos_basis` is `"undetermined"`: run further (`arc-increments`, `max-displacement`) instead of taking the last
+  factor. The options of `*Reduction` are read only together with `arc-length`; the data line then needs finite
+  positive values with dFoS_min <= dFoS_0 <= dFoS_max (`NG-STEP-135`).
 - **Pressure that varies along a coordinate.** `*Dsload` `HP` and `*Dload` `HPi` need seven fields: set, label,
   coordinate (`x`, `y`, `z` or `1`, `2`, `3`), `p1`, `c1`, `p2`, `c2`. The pressure is zero outside `c1`..`c2`;
   the coordinate is not optional (`NG-LOAD-115`).
 - **Water-filled gap.** `*Normal, mechanical=penalty, water-filled gap` works with the contact discretisations
   `IPS`, `element mortar` and `NTN`, not with `doublepass` of an `IPS` pair (`NG-CONT-128`, `NG-CONT-129`).
+- **Small sliding of IPS contact pairs.** `sliding=small` on `*Contact pair, discretisation=IPS` keeps the paired
+  points of the mesh; `*Model change, contact pair, sliding=small` in a step, with data lines
+  `slave surface, master surface`, changes a pair with finite sliding at the beginning of that step. Give the
+  surfaces in the order of `*Contact pair`. Not with `doublepass` or `general`, not in a step with
+  `*PFEM remeshing`, and there is no way back to finite sliding; pairs whose slave surfaces share faces change in
+  the same step (`NG-CONT-130` to `NG-CONT-134`).

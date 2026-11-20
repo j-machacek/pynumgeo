@@ -24,6 +24,12 @@
 # 14.11.2026, J. Machacek - Line numbers of arc_length_.f90 in NG-STEP-133 (uncommitted numgeo-src of 14.11.2026)
 # 15.11.2026, J. Machacek - Pressure HPi / HP (NG-LOAD-115), water-filled gap also with IPS (NG-CONT-128,
 #                           NG-CONT-129), *PFEM remeshing (NG-STEP-134)
+# 19.11.2026, J. Machacek - Small sliding of IPS contact pairs: sliding=small of *Contact pair and *Model change,
+#                           contact pair (NG-CONT-130 to NG-CONT-134); line numbers of numgeo-src 1f48283 in the
+#                           rules on *Contact pair and *Model change
+# 20.11.2026, J. Machacek - *Reduction, arc-length of numgeo-src e15b379: finite positive option values, data line
+#                           and numbers of *Reduction (NG-STEP-135), iteration limits of the step (NG-STEP-133);
+#                           line numbers of numgeo-src 1f48283 for *PFEM remeshing
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Rules on numgeo's behaviour in particular cases: input that numgeo rejects, ignores, clamps or reads
 differently than the text suggests. Every rule names the solver source it mirrors (``source``).
@@ -68,6 +74,7 @@ from pynumgeo.validation.rules.keywords import (
     is_int_token,
     is_real_token,
     line_text,
+    model_change_branch,
     output_type,
 )
 
@@ -1802,12 +1809,23 @@ def reduction_inc(ctx: Context) -> Iterator[Finding]:
 
 # Options of *Reduction, arc-length: (integer, smallest value or None for > 0, requirement as numgeo states it).
 _ARC_OPTIONS: dict[str, tuple[bool, int | None, str]] = {
-    "MAX-DISPLACEMENT": (False, None, "a positive number"),
-    "PLATEAU-TOLERANCE": (False, None, "a positive number"),
+    "MAX-DISPLACEMENT": (False, None, "a finite positive number"),
+    "PLATEAU-TOLERANCE": (False, None, "a finite positive number"),
     "PLATEAU-INCREMENTS": (True, 2, "an integer of at least 2"),
     "ARC-INCREMENTS": (True, 1, "a positive integer"),
-    "PERTURBATION": (False, None, "a positive number"),
+    "PERTURBATION": (False, None, "a finite positive number"),
 }
+
+
+def _finite_positive(value: Token) -> bool:
+    """True for a real number numgeo reads as finite and greater than zero."""
+    if isinstance(value, bool) or not is_real_token(value):
+        return False
+    try:
+        number = parse_real(value) if isinstance(value, str) else float(value)
+    except ValueError:
+        return False
+    return math.isfinite(number) and number > 0.0
 
 
 @rule(
@@ -1815,7 +1833,7 @@ _ARC_OPTIONS: dict[str, tuple[bool, int | None, str]] = {
     "error",
     "*Reduction, arc-length takes max-displacement=, plateau-tolerance=, plateau-increments=, arc-increments= and "
     "perturbation= with valid values",
-    source="src/input/read_step_.f90:3909-4006 (read_reduction_options, uncommitted numgeo-src of 13.11.2026)",
+    source="src/input/read_step_.f90:3931-4025 (read_reduction_options, numgeo-src e15b379)",
 )
 def reduction_arc_length_options(ctx: Context) -> Iterator[Finding]:
     # without the option arc-length numgeo does not read the options of *Reduction (NG-KW-011)
@@ -1845,9 +1863,45 @@ def reduction_arc_length_options(ctx: Context) -> Iterator[Finding]:
                 # numgeo accepts digits only (no sign, no decimal point or exponent)
                 ok = re.fullmatch(r"[0-9]+", value) is not None and int(value) >= (least or 1)
             else:
-                ok = is_real_token(value) and parse_real(value) > 0.0
+                # numgeo reads the value only if it consists of digits, sign, point and exponent letter
+                ok = re.fullmatch(r"[0-9.+\-DE]+", value) is not None and _finite_positive(value)
             if not ok:
                 yield f"{where}: {name}={v} must be {text}; numgeo stops", _sloc(st, kw)
+
+
+@rule(
+    "NG-STEP-135",
+    "error",
+    "*Reduction needs four numbers; with arc-length finite positive values with dFoS_min <= dFoS_0 <= dFoS_max",
+    source="src/input/read_step_.f90:419-432 (read_step, numgeo-src e15b379)",
+)
+def reduction_data(ctx: Context) -> Iterator[Finding]:
+    for st in ctx.deck.steps:
+        kw = st.procedure
+        if kw.keyword != "*REDUCTION" or not kw.data or len(kw.data[0]) != 4:
+            continue  # (another number of values: NG-STEP-010)
+        row = kw.data[0]
+        # list-directed input also reads the IEEE values inf and nan: no read error, but no finite number either
+        ieee = [isinstance(t, str) and re.fullmatch(r"[+-]?(INF|INFINITY|NAN)", _key(t)) is not None for t in row]
+        if not all(is_real_token(t) or word for t, word in zip(row, ieee, strict=True)):
+            yield (
+                f"step {st.name}: *Reduction: the data line {_row(row)} (FoS_0, dFoS_0, dFoS_max, dFoS_min) must be "
+                "four numbers; numgeo stops",
+                _sloc(st, kw),
+            )
+            continue
+        if not arc_length_reduction(kw):
+            continue
+        _fos0, dfos0, dfos_max, dfos_min = (_num(t) for t in row)
+        ok = all(_finite_positive(t) for t in row)
+        if ok and dfos0 is not None and dfos_max is not None and dfos_min is not None:
+            ok = dfos_min <= dfos0 <= dfos_max
+        if not ok:
+            yield (
+                f"step {st.name}: *Reduction, arc-length: the data line {_row(row)} (FoS_0, dFoS_0, dFoS_max, "
+                "dFoS_min) needs finite positive values with dFoS_min <= dFoS_0 <= dFoS_max; numgeo stops",
+                _sloc(st, kw),
+            )
 
 
 def _arc_length_solver(kw: Keyword | None, nelems: int) -> tuple[str, bool]:
@@ -1885,8 +1939,9 @@ def _arc_length_solver(kw: Keyword | None, nelems: int) -> tuple[str, bool]:
 @rule(
     "NG-STEP-133",
     "error",
-    "*Reduction, arc-length needs Pardiso or MUMPS without iterative, no *Accelerator, type=anderson and no NOCUTBACK",
-    source="src/fem/arc_length_.f90:167-179,196-208 (arc_length_initialize, numgeo-src 3ece972)",
+    "*Reduction, arc-length needs Pardiso or MUMPS without iterative, no *Accelerator, type=anderson, no NOCUTBACK "
+    "and maxiter >= miniter",
+    source="src/fem/arc_length_.f90:163-175,192-209 (arc_length_initialize, numgeo-src e15b379)",
 )
 def reduction_arc_length_setup(ctx: Context) -> Iterator[Finding]:
     for st in ctx.deck.steps:
@@ -1921,6 +1976,15 @@ def reduction_arc_length_setup(ctx: Context) -> Iterator[Finding]:
                 "at the start of the step",
                 _sloc(st),
             )
+        # a reduction step without maxiter= iterates up to 100 times (src/input/read_step_.f90:469), miniter is 1
+        maxiter = 100 if st.maxiter is None else st.maxiter
+        miniter = 1 if st.miniter is None else st.miniter
+        if maxiter < max(1, miniter):
+            yield (
+                f"{where} needs maxiter >= 1 and maxiter >= miniter in the *Step line (maxiter={maxiter}, "
+                f"miniter={miniter}); numgeo stops at the start of the step",
+                _sloc(st),
+            )
 
 
 _PFEM_YES_NO = ("YES", "TRUE", "1", "NO", "FALSE", "0")
@@ -1936,8 +2000,8 @@ def _pfem_int(v: str | None) -> int | None:
     "error",
     "*PFEM remeshing needs a criterion, valid values, *PFEM write and a static, dynamic or transient step after the "
     "first",
-    source="src/input/read_step_.f90:3423-3567,3585-3662 (read_pfem_remeshing_options, "
-    "check_pfem_remeshing_definition; numgeo-src ab1f76b)",
+    source="src/input/read_step_.f90:3444-3565,3603-3689 (read_pfem_remeshing_options, "
+    "check_pfem_remeshing_definition; numgeo-src ab1f76b, lines of numgeo-src 1f48283)",
 )
 def pfem_remeshing(ctx: Context) -> Iterator[Finding]:
     for i, st in enumerate(ctx.deck.steps):
@@ -2012,7 +2076,7 @@ def pfem_remeshing(ctx: Context) -> Iterator[Finding]:
             )
         if st.procedure.keyword not in ("*STATIC", "*DYNAMIC", "*TRANSIENT"):
             yield f"{where} is only available for steps of type static, dynamic (implicit) and transient", loc
-        if any(k.keyword == "*MODELCHANGE" and ("REMOVE" in _opt_text(k) or "ADD" in _opt_text(k)) for k in st.items):
+        if any(model_change_branch(k) == "ELEMENTS" for k in st.items):
             yield f"{where} cannot be combined with *Model change, remove/add in the same step", loc
 
 
@@ -3301,7 +3365,7 @@ def interaction_names(ctx: Context) -> Iterator[Finding]:
     "NG-CONT-108",
     "error",
     "interaction names in *Contact pair must not contain pair option words",
-    source="src/input/read_contact_pairing_.f90:80-154 (read_contact_pairing)",
+    source="src/input/read_contact_pairing_.f90:84-158 (read_contact_pairing)",
 )
 def pair_names(ctx: Context) -> Iterator[Finding]:
     for kw, v, hit in _names_with(_model_kws(ctx.deck, "*CONTACTPAIR"), "INTERACTION", _PAIR_WORDS):
@@ -3390,7 +3454,8 @@ def _mc_softening_findings(values: list[Token], where: str) -> Iterator[str]:
     "error",
     "Mohr-Coulomb friction with softening needs 0 <= tan(delta_r) <= tan(delta), tan(theta) >= 0 and u_r > 0",
     source="src/input/read_interaction_.f90:413-416,441-467 (read_interaction, check_mc_softening_parameters); "
-    "src/input/read_model_change_.f90:204-211 (read_model_change); uncommitted numgeo-src of 06.11.2026",
+    "src/input/read_model_change_.f90:351-358 (read_model_change); uncommitted numgeo-src of 06.11.2026, lines of "
+    "read_model_change_.f90 of numgeo-src 1f48283",
 )
 def mc_softening_parameters(ctx: Context) -> Iterator[Finding]:
     deck = ctx.deck
@@ -3500,7 +3565,7 @@ def contact_unknown_options(ctx: Context) -> Iterator[Finding]:
     "NG-CONT-113",
     "error",
     "the general option needs a single contact pair",
-    source="src/input/read_contact_pairing_.f90:73,176-180 (read_contact_pairing)",
+    source="src/input/read_contact_pairing_.f90:77,197-201 (read_contact_pairing)",
 )
 def contact_general(ctx: Context) -> Iterator[Finding]:
     pairs = _model_kws(ctx.deck, "*CONTACTPAIR")
@@ -3762,20 +3827,18 @@ _FRICTION_CHANGE_MODELS = ("COULOMB", "MOHR-COULOMB", "MC")
 
 
 def _friction_changes(deck: Deck) -> Iterator[tuple[Step, Keyword]]:
-    """``*Model change`` keywords numgeo reads as friction changes (MATERIAL is checked first)."""
+    """``*Model change`` keywords numgeo reads as friction changes (CONTACTPAIR and MATERIAL are checked first)."""
     for _, st, _, kw in _step_items(deck):
-        if kw.keyword == "*MODELCHANGE":
-            text = _opt_text(kw)
-            if "FRICTION" in text and "MATERIAL" not in text:
-                yield st, kw
+        if model_change_branch(kw) == "FRICTION":
+            yield st, kw
 
 
 @rule(
     "NG-CONT-125",
     "error",
     "*Model change, friction needs an interaction with Coulomb or Mohr-Coulomb friction and its parameters",
-    source="src/input/read_model_change_.f90:139-228 (read_model_change, numgeo-src 60fca8b5; lines of the uncommitted "
-    "numgeo-src of 06.11.2026)",
+    source="src/input/read_model_change_.f90:286-375 (read_model_change, numgeo-src 60fca8b5; lines of numgeo-src "
+    "1f48283)",
 )
 def friction_change(ctx: Context) -> Iterator[Finding]:
     deck = ctx.deck
@@ -3833,7 +3896,7 @@ def friction_change(ctx: Context) -> Iterator[Finding]:
                 )
                 continue
             entry = library.get(model)
-            # with softening, tan(delta_r) and u_r follow the parameters of the library (read_model_change_.f90:204-215)
+            # with softening, tan(delta_r) and u_r follow the parameters of the library (read_model_change_.f90:351-362)
             full = int(entry["nprops"]) + (2 if _mc_softening(fr) else 0) if entry is not None else 0
             if entry is not None and len(values) == full:
                 a, b = _num(new[0]), _num(values[0])
@@ -3878,8 +3941,8 @@ def _surface_node_set(deck: Deck, name: str) -> set[int] | None:
     "NG-CONT-127",
     "warning",
     "merged IPS contact pairs need Mohr-Coulomb friction all with or all without softening",
-    source="src/contacts/contact_.f90:1400-1412,1479-1494 (merged_master_faces, compatible_interactions, "
-    "uncommitted numgeo-src of 06.11.2026)",
+    source="src/contacts/contact_.f90:1915-1929,1995-2010 (merged_master_faces, compatible_interactions, "
+    "uncommitted numgeo-src of 06.11.2026; lines of numgeo-src 1f48283)",
 )
 def merged_pairs_softening(ctx: Context) -> Iterator[Finding]:
     deck = ctx.deck
@@ -3965,8 +4028,8 @@ def water_gap_penalty(ctx: Context) -> Iterator[Finding]:
     "NG-CONT-129",
     "error",
     "water-filled gap: IPS (without doublepass), element mortar or NTN; frictionless, Coulomb or Mohr-Coulomb friction",
-    source="src/input/read_contact_pairing_.f90:210-235 (read_contact_pairing, uncommitted numgeo-src of 15.11.2026: "
-    "IPS, doublepass)",
+    source="src/input/read_contact_pairing_.f90:231-256 (read_contact_pairing, uncommitted numgeo-src of 15.11.2026: "
+    "IPS, doublepass; lines of numgeo-src 1f48283)",
 )
 def water_gap_pair(ctx: Context) -> Iterator[Finding]:
     gaps = {_key(kw.option("NAME")): kw for kw in _interactions(ctx.deck) if _water_gap(kw) is not None}
@@ -4000,6 +4063,340 @@ def water_gap_pair(ctx: Context) -> Iterator[Finding]:
                 f"the friction models Coulomb and Mohr-Coulomb only, not {_friction_model(fr).lower()}",
                 loc,
             )
+
+
+# ----------------------------------------------------------------------------- small sliding of IPS contact pairs
+# Discretisations as read_contact_pairing stores them (src/input/read_contact_pairing_.f90:89-106): the tests of a
+# token follow each other in this order, the last hit of the last token is kept.
+_DISCRETISATIONS = (
+    ("DISCRETISATION=ELEMENTMORTAR", "NTS"),
+    ("DISCRETISATION=NTS", "NTS"),
+    ("DISCRETISATION=IPS", "IPS"),
+    ("DISCRETISATION=INTEGRATION-POINT-SURFACE", "IPS"),
+    ("DISCRETISATION=SEGMENTMORTAR", "STS"),
+    ("DISCRETISATION=NTN", "NTN"),
+)
+
+
+def _pair_discretisation(kw: Keyword) -> str:
+    """Discretisation of a ``*Contact pair`` as numgeo stores it: ``NTS``, ``IPS``, ``STS``, ``NTN`` or ``""``."""
+    found = ""
+    for token in _opt_text(kw).split(","):
+        for word, internal in _DISCRETISATIONS:
+            if word in token:
+                found = internal
+    return found
+
+
+def _pair_small_sliding(kw: Keyword) -> bool:
+    """True if a ``*Contact pair`` asks for small sliding (src/input/read_contact_pairing_.f90:141-148)."""
+    small = False
+    for token in _opt_text(kw).split(","):
+        if "SLIDING=SMALL" in token:
+            small = True
+        if "SLIDING=FINITE" in token:
+            small = False
+    return small
+
+
+@rule(
+    "NG-CONT-130",
+    "error",
+    "sliding=small of *Contact pair: IPS (without doublepass and general) or element mortar",
+    source="src/input/read_contact_pairing_.f90:173-194 (read_contact_pairing, numgeo-src 1f48283: IPS)",
+)
+def small_sliding_pair(ctx: Context) -> Iterator[Finding]:
+    for pair in _model_kws(ctx.deck, "*CONTACTPAIR"):
+        if not _pair_small_sliding(pair):
+            continue
+        name = next((v for k, v in pair.options if "INTERACTION" in k and v is not None), None)
+        where = f"*Contact pair, interaction={name}: the option sliding=small"
+        loc = _loc(pair, "model *Contact pair")
+        discretisation = _pair_discretisation(pair)
+        if discretisation in ("STS", "NTN"):
+            yield f"{where} is available for the discretisations IPS and element mortar only", loc
+        if discretisation != "IPS":
+            continue
+        if _has_word(pair, "DOUBLEPASS"):
+            yield (
+                f"{where} is not available with doublepass (the reference configuration is kept for the integration "
+                "points of the slave surface only)",
+                loc,
+            )
+        if _has_word(pair, "GENERAL"):
+            yield f"{where} is not available with general (discretisation=IPS)", loc
+
+
+class _SurfacePair:
+    """One surface pair (data line) of a ``*Contact pair``; the names as numgeo compares them."""
+
+    def __init__(self, kw: Keyword, definition: int, slave: str, master: str) -> None:
+        self.kw = kw
+        self.definition = definition  # number of the *Contact pair in the deck, from 1
+        self.slave = _key(slave)
+        self.master = _key(master)
+        self.text = f"{slave}, {master}"
+        self.ips = _pair_discretisation(kw) == "IPS"
+        self.doublepass = _has_word(kw, "DOUBLEPASS")
+        #: step (index) from which the pair uses small sliding: 0 with sliding=small of an IPS pair, ``None`` never
+        self.small_from: int | None = 0 if self.ips and not self.doublepass and _pair_small_sliding(kw) else None
+
+
+def _surface_pairs(deck: Deck) -> list[_SurfacePair]:
+    """Surface pairs of all ``*Contact pair`` definitions in the order of the deck (none for the option general, whose
+    data lines numgeo does not read)."""
+    out: list[_SurfacePair] = []
+    for n, kw in enumerate(_model_kws(deck, "*CONTACTPAIR"), 1):
+        if _has_word(kw, "GENERAL"):
+            continue
+        out += [_SurfacePair(kw, n, str(r[0]), str(r[1])) for r in kw.data if len(r) >= 2]
+    return out
+
+
+def _sliding_changes(deck: Deck) -> Iterator[tuple[int, Step, Keyword]]:
+    """``*Model change`` keywords numgeo reads as changes of contact pairs to small sliding."""
+    for i, st, _, kw in _step_items(deck):
+        if model_change_branch(kw) == "CONTACTPAIR":
+            yield i, st, kw
+
+
+def _selected_pair(pairs: list[_SurfacePair], row: list[Token]) -> _SurfacePair | None:
+    """The surface pair a data line ``slave surface, master surface`` selects, if it is the only one and can be changed
+    (src/input/read_model_change_.f90:166-213)."""
+    if len(row) != 2:
+        return None
+    slave, master = _key(str(row[0])), _key(str(row[1]))
+    hits = [p for p in pairs if p.slave == slave and p.master == master]
+    if len(hits) != 1 or not hits[0].ips or hits[0].doublepass:
+        return None
+    return hits[0]
+
+
+def _small_sliding(deck: Deck) -> tuple[list[_SurfacePair], list[tuple[int, Step, Keyword, _SurfacePair, int | None]]]:
+    """The surface pairs with the step from which each uses small sliding (``small_from``), and the valid selections
+    of ``*Model change, contact pair``: ``(step index, step, keyword, pair, step from which the pair used small sliding
+    before)``."""
+    pairs = _surface_pairs(deck)
+    selections: list[tuple[int, Step, Keyword, _SurfacePair, int | None]] = []
+    for i, st, kw in _sliding_changes(deck):
+        for row in kw.data:
+            pair = _selected_pair(pairs, row)
+            if pair is None:
+                continue
+            selections.append((i, st, kw, pair, pair.small_from))
+            if pair.small_from is None:
+                pair.small_from = i
+    return pairs, selections
+
+
+@rule(
+    "NG-CONT-131",
+    "error",
+    "*Model change, contact pair needs sliding=small and surface pairs of IPS contact pairs in the order of *Contact "
+    "pair",
+    source="src/input/read_model_change_.f90:98-227 (read_model_change, numgeo-src 1f48283)",
+)
+def sliding_change(ctx: Context) -> Iterator[Finding]:
+    deck = ctx.deck
+    changes = list(_sliding_changes(deck))
+    if not changes:
+        return
+    pairs = _surface_pairs(deck)
+    surfaces = {s.key for s in deck.mesh.surfaces}
+    selected: dict[int, set[int]] = {}
+    for i, st, kw in changes:
+        where = f"step {st.name}: *Model change, contact pair"
+        loc = _sloc(st, kw)
+        # the options are compared exactly: contact pair, sliding=small (once)
+        small, refused = 0, 0
+        for token in _opt_text(kw).split(","):
+            if token == "SLIDING=SMALL":
+                small += 1
+            elif token == "SLIDING=FINITE":
+                refused += 1
+                yield (
+                    f"{where}: sliding=finite is not available (a surface pair with small sliding keeps its reference "
+                    "configuration for the rest of the analysis)",
+                    loc,
+                )
+            elif token and token != "CONTACTPAIR":
+                refused += 1
+                yield (
+                    f"{where}: unknown option {token.lower()!r}; numgeo stops (supported is *Model change, contact "
+                    "pair, sliding=small)",
+                    loc,
+                )
+        if small != 1 and not refused:
+            yield f"{where} requires the option sliding=small (once)", loc
+        if not kw.data:
+            yield f"{where} needs at least one line 'slave surface, master surface'", loc
+        done = selected.setdefault(i, set())
+        for r in kw.data:
+            if len(r) != 2:
+                yield f"{where}: {_row(r)!r} must give one surface pair as 'slave surface, master surface'", loc
+                continue
+            slave, master = str(r[0]), str(r[1])
+            unknown = [n for n in (slave, master) if _key(n) not in surfaces]
+            if unknown:
+                yield f"{where}: unknown surface {unknown[0]!r}", loc
+                continue
+            hits = [p for p in pairs if p.slave == _key(slave) and p.master == _key(master)]
+            if not hits:
+                if any(p.slave == _key(master) and p.master == _key(slave) for p in pairs):
+                    yield (
+                        f"{where}: no *Contact pair has the slave surface {slave} and the master surface {master}; the "
+                        f"pair is defined with {master} as slave and {slave} as master surface (give the surfaces in "
+                        "the order of *Contact pair)",
+                        loc,
+                    )
+                else:
+                    yield (
+                        f"{where}: no *Contact pair has the slave surface {slave} and the master surface {master}",
+                        loc,
+                    )
+                continue
+            if len(hits) > 1:
+                yield (
+                    f"{where}: the surface pair {slave}, {master} is defined in {len(hits)} *Contact pair "
+                    "definitions; the selection is ambiguous",
+                    loc,
+                )
+                continue
+            pair = hits[0]
+            if not pair.ips:
+                yield (
+                    f"{where}: the surface pair {slave}, {master} does not use discretisation=IPS (the change to small "
+                    "sliding is available for IPS contact pairs only)",
+                    loc,
+                )
+                continue
+            if pair.doublepass:
+                yield (
+                    f"{where}: the surface pair {slave}, {master} uses the option doublepass of *Contact pair, which "
+                    "is not available with small sliding",
+                    loc,
+                )
+                continue
+            if id(pair) in done:
+                yield f"{where}: the surface pair {slave}, {master} is selected more than once", loc
+            done.add(id(pair))
+
+
+@rule(
+    "NG-CONT-132",
+    "error",
+    "small sliding of IPS contact pairs cannot be combined with *PFEM remeshing",
+    source="src/contacts/contact_.f90:1554-1560 (apply_contact_pair_sliding, numgeo-src 1f48283)",
+)
+def small_sliding_pfem(ctx: Context) -> Iterator[Finding]:
+    deck = ctx.deck
+    if not any(k.keyword == "*PFEMREMESHING" for st in deck.steps for k in st.items):
+        return
+    pairs, _ = _small_sliding(deck)
+    for i, st in enumerate(deck.steps):
+        remeshing = next((k for k in st.items if k.keyword == "*PFEMREMESHING"), None)
+        if remeshing is None:
+            continue
+        small = [p for p in pairs if p.small_from is not None and p.small_from <= i]
+        if small:
+            how = (
+                "sliding=small of *Contact pair"
+                if small[0].small_from == 0 and _pair_small_sliding(small[0].kw)
+                else f"*Model change, contact pair in step {deck.steps[small[0].small_from or 0].name}"
+            )
+            yield (
+                f"step {st.name}: *PFEM remeshing cannot be combined with small sliding of IPS contact pairs (surface "
+                f"pair {small[0].text}: {how}); the reference configuration of the pairs belongs to the mesh",
+                _sloc(st, remeshing),
+            )
+
+
+def _surface_faces(deck: Deck, name: str) -> set[tuple[int, str]] | None:
+    """Faces ``(element label, face)`` of an element-based surface, ``None`` if they cannot be resolved from the deck
+    (node-based surface, unknown surface or set, set queries)."""
+    try:
+        s = deck.mesh.surface(name)
+    except KeyError:
+        return None
+    if s.type != "element":
+        return None
+    faces: set[tuple[int, str]] = set()
+    for r in s.rows:
+        if len(r) < 2:
+            return None
+        members = _elset_members(deck, r[0])
+        if members is None:
+            return None
+        faces |= {(e, _key(r[1])) for e in members}
+    return faces
+
+
+@rule(
+    "NG-CONT-133",
+    "error",
+    "a face in the slave surfaces of several IPS surface pairs needs the same sliding formulation in all of them",
+    source="src/contacts/contact_.f90:1563-1591,1760-1792 (apply_contact_pair_sliding, ambiguous_face, numgeo-src "
+    "1f48283)",
+)
+def small_sliding_shared_faces(ctx: Context) -> Iterator[Finding]:
+    deck = ctx.deck
+    pairs, _ = _small_sliding(deck)
+    ips = [p for p in pairs if p.ips]
+    if not any(p.small_from is not None for p in ips):
+        return
+    faces: dict[str, set[tuple[int, str]] | None] = {}
+
+    def shared(a: _SurfacePair, b: _SurfacePair) -> bool:
+        if a.slave == b.slave:
+            return True
+        for p in (a, b):
+            if p.slave not in faces:
+                faces[p.slave] = _surface_faces(deck, p.slave)
+        fa, fb = faces[a.slave], faces[b.slave]
+        return fa is not None and fb is not None and bool(fa & fb)
+
+    for a in ips:
+        if a.small_from is None:
+            continue
+        for b in ips:
+            # b still uses finite sliding in the step in which a starts with small sliding
+            if b is a or (b.small_from is not None and b.small_from <= a.small_from) or not shared(a, b):
+                continue
+            since = (
+                "from the first step on"
+                if a.small_from == 0 and _pair_small_sliding(a.kw)
+                else f"from step {deck.steps[a.small_from].name} on"
+            )
+            yield (
+                f"IPS surface pair {a.text} uses small sliding {since}, the surface pair {b.text} finite sliding, and "
+                "their slave surfaces share faces: an integration point has one sliding formulation (change both pairs "
+                "in the same step with *Model change, contact pair, sliding=small or define both with sliding=small)",
+                _loc(a.kw, "model *Contact pair"),
+            )
+
+
+@rule(
+    "NG-CONT-134",
+    "warning",
+    "*Model change, contact pair of a surface pair that already uses small sliding keeps its reference",
+    source="src/contacts/contact_.f90:1522-1535 (apply_contact_pair_sliding, numgeo-src 1f48283)",
+)
+def sliding_change_repeated(ctx: Context) -> Iterator[Finding]:
+    deck = ctx.deck
+    _, selections = _small_sliding(deck)
+    for i, st, kw, pair, before in selections:
+        if before is None or (before == i and not _pair_small_sliding(pair.kw)):
+            continue  # (a pair selected twice in one step: NG-CONT-131)
+        since = (
+            "sliding=small of *Contact pair"
+            if before == 0 and _pair_small_sliding(pair.kw)
+            else f"since step {deck.steps[before].name}"
+        )
+        yield (
+            f"step {st.name}: *Model change, contact pair: the surface pair {pair.text} already uses small sliding "
+            f"({since}); its reference configuration is kept",
+            _sloc(st, kw),
+        )
 
 
 # ============================================================================= output

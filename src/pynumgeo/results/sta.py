@@ -16,6 +16,8 @@
 # 26.10.2026, J. Machacek - Initial version
 # 13.11.2026, J. Machacek - Strength reduction with arc-length control: StaRow.control, ArcLengthSummary
 # 14.11.2026, J. Machacek - Summary of numgeo-src of 14.11.2026: FoS of the plateau at the end, first plateau
+# 20.11.2026, J. Machacek - Summary of numgeo-src e15b379 (18.11.2026): factor of safety undetermined without a
+#                           plateau, FoS correction, note on contact friction
 # =~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~~=~=~
 """Reader for the status file ``<job>.sta`` and the step headers of ``<job>.msg``.
 
@@ -45,12 +47,12 @@ The rejection texts are set in :213-229; ``rejected (niter > maxiter)`` is also 
 attempts that converged in the last allowed iteration, so :attr:`StaRow.accepted` follows the
 rule given in :func:`read_sta`.
 
-A strength reduction step with arc-length control (``*Reduction, arc-length``, line numbers of the uncommitted
-numgeo-src of 14.11.2026) writes the column ``Ctrl`` (``report_statistics.f90:289,333``), the rejection text
+A strength reduction step with arc-length control (``*Reduction, arc-length``, line numbers of numgeo-src
+e15b379 of 18.11.2026) writes the column ``Ctrl`` (``report_statistics.f90:289,333``), the rejection text
 ``rejected (arc-length)`` (:255), its settings and notes at the start of the step
-(``src/fem/arc_length_.f90:296-324``, ``arc_length_initialize``) and a summary at the end of the step
-(``src/fem/arc_length_.f90:1149-1222``, ``arc_length_write_history``): :func:`read_arc_length_summaries`
-reads it as :class:`ArcLengthSummary`.
+(``src/fem/arc_length_.f90:290-317``, ``arc_length_initialize``) and a summary at the end of the step
+(``src/fem/arc_length_.f90:1158-1225``, ``arc_length_write_history``): :func:`read_arc_length_summaries`
+reads it as :class:`ArcLengthSummary`. The summaries of the numgeo-src of 13. and 14.11.2026 are read as well.
 
 ``<job>.msg`` starts every executed step with ``Step <n>: <NAME>`` (``src/report/report_convergence_.f90:68``,
 called once per step from ``src/main.f90:460``), the only place that gives the step *number* (restart
@@ -116,14 +118,16 @@ _EXPLICIT = re.compile(rf"^\s+{_INT}\s+{_NUM}\s+{_NUM}\s+{_NUM}\s+{_NUM}\s*$")
 _CRITICAL = re.compile(rf"^\s+{_INT}\s+{_INT}\s+{_NUM}\s+{_NUM}\s+{_NUM}\s+{_NUM}\s+{_INT}\s*(.*?)\s*$")
 _NITER_LABEL = "rejected (niter > maxiter)"
 
-# strength reduction with arc-length control: settings at the start of the step (arc_length_.f90:296-324)
+# strength reduction with arc-length control: settings at the start of the step (arc_length_.f90:290-317)
 _ARC_SETTINGS = re.compile(
     rf"^\s+Arc-length control of the factor of safety \(\*Reduction, arc-length\): plateau-tolerance =\s*{_NUM}, "
     rf"plateau-increments = {_INT}, arc-increments = {_INT}, perturbation =\s*{_NUM}\s*$"
 )
 _ARC_MAX_DISP = re.compile(rf"^\s+End of the step at the largest displacement max-displacement =\s*{_NUM}\s*$")
 _ARC_NOTE = re.compile(r"^\s+Note: (?P<text>.*?)\s*$")
-# summary at the end of the step (arc_length_.f90:1149-1222)
+# numgeo-src e15b379: the note on contact interactions with reduction has no "Note:" (arc_length_.f90:308-309)
+_ARC_CONTACT_NOTE = re.compile(r"^\s+(?P<text>Contact friction reduction enters the equilibrium residual\..*?)\s*$")
+# summary at the end of the step (arc_length_.f90:1158-1225)
 _ARC_SUMMARY = re.compile(r"^\s+Strength reduction with arc-length control\s*$")
 _ARC_REASON = re.compile(r"^\s+End of the step: (?P<reason>.*?)\s*$")
 _ARC_ENGAGED = re.compile(
@@ -137,6 +141,9 @@ _ARC_WINDOWS = re.compile(
     rf"mean\s*{_NUM} \({_INT} increments\),\s*{_NUM} \({_INT} increments\)\s*$"
 )
 _ARC_AGREE = re.compile(r"^\s+The windows at the end of the step (?P<no>do not )?agree within plateau-tolerance")
+# numgeo-src e15b379 (arc_length_.f90:1171,1187): no plateau confirmed, windows without a plateau
+_ARC_UNDETERMINED = re.compile(r"^\s+Limiting factor of safety undetermined\.")
+_ARC_NO_AGREEMENT = re.compile(r"^\s+The final windows did not satisfy all displacement, sample count and FoS criteria")
 _ARC_ALL = re.compile(rf"^\s+All {_INT} accepted arc-length increments: mean\s*{_NUM}, min\s*{_NUM}, max\s*{_NUM}\s*$")
 _ARC_FIRST = re.compile(
     rf"^\s+First plateau of the step: increment {_INT}, u =\s*{_NUM}, mean\s*{_NUM}\s+"
@@ -157,7 +164,9 @@ _ARC_NO_PLATEAU = re.compile(
 _ARC_NO_PLATEAU_LAST = re.compile(rf"^\s+Factor of safety \(no plateau; last accepted increment\):\s*{_NUM}\s*$")
 _ARC_PEAK = re.compile(rf"^\s+Peak FoS of the step:\s*{_NUM}\s+\(max\. \|u-u_0\| =\s*{_NUM}, increment {_INT}\)\s*$")
 _ARC_PEAK_NOTE = re.compile(r"^\s+Note: the peak exceeds the factor of safety")
-_ARC_FOS_ERROR = re.compile(rf"^\s+Estimated FoS error \|dFoS\| of the last accepted iteration:\s*{_NUM}\s*$")
+_ARC_FOS_ERROR = re.compile(  # "Estimated FoS error": numgeo-src of 14.11.2026
+    rf"^\s+(?:FoS correction|Estimated FoS error) \|dFoS\| of the last accepted iteration:\s*{_NUM}\s*$"
+)
 _ARC_CONSTRAINT = re.compile(rf"^\s+Largest constraint error .*?:\s*{_NUM}\s*$")
 # end reasons of the arc-length control (arc_length_.f90:941,950,967,1144,1146): the end criteria
 # arc-increments and max-displacement are checked after an accepted increment, the others end the step
@@ -214,7 +223,7 @@ class StaRow:
 
 
 #: What the factor of safety of a strength reduction step with arc-length control is (:attr:`ArcLengthSummary.fos`).
-FosBasis = Literal["plateau at the end", "first plateau", "no plateau", "last increment"]
+FosBasis = Literal["plateau at the end", "first plateau", "undetermined", "no plateau", "last increment"]
 
 
 @dataclass(frozen=True)
@@ -222,8 +231,8 @@ class ArcLengthSummary:
     """A strength reduction step with arc-length control (``*Reduction, arc-length``) as the ``.sta`` reports it.
 
     The settings and notes come from the start of the step, the other values from the summary at its end
-    (``src/fem/arc_length_.f90``, ``arc_length_initialize`` and ``arc_length_write_history``, uncommitted
-    numgeo-src of 14.11.2026). A value the file does not contain (step not finished, line not written, field
+    (``src/fem/arc_length_.f90``, ``arc_length_initialize`` and ``arc_length_write_history``, numgeo-src e15b379
+    of 18.11.2026). A value the file does not contain (step not finished, line not written, field
     overflow ``***``) is ``None``. Reals of the summary have 6 decimals (``F10.6``) or 5 significant digits
     (``ES11.4``).
 
@@ -237,8 +246,9 @@ class ArcLengthSummary:
             leading ``Note:``.
         end_reason: why the step ended, e.g. ``arc-increments = 100 arc-length increments accepted``,
             ``largest displacement reached max-displacement``, ``no convergence under arc-length control (10
-            consecutive rejections)``, ``FoS control: dFoS below dFoS_min`` or ``maximum number of increments of
-            the step (INC)``; ``None`` without summary.
+            consecutive rejections)``, ``FoS control: cutback reached dFoS_min`` (before 18.11.2026: ``FoS control:
+            dFoS below dFoS_min``), ``user-defined termination criterion reached`` or ``maximum number of increments
+            of the step (INC)``; ``None`` without summary.
         engaged: ``True`` if the arc-length control took over, ``False`` if it was never engaged.
         switch_increment: increment at which the arc-length control was engaged.
         switch_fos: factor of safety of the last converged increment at the switch.
@@ -247,24 +257,31 @@ class ArcLengthSummary:
         window_u: largest displacement u of the last accepted increment (windows at the end of the step).
         window_means, window_counts: mean factor of safety and number of accepted arc-length increments in the
             windows ``(u/4, u/2]`` and ``(u/2, u]`` at the end of the step.
-        windows_agree: the two windows at the end of the step agree within the plateau tolerance.
+        windows_agree: the two windows at the end of the step agree within the plateau tolerance (a plateau at the
+            end of the step); ``False`` if they do not meet the criteria of a plateau (displacement, number of
+            increments, factor of safety).
         arc_mean, arc_min, arc_max: mean, minimum and maximum factor of safety of all accepted arc-length
             increments.
         first_plateau_increment, first_plateau_u: increment and largest displacement u at which the first
             plateau of the step was found (``None`` without plateau).
         first_plateau_fos, first_plateau_min, first_plateau_max: mean, minimum and maximum factor of safety over
             the windows of the first plateau.
-        fos: factor of safety of the step, see :attr:`fos_basis`.
+        fos: factor of safety of the step, see :attr:`fos_basis`; ``None`` if numgeo did not determine one.
         fos_basis: what :attr:`fos` is: ``"plateau at the end"`` (the windows at the end of the step agree: mean
-            over them), ``"first plateau"`` (they do not agree: mean over the windows of the first plateau),
-            ``"no plateau"`` (mean over the windows at the end of the step) or ``"last increment"`` (no plateau
-            and no window: factor of safety of the last accepted increment).
-        fos_min, fos_max: minimum and maximum over the windows of :attr:`fos` (``None`` for ``"last increment"``).
+            over them), ``"first plateau"`` (they do not agree: mean over the windows of the first plateau) or
+            ``"undetermined"`` (no plateau was confirmed: the limiting factor of safety is undetermined and
+            :attr:`fos` is ``None``; :attr:`last_fos`, :attr:`window_means` and :attr:`arc_mean` remain for
+            inspection). Files of numgeo before 18.11.2026 gave a number also without plateau: ``"no plateau"``
+            (mean over the windows at the end of the step) or ``"last increment"`` (no window: factor of safety of
+            the last accepted increment).
+        fos_min, fos_max: minimum and maximum over the windows of :attr:`fos` (``None`` without :attr:`fos` and for
+            ``"last increment"``).
         peak_fos, peak_max_disp, peak_increment: largest factor of safety of the step, its max. ``|u - u_0|`` and
             increment.
         peak_exceeds_plateau: the peak exceeds the factor of safety of a plateau by more than the plateau
             tolerance (softening-like response).
-        fos_error: estimated error ``|dFoS|`` of the factor of safety of the last accepted iteration.
+        fos_error: correction ``|dFoS|`` of the factor of safety in the last accepted iteration (written as
+            estimated error before 18.11.2026).
         constraint_error: largest constraint error ``|b.(du-du_pred)|/|b|^2`` of the accepted increments.
     """
 
@@ -454,7 +471,7 @@ def _arc_line(b: _Block, line: str) -> bool:
         b.arc["peak_exceeds_plateau"] = False
         return True
     if not b.in_summary:
-        m = _ARC_NOTE.match(line)
+        m = _ARC_NOTE.match(line) or _ARC_CONTACT_NOTE.match(line)
         if m and b.arc is not None:
             b.notes.append(m.group("text"))
             return True
@@ -477,6 +494,10 @@ def _arc_line(b: _Block, line: str) -> bool:
         a.update(window_u=_real(u), window_means=(_real(m1), _real(m2)), window_counts=(_int(n1), _int(n2)))
     elif m := _ARC_AGREE.match(line):
         a["windows_agree"] = m.group("no") is None
+    elif _ARC_NO_AGREEMENT.match(line):
+        a["windows_agree"] = False
+    elif _ARC_UNDETERMINED.match(line):
+        a["fos_basis"] = "undetermined"
     elif m := _ARC_ALL.match(line):
         a.update(arc_mean=_real(m.group(2)), arc_min=_real(m.group(3)), arc_max=_real(m.group(4)))
     elif m := _ARC_FIRST.match(line):

@@ -1,5 +1,5 @@
 {
- "docs_commit": "f903d1a1b9a8180207038255875dcbb9e8f75b79",
+ "docs_commit": "d6e7aa8a681f406b25ba2bb414a65be146352204",
  "excluded_entries": 16,
  "keywords": [
   {
@@ -2062,7 +2062,7 @@
        "source": {
         "anchor": "1083cf0895b2e0b9",
         "file": "src/input/read_contact_pairing_.f90",
-        "line": 266,
+        "line": 295,
         "routine": "read_contact_pairing"
        },
        "type": "name",
@@ -2075,7 +2075,7 @@
        "source": {
         "anchor": "b74ba6de9e3441d7",
         "file": "src/input/read_contact_pairing_.f90",
-        "line": 268,
+        "line": 297,
         "routine": "read_contact_pairing"
        },
        "type": "name",
@@ -2086,7 +2086,7 @@
      "source": {
       "anchor": "ac0b52a2ae6ef999",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 242,
+      "line": 271,
       "routine": "read_contact_pairing"
      }
     }
@@ -2102,14 +2102,14 @@
    "handler": {
     "anchor": "5427f6c735a54a4e",
     "file": "src/input/read_contact_pairing_.f90",
-    "line": 50,
+    "line": 54,
     "routine": "read_contact_pairing"
    },
    "keyword": "*CONTACTPAIR",
    "match_forms": [
     "*CONTACTPAIR,"
    ],
-   "notes": "Unknown options -> error (193-198). All option tests are substring tests over every token, so names containing e.g. NGP, ADJUST, GENERAL, REFINE, NLGEOM, PERTURBATION trigger those options. Slave = surf_name(2k-1), master = surf_name(2k) (contact_.f90:92-93). Messages say *CONTACTPAIRING but only '*CONTACTPAIR,' is dispatched.",
+   "notes": "Unknown options -> error (214-219). All option tests are substring tests over every token, so names containing e.g. NGP, ADJUST, GENERAL, REFINE, NLGEOM, PERTURBATION trigger those options. Slave = surf_name(2k-1), master = surf_name(2k) (contact_.f90:92-93). Messages say *CONTACTPAIRING but only '*CONTACTPAIR,' is dispatched. The sliding formulation is kept per surface pair (data line): sliding_step = 0 with SLIDING=SMALL and IPS, else -1 until *Model change, contact pair, sliding=small sets it to its step (347-353; numgeo-src 1f48283). Line numbers of read_contact_pairing_.f90 refer to the numgeo-src 1f48283.",
    "options": [
     {
      "default": null,
@@ -2117,12 +2117,12 @@
      "doc": "docs/reference/contacts/contact-pair.md",
      "match": "substring 'INTERACTION'; value after '='",
      "name": "INTERACTION",
-     "notes": "Must name an *INTERACTION defined earlier (202-208).",
+     "notes": "Must name an *INTERACTION defined earlier (223-229).",
      "required": true,
      "source": {
       "anchor": "638cd115e8d1aa7d",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 183,
+      "line": 204,
       "routine": "read_contact_pairing"
      },
      "value_type": "name",
@@ -2134,12 +2134,12 @@
      "doc": null,
      "match": "substring 'DISCRETISATION=<literal>' (see contact_discretisations)",
      "name": "DISCRETISATION",
-     "notes": "Error if the stored value is not 3 characters long (163-167); no type default (uninitialised character).",
+     "notes": "Error if the stored value is not 3 characters long (167-171); no type default (uninitialised character).",
      "required": true,
      "source": {
-      "anchor": "1be869491f79a188",
+      "anchor": "db1b526841df5fb9",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 85,
+      "line": 89,
       "routine": "read_contact_pairing"
      },
      "value_type": "enum",
@@ -2157,7 +2157,7 @@
      "default_source": {
       "anchor": "f826800177bfb0c5",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 71,
+      "line": 75,
       "routine": "read_contact_pairing"
      },
      "doc": null,
@@ -2168,7 +2168,7 @@
      "source": {
       "anchor": "45677e594a830151",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 103,
+      "line": 107,
       "routine": "read_contact_pairing"
      },
      "value_type": "flag",
@@ -2179,7 +2179,7 @@
      "default_source": {
       "anchor": "f51e0baf331816bf",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 70,
+      "line": 74,
       "routine": "read_contact_pairing"
      },
      "doc": null,
@@ -2190,7 +2190,7 @@
      "source": {
       "anchor": "2b12ee4f23977314",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 107,
+      "line": 111,
       "routine": "read_contact_pairing"
      },
      "value_type": "flag",
@@ -2201,7 +2201,7 @@
      "default_source": {
       "anchor": "e49c5122622b7dd4",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 72,
+      "line": 76,
       "routine": "read_contact_pairing"
      },
      "doc": null,
@@ -2212,7 +2212,7 @@
      "source": {
       "anchor": "600149fe5710735a",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 111,
+      "line": 115,
       "routine": "read_contact_pairing"
      },
      "value_type": "flag",
@@ -2223,18 +2223,18 @@
      "default_source": {
       "anchor": "01fe627edf20775f",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 73,
+      "line": 77,
       "routine": "read_contact_pairing"
      },
      "doc": null,
      "match": "substring 'GENERAL'",
      "name": "GENERAL",
-     "notes": "Only one contact pair allowed in the model (176-180); no data lines are read (230-237).",
+     "notes": "Only one contact pair allowed in the model (197-201); no data lines are read (259-266). Error together with SLIDING=SMALL and IPS (189-193; numgeo-src 1f48283).",
      "required": false,
      "source": {
       "anchor": "4e14fe2e692612cb",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 115,
+      "line": 119,
       "routine": "read_contact_pairing"
      },
      "value_type": "flag",
@@ -2256,7 +2256,7 @@
      "source": {
       "anchor": "de3abac6c1f83058",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 119,
+      "line": 123,
       "routine": "read_contact_pairing"
      },
      "value_type": "int",
@@ -2278,7 +2278,7 @@
      "source": {
       "anchor": "300ab3ee79f635ec",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 128,
+      "line": 132,
       "routine": "read_contact_pairing"
      },
      "value_type": "flag",
@@ -2295,12 +2295,12 @@
      "doc": null,
      "match": "substring 'DOUBLEPASS'",
      "name": "DOUBLEPASS",
-     "notes": "IPS: second pass with the integration points of the master surface. Error together with the option water-filled gap of the interaction: each pass integrates the pore water pressure (src/input/read_contact_pairing_.f90:224; uncommitted numgeo-src of 15.11.2026).",
+     "notes": "IPS: second pass with the integration points of the master surface. Error together with the option water-filled gap of the interaction: each pass integrates the pore water pressure (src/input/read_contact_pairing_.f90:241-246; uncommitted numgeo-src of 15.11.2026). Error together with SLIDING=SMALL: the reference of small sliding is kept for the integration points of the slave surface only (184-188; numgeo-src 1f48283); such a pair can also not be changed with *Model change, contact pair (src/input/read_model_change_.f90:208-213).",
      "required": false,
      "source": {
       "anchor": "22ed9034667ce49e",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 132,
+      "line": 136,
       "routine": "read_contact_pairing"
      },
      "value_type": "flag",
@@ -2311,18 +2311,18 @@
      "default_source": {
       "anchor": "ebc9ee2302ed3ba7",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 74,
+      "line": 78,
       "routine": "read_contact_pairing"
      },
-     "doc": null,
+     "doc": "docs/reference/contacts/contact-pair.md",
      "match": "substring 'SLIDING=SMALL' / 'SLIDING=FINITE'",
      "name": "SLIDING",
-     "notes": "SMALL only for NTS (170-173), 3D and without PERTURBATION (contact_discretisation_EBM_.f90:151-155).",
+     "notes": "SMALL (contact kinematics in a reference configuration) for NTS (element mortar: 3D and without PERTURBATION, contact_discretisation_EBM_.f90:151-155) and for IPS (2D, axisymmetric and 3D; numgeo-src 1f48283); other discretisations -> error (173-180). IPS: error together with DOUBLEPASS or GENERAL (181-194); the reference of an integration point is the mesh for faces active from the start and the configuration at the beginning of the activation step for faces activated by *Model change, add; no way back to FINITE. A pair with FINITE can be changed at the beginning of a step with *Model change, contact pair, sliding=small. Error in a step with *PFEM remeshing (src/contacts/contact_.f90:1554-1560). A face that belongs to the slave surfaces of several IPS pairs needs the same sliding formulation in all of them (src/contacts/contact_.f90:1589-1591, ambiguous_face).",
      "required": false,
      "source": {
       "anchor": "9a4d31e80638002d",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 137,
+      "line": 141,
       "routine": "read_contact_pairing"
      },
      "value_type": "enum",
@@ -2342,12 +2342,12 @@
      "doc": null,
      "match": "substring 'GAP=ACTIVATION' / 'GAP=MESH'",
      "name": "GAP",
-     "notes": "ACTIVATION only for IPS and NTS (156-160).",
+     "notes": "ACTIVATION only for IPS and NTS (160-164).",
      "required": false,
      "source": {
       "anchor": "8e38b0f88342ee89",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 146,
+      "line": 150,
       "routine": "read_contact_pairing"
      },
      "value_type": "enum",
@@ -7160,7 +7160,7 @@
        "source": {
         "anchor": "f4e43fba17c9a7d5",
         "file": "src/input/read_model_change_.f90",
-        "line": 101,
+        "line": 248,
         "routine": "read_model_change"
        },
        "type": "name",
@@ -7173,18 +7173,18 @@
        "source": {
         "anchor": "f4e43fba17c9a7d5",
         "file": "src/input/read_model_change_.f90",
-        "line": 101,
+        "line": 248,
         "routine": "read_model_change"
        },
        "type": "name",
        "unit": null
       }
      ],
-     "repeat": "until next line containing '*'; at least one line (l.89-97)",
+     "repeat": "until next line containing '*'; at least one line (l.236-244)",
      "source": {
       "anchor": "dd0ab02bf2bafd89",
       "file": "src/input/read_model_change_.f90",
-      "line": 88,
+      "line": 235,
       "routine": "read_model_change"
      }
     },
@@ -7199,7 +7199,7 @@
        "source": {
         "anchor": "9b9307ec486fcf9f",
         "file": "src/input/read_model_change_.f90",
-        "line": 162,
+        "line": 309,
         "routine": "read_model_change"
        },
        "type": "name",
@@ -7212,18 +7212,18 @@
        "source": {
         "anchor": "f0af82c775fde737",
         "file": "src/input/read_model_change_.f90",
-        "line": 164,
+        "line": 311,
         "routine": "read_model_change"
        },
        "type": "real",
        "unit": null
       }
      ],
-     "repeat": "until next line containing '*'; at least one line (l.143-148)",
+     "repeat": "until next line containing '*'; at least one line (l.290-295)",
      "source": {
       "anchor": "dd0ab02bf2bafd89",
       "file": "src/input/read_model_change_.f90",
-      "line": 142,
+      "line": 289,
       "routine": "read_model_change"
      }
     },
@@ -7238,18 +7238,57 @@
        "source": {
         "anchor": "82c5afef76747e8c",
         "file": "src/input/read_model_change_.f90",
-        "line": 303,
+        "line": 451,
         "routine": "read_model_change"
        },
        "type": "name",
        "unit": null
       }
      ],
-     "repeat": "until next line containing '*'; at least one set (l.292-300)",
+     "repeat": "until next line containing '*'; at least one set (l.440-448)",
      "source": {
       "anchor": "dd0ab02bf2bafd89",
       "file": "src/input/read_model_change_.f90",
-      "line": 291,
+      "line": 439,
+      "routine": "read_model_change"
+     }
+    },
+    {
+     "count_rule": "narg == 2",
+     "description": "CONTACTPAIR: slave surface, master surface of one surface pair (data line) of a *Contact pair, discretisation=IPS, in the order of that definition",
+     "fields": [
+      {
+       "default": null,
+       "name": "slave_surface",
+       "required": true,
+       "source": {
+        "anchor": "bdd9a7f6475d62ee",
+        "file": "src/input/read_model_change_.f90",
+        "line": 147,
+        "routine": "read_model_change"
+       },
+       "type": "name",
+       "unit": null
+      },
+      {
+       "default": null,
+       "name": "master_surface",
+       "required": true,
+       "source": {
+        "anchor": "7b357986f855440a",
+        "file": "src/input/read_model_change_.f90",
+        "line": 148,
+        "routine": "read_model_change"
+       },
+       "type": "name",
+       "unit": null
+      }
+     ],
+     "repeat": "until next line containing '*'; at least one line (l.130-138); two fields per line (l.139-145)",
+     "source": {
+      "anchor": "dd0ab02bf2bafd89",
+      "file": "src/input/read_model_change_.f90",
+      "line": 129,
       "routine": "read_model_change"
      }
     }
@@ -7265,7 +7304,7 @@
    "handler": {
     "anchor": "634e8d2e0590fa42",
     "file": "src/input/read_model_change_.f90",
-    "line": 62,
+    "line": 72,
     "routine": "read_model_change"
    },
    "keyword": "*MODELCHANGE",
@@ -7273,20 +7312,20 @@
     "*MODELCHANGE",
     "*MODELCHANGE,"
    ],
-   "notes": "REMOVE/ADD refused in *Reduction and explicit dynamic steps, with *Embedded region absorbed/<private>/plate and with general contact (l.237-261); an element in a REMOVE and an ADD set of the same step -> error (l.328-343). docs/reference/model-change/elements.md carries front matter 'level: confidential'. FRICTION (numgeo-src 60fca8b5): the parameters of the friction model of an interaction from this step on, see docs/reference/model-change/friction.md. Mohr-Coulomb friction with softening (uncommitted numgeo-src of 06.11.2026): also tan(delta_r) and u_r; the accumulated plastic slip is reset at the change. Line numbers of read_model_change_.f90 refer to the uncommitted numgeo-src of 06.11.2026.",
+   "notes": "REMOVE/ADD refused in *Reduction and explicit dynamic steps, with *Embedded region absorbed/<private>/plate and with general contact (l.384-409); an element in a REMOVE and an ADD set of the same step -> error (l.476-490). docs/reference/model-change/elements.md carries front matter 'level: confidential'. FRICTION (numgeo-src 60fca8b5): the parameters of the friction model of an interaction from this step on, see docs/reference/model-change/friction.md. Mohr-Coulomb friction with softening (uncommitted numgeo-src of 06.11.2026): also tan(delta_r) and u_r; the accumulated plastic slip is reset at the change. CONTACTPAIR (numgeo-src 1f48283): surface pairs of IPS contact pairs change from finite to small sliding at the beginning of the step, see docs/reference/model-change/contact-pair.md; read first (l.98-227), applied at the beginning of the step after the restart read and the rebuild of the contact topology (apply_contact_pair_sliding, src/contacts/contact_.f90:1490-1794) and replayed for the skipped steps of a restart (replay_contact_pair_sliding, src/contacts/contact_.f90:1808). Line numbers of read_model_change_.f90 refer to the numgeo-src 1f48283.",
    "options": [
     {
      "default": null,
      "default_source": null,
      "doc": "docs/reference/model-change/material.md",
-     "match": "substring 'MATERIAL' (checked first)",
+     "match": "substring 'MATERIAL' (checked after CONTACTPAIR)",
      "name": "MATERIAL",
      "notes": "",
      "required": false,
      "source": {
-      "anchor": "1b47b86736a2ca6f",
+      "anchor": "a330d57d5c141822",
       "file": "src/input/read_model_change_.f90",
-      "line": 85,
+      "line": 232,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7300,12 +7339,12 @@
      "doc": "docs/reference/model-change/friction.md",
      "match": "substring 'FRICTION' (checked after MATERIAL, before REMOVE/ADD)",
      "name": "FRICTION",
-     "notes": "numgeo-src 60fca8b5 (30.10.2026). Interaction defined before the first step, with *Friction, model=Coulomb or Mohr-Coulomb, not *Interaction, user; the tangential penalty (first value, if given in *Friction) must be repeated unchanged (l.214-224); as many values as the data line of its *Friction (l.198-203). Mohr-Coulomb with softening (uncommitted numgeo-src of 06.11.2026): the six (five) values of *Friction, checked as there (u_r > 0, 0 <= tan(delta_r) <= tan(delta), tan(theta) >= 0; l.204-211, check_mc_softening_parameters). The change resets the accumulated plastic slip of the contact points (also when the parameters are repeated); the dilation reached is kept.",
+     "notes": "numgeo-src 60fca8b5 (30.10.2026). Interaction defined before the first step, with *Friction, model=Coulomb or Mohr-Coulomb, not *Interaction, user; the tangential penalty (first value, if given in *Friction) must be repeated unchanged (l.361-371); as many values as the data line of its *Friction (l.345-350). Mohr-Coulomb with softening (uncommitted numgeo-src of 06.11.2026): the six (five) values of *Friction, checked as there (u_r > 0, 0 <= tan(delta_r) <= tan(delta), tan(theta) >= 0; l.351-358, check_mc_softening_parameters). The change resets the accumulated plastic slip of the contact points (also when the parameters are repeated); the dilation reached is kept.",
      "required": false,
      "source": {
       "anchor": "2593f39c5063fa68",
       "file": "src/input/read_model_change_.f90",
-      "line": 139,
+      "line": 286,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7324,7 +7363,7 @@
      "source": {
       "anchor": "09432ac1b5d8f597",
       "file": "src/input/read_model_change_.f90",
-      "line": 232,
+      "line": 379,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7338,12 +7377,12 @@
      "doc": "docs/reference/model-change/elements.md",
      "match": "substring 'ADD'",
      "name": "ADD",
-     "notes": "One of MATERIAL/FRICTION/REMOVE/ADD required, else error (l.345-349).",
+     "notes": "One of CONTACTPAIR/MATERIAL/FRICTION/REMOVE/ADD required, else error (l.492-499).",
      "required": false,
      "source": {
       "anchor": "09432ac1b5d8f597",
       "file": "src/input/read_model_change_.f90",
-      "line": 232,
+      "line": 379,
       "routine": "read_model_change"
      },
      "value_type": "flag",
@@ -7356,24 +7395,62 @@
      "default_source": {
       "anchor": "9e0523db61bedf98",
       "file": "src/input/read_model_change_.f90",
-      "line": 265,
+      "line": 413,
       "routine": "read_model_change"
      },
      "doc": "docs/reference/model-change/elements.md",
      "match": "substring 'POSITION=DEFORMED' / 'POSITION=DESIGN'",
      "name": "POSITION",
-     "notes": "Only with ADD (error with REMOVE l.267-270); other value -> error (l.271-274); all ADD blocks of a step must use the same position (l.276-283).",
+     "notes": "Only with ADD (error with REMOVE l.415-418); other value -> error (l.419-422); all ADD blocks of a step must use the same position (l.425-432).",
      "required": false,
      "source": {
       "anchor": "9e0523db61bedf98",
       "file": "src/input/read_model_change_.f90",
-      "line": 265,
+      "line": 413,
       "routine": "read_model_change"
      },
      "value_type": "enum",
      "values": [
       "DESIGN",
       "DEFORMED"
+     ]
+    },
+    {
+     "default": null,
+     "default_source": null,
+     "doc": "docs/reference/model-change/contact-pair.md",
+     "match": "substring 'CONTACTPAIR' (written 'contact pair'; checked first, before MATERIAL)",
+     "name": "CONTACTPAIR",
+     "notes": "Numgeo-src 1f48283. The surface pairs of the data lines use small sliding from the beginning of the step on, with the configuration at the beginning of the step as reference; needs SLIDING=SMALL. With CONTACTPAIR the options are split at the commas and compared exactly: any other option -> error (l.102-119). Each data line names one surface pair (data line) of a *Contact pair by its slave and its master surface, in that order: both surfaces defined (l.150-164); exactly one *Contact pair with this pair, error also for the reversed order (l.166-199); DISCRETISATION=IPS without DOUBLEPASS (l.201-213); a pair once per step (l.215-223). A pair that already uses small sliding keeps its reference (warning, src/contacts/contact_.f90:1522-1543). Available in all step types with IPS contact, also *Reduction; error in a step with *PFEM remeshing (src/contacts/contact_.f90:1554-1560).",
+     "required": false,
+     "source": {
+      "anchor": "4dab0462b403ebd1",
+      "file": "src/input/read_model_change_.f90",
+      "line": 98,
+      "routine": "read_model_change"
+     },
+     "value_type": "flag",
+     "values": [
+      "CONTACTPAIR"
+     ]
+    },
+    {
+     "default": null,
+     "default_source": null,
+     "doc": "docs/reference/model-change/contact-pair.md",
+     "match": "exact option 'SLIDING=SMALL' (only read with CONTACTPAIR)",
+     "name": "SLIDING",
+     "notes": "Numgeo-src 1f48283. Required exactly once with CONTACTPAIR (l.120-124). SLIDING=FINITE -> error: a surface pair with small sliding keeps its reference configuration for the rest of the analysis (l.109-113); any other value is an unknown option -> error (l.114-117). Without CONTACTPAIR the option is not read.",
+     "required": false,
+     "source": {
+      "anchor": "0c53306df43a6dd5",
+      "file": "src/input/read_model_change_.f90",
+      "line": 107,
+      "routine": "read_model_change"
+     },
+     "value_type": "enum",
+     "values": [
+      "SMALL"
      ]
     }
    ],
@@ -9546,7 +9623,7 @@
    "dispatch": {
     "anchor": "6f1422ce095a3ad1",
     "file": "src/input/read_step_.f90",
-    "line": 3112,
+    "line": 3133,
     "routine": "read_step"
    },
    "display": "*PFEM remeshing",
@@ -9554,7 +9631,7 @@
    "handler": {
     "anchor": "e05636f4d041303c",
     "file": "src/input/read_step_.f90",
-    "line": 3423,
+    "line": 3444,
     "routine": "read_pfem_remeshing_options"
    },
    "keyword": "*PFEMREMESHING",
@@ -9562,7 +9639,7 @@
     "*PFEMREMESHING",
     "*PFEMREMESHING,"
    ],
-   "notes": "Criteria for a PFEM remeshing during the step (numgeo-src ab1f76b, 03.11.2026): when a criterion is fulfilled after a converged increment, the step is interrupted, the state is written (*PFEM write) and the step continues after the remeshing in a new run (*PFEM read). Every option is option=value; an unknown option, a missing or invalid value and an option given twice are errors (src/input/read_step_.f90:3423-3544). Checked after the step is read (:3593-3662): at least one of INTERVAL, INCREMENTS, QUALITY; QUALITY needs DROP and/or LIMIT; DROP, LIMIT, ELSET only with QUALITY; EXACT only with INTERVAL; MININTERVAL <= INTERVAL; MININCREMENTS <= INCREMENTS; ELSET must exist; *PFEM write in the same step; not in the first step; only *Static, *Dynamic (implicit) and *Transient; not with *Model change, remove/add; not with amplitudes of type LAB-*.",
+   "notes": "Criteria for a PFEM remeshing during the step (numgeo-src ab1f76b, 03.11.2026): when a criterion is fulfilled after a converged increment, the step is interrupted, the state is written (*PFEM write) and the step continues after the remeshing in a new run (*PFEM read). Every option is option=value; an unknown option, a missing or invalid value and an option given twice are errors (src/input/read_step_.f90:3444-3565). Checked after the step is read (:3614-3683): at least one of INTERVAL, INCREMENTS, QUALITY; QUALITY needs DROP and/or LIMIT; DROP, LIMIT, ELSET only with QUALITY; EXACT only with INTERVAL; MININTERVAL <= INTERVAL; MININCREMENTS <= INCREMENTS; ELSET must exist; *PFEM write in the same step; not in the first step; only *Static, *Dynamic (implicit) and *Transient; not with *Model change, remove/add; not with amplitudes of type LAB-*. Not in a step in which an IPS contact pair uses small sliding (SLIDING=SMALL of *Contact pair or *Model change, contact pair in this or an earlier step): the reference configuration belongs to the mesh (src/contacts/contact_.f90:1554-1560; numgeo-src 1f48283).",
    "options": [
     {
      "default": 0.0,
@@ -9580,7 +9657,7 @@
      "source": {
       "anchor": "2438bd1f6d689252",
       "file": "src/input/read_step_.f90",
-      "line": 3456,
+      "line": 3477,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "real",
@@ -9602,7 +9679,7 @@
      "source": {
       "anchor": "95af74e7c66b28ba",
       "file": "src/input/read_step_.f90",
-      "line": 3461,
+      "line": 3482,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "enum",
@@ -9631,7 +9708,7 @@
      "source": {
       "anchor": "47c9976a0bfd41d0",
       "file": "src/input/read_step_.f90",
-      "line": 3472,
+      "line": 3493,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "enum",
@@ -9660,7 +9737,7 @@
      "source": {
       "anchor": "fdc874468d5421a8",
       "file": "src/input/read_step_.f90",
-      "line": 3483,
+      "line": 3504,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "int",
@@ -9682,7 +9759,7 @@
      "source": {
       "anchor": "da929fcb143324b8",
       "file": "src/input/read_step_.f90",
-      "line": 3488,
+      "line": 3509,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "enum",
@@ -9708,7 +9785,7 @@
      "source": {
       "anchor": "a4c658b7e910623f",
       "file": "src/input/read_step_.f90",
-      "line": 3499,
+      "line": 3520,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "real",
@@ -9730,7 +9807,7 @@
      "source": {
       "anchor": "5a878911f4a5e43b",
       "file": "src/input/read_step_.f90",
-      "line": 3505,
+      "line": 3526,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "real",
@@ -9752,7 +9829,7 @@
      "source": {
       "anchor": "1bad40e52d1a1ef6",
       "file": "src/input/read_step_.f90",
-      "line": 3510,
+      "line": 3531,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "name",
@@ -9774,7 +9851,7 @@
      "source": {
       "anchor": "26bad5dbc97f9528",
       "file": "src/input/read_step_.f90",
-      "line": 3514,
+      "line": 3535,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "real",
@@ -9796,7 +9873,7 @@
      "source": {
       "anchor": "4b227a70de78a20c",
       "file": "src/input/read_step_.f90",
-      "line": 3518,
+      "line": 3539,
       "routine": "read_pfem_remeshing_options"
      },
      "value_type": "int",
@@ -10283,7 +10360,7 @@
    "context": "step-procedure",
    "data_lines": [
     {
-     "count_rule": "narg == 4 (405-410)",
+     "count_rule": "narg == 4 (413-417)",
      "description": "strength reduction parameters",
      "fields": [
       {
@@ -10291,9 +10368,9 @@
        "name": "FoS_0",
        "required": true,
        "source": {
-        "anchor": "ecda744640f1af69",
+        "anchor": "642ca861686da977",
         "file": "src/input/read_step_.f90",
-        "line": 412,
+        "line": 433,
         "routine": "read_step"
        },
        "type": "real",
@@ -10304,9 +10381,9 @@
        "name": "dFoS_0",
        "required": true,
        "source": {
-        "anchor": "ecda744640f1af69",
+        "anchor": "41bece93d9f757d7",
         "file": "src/input/read_step_.f90",
-        "line": 412,
+        "line": 434,
         "routine": "read_step"
        },
        "type": "real",
@@ -10317,9 +10394,9 @@
        "name": "dFoS_max",
        "required": true,
        "source": {
-        "anchor": "ecda744640f1af69",
+        "anchor": "2719842e6c93de13",
         "file": "src/input/read_step_.f90",
-        "line": 412,
+        "line": 435,
         "routine": "read_step"
        },
        "type": "real",
@@ -10330,9 +10407,9 @@
        "name": "dFoS_min",
        "required": true,
        "source": {
-        "anchor": "ecda744640f1af69",
+        "anchor": "d9eb7fa4921d713d",
         "file": "src/input/read_step_.f90",
-        "line": 412,
+        "line": 436,
         "routine": "read_step"
        },
        "type": "real",
@@ -10343,7 +10420,7 @@
      "source": {
       "anchor": "32f36b0754e85e72",
       "file": "src/input/read_step_.f90",
-      "line": 404,
+      "line": 411,
       "routine": "read_step"
      }
     }
@@ -10351,7 +10428,7 @@
    "dispatch": {
     "anchor": "e496e01a2d1a3fc3",
     "file": "src/input/read_step_.f90",
-    "line": 396,
+    "line": 400,
     "routine": "read_step"
    },
    "display": "*Reduction",
@@ -10359,7 +10436,7 @@
    "handler": {
     "anchor": "e496e01a2d1a3fc3",
     "file": "src/input/read_step_.f90",
-    "line": 396,
+    "line": 400,
     "routine": "read_step"
    },
    "keyword": "*REDUCTION",
@@ -10367,7 +10444,7 @@
     "*REDUCTION",
     "*REDUCTION,<ignored>"
    ],
-   "notes": "public_version -> error (396-400). Sets calc%reduction (402); dFoS=dFoS0 (414); dt0=1, t_end=maxInc, dtmin=1/maxInc, dtmax=1 (415-418); FoS=FoS_0-dFoS_0 (420); all materials reduction_step=istep (424-426); extrapolation FOS-LINEAR (429); U controls modify (432-439); maxIter=100 unless MAXITER given (443). Runtime dt=1 always (src/fem/fem_global_estimate_current_dt_.f90:71-74). Options of the line (line numbers of the uncommitted numgeo-src of 14.11.2026): read_reduction_options (src/input/read_step_.f90:3909-4006, called at 450) evaluates the text after the first comma only if one comma token is exactly ARC-LENGTH; without it the options are ignored. ARC-LENGTH: arc-length control of the factor of safety; the .sta rows get the column Ctrl (F/A) and the step ends with a summary, the history CSV gets the columns inc and control.",
+   "notes": "public_version -> error (402-406). Sets calc%reduction (408); the options of the line are read first (read_reduction_options, 409); data line: four entries (413-417), read as numbers (419-424: error if the read fails); dFoS=dFoS0 (438); dt0=1, t_end=maxInc, dtmin=1/maxInc, dtmax=1 (439-442); FoS=FoS_0-dFoS_0 without arc-length control (444-446); all materials reduction_step=istep (450-452); extrapolation FOS-LINEAR (455); U controls modify (458-465); maxIter=100 unless MAXITER given (469). Runtime dt=1 always (src/fem/fem_global_estimate_current_dt_.f90:71-74). Options of the line: read_reduction_options (src/input/read_step_.f90:3931-4025) evaluates the text after the first comma only if one comma token is exactly ARC-LENGTH; without it the options are ignored. ARC-LENGTH: arc-length control of the factor of safety; the four values of the data line must then be finite and positive with dFoS_min <= dFoS_0 <= dFoS_max (425-432), FoS_0 is used directly for the first increment; the .sta rows get the column Ctrl (F/A) and the step ends with a summary, the history CSV gets the columns inc and control. Without a confirmed plateau the limiting factor of safety is undetermined (warning and line in the .sta, src/fem/arc_length_.f90:1141-1145,1170-1172). Line numbers: numgeo-src e15b379 of 18.11.2026.",
    "options": [
     {
      "default": null,
@@ -10380,12 +10457,12 @@
      "doc": "docs/reference/step/reduction.md",
      "match": "exact comma token 'ARC-LENGTH' of the text after the first comma (parse_string_to_keywords)",
      "name": "ARC-LENGTH",
-     "notes": "Arc-length control of the factor of safety (safety%arc%active, 3931). Without this token the options of the line are not evaluated (3926-3929, as in earlier versions); with it every other token must be <name>=<value> with one of the options below, else error (3942, 3995). Needs *Solver, Pardiso or MUMPS without iterative, no *Accelerator, type=anderson and no NOCUTBACK in the *Step line: error at the start of the step (src/fem/arc_length_.f90:171-211, arc_length_initialize). Line numbers: uncommitted numgeo-src of 14.11.2026.",
+     "notes": "Arc-length control of the factor of safety (safety%arc%active, 3955). Without this token the options of the line are not evaluated (3945-3953, as in earlier versions); with it every other token must be <name>=<value> with one of the options below, else error (3965-3969, 4013-4017), and the data line needs finite positive values with dFoS_min <= dFoS_0 <= dFoS_max (425-432). Needs *Solver, Pardiso or MUMPS without iterative, no *Accelerator, type=anderson, no NOCUTBACK in the *Step line and MAXITER >= 1, MAXITER >= MINITER (206-209): error at the start of the step (src/fem/arc_length_.f90:163-209, arc_length_initialize). Line numbers: numgeo-src e15b379 of 18.11.2026.",
      "required": false,
      "source": {
       "anchor": "f7c0ec271cdd6950",
       "file": "src/input/read_step_.f90",
-      "line": 3923,
+      "line": 3947,
       "routine": "read_reduction_options"
      },
      "value_type": "flag",
@@ -10402,12 +10479,12 @@
      "doc": "docs/reference/step/reduction.md",
      "match": "exact name before '=' of a comma token, only together with ARC-LENGTH; value read list-directed (integer: digits only)",
      "name": "ARC-INCREMENTS",
-     "notes": "Number of accepted arc-length increments after which the step ends. Value digits only and >= 1, else error (3976-3983); without a value error (3942). Read only together with ARC-LENGTH. Line numbers: uncommitted numgeo-src of 14.11.2026.",
+     "notes": "Number of accepted arc-length increments after which the step ends. Value digits only and >= 1, else error (4003-4011); without a value error (3965-3969). Read only together with ARC-LENGTH. Line numbers: numgeo-src e15b379 of 18.11.2026.",
      "required": false,
      "source": {
       "anchor": "7ba699da6d6bbf9a",
       "file": "src/input/read_step_.f90",
-      "line": 3976,
+      "line": 4003,
       "routine": "read_reduction_options"
      },
      "value_type": "int",
@@ -10422,14 +10499,14 @@
       "routine": "reduction_arc_length_ty"
      },
      "doc": "docs/reference/step/reduction.md",
-     "match": "exact name before '=' of a comma token, only together with ARC-LENGTH; value read list-directed (real)",
+     "match": "exact name before '=' of a comma token, only together with ARC-LENGTH; value read list-directed (real) if it has no other characters than 0-9 . + - D E",
      "name": "MAX-DISPLACEMENT",
-     "notes": "End of the step when the largest displacement since the start of the step reaches the value (default: not active). Value > 0, else error (3949-3954); without a value error (3942). Read only together with ARC-LENGTH. Line numbers: uncommitted numgeo-src of 14.11.2026.",
+     "notes": "End of the step when the largest displacement since the start of the step reaches the value (default: not active; it applies from the first accepted increment on). Value: digits, sign, point and exponent letter D or E only, finite and > 0, else error (3973-3990); without a value error (3965-3969). Read only together with ARC-LENGTH. Line numbers: numgeo-src e15b379 of 18.11.2026.",
      "required": false,
      "source": {
       "anchor": "7fe39dfdf3d29e65",
       "file": "src/input/read_step_.f90",
-      "line": 3949,
+      "line": 3984,
       "routine": "read_reduction_options"
      },
      "value_type": "real",
@@ -10444,14 +10521,14 @@
       "routine": "reduction_arc_length_ty"
      },
      "doc": "docs/reference/step/reduction.md",
-     "match": "exact name before '=' of a comma token, only together with ARC-LENGTH; value read list-directed (real)",
+     "match": "exact name before '=' of a comma token, only together with ARC-LENGTH; value read list-directed (real) if it has no other characters than 0-9 . + - D E",
      "name": "PLATEAU-TOLERANCE",
-     "notes": "Plateau: largest difference of the mean factor of safety of the displacement windows (u/4,u/2] and (u/2,u], relative to the mean of the upper window. Value > 0, else error (3957-3962); without a value error (3942). Read only together with ARC-LENGTH. Line numbers: uncommitted numgeo-src of 14.11.2026.",
+     "notes": "Plateau: largest difference of the mean factor of safety of the displacement windows (u/4,u/2] and (u/2,u], relative to the mean of the upper window; also the tolerance of the relative correction |dFoS|/FoS of an arc-length increment. Value: digits, sign, point and exponent letter D or E only, finite and > 0, else error (3973-3990); without a value error (3965-3969). Read only together with ARC-LENGTH. Line numbers: numgeo-src e15b379 of 18.11.2026.",
      "required": false,
      "source": {
       "anchor": "157318b67a27bc7a",
       "file": "src/input/read_step_.f90",
-      "line": 3957,
+      "line": 3986,
       "routine": "read_reduction_options"
      },
      "value_type": "real",
@@ -10468,12 +10545,12 @@
      "doc": "docs/reference/step/reduction.md",
      "match": "exact name before '=' of a comma token, only together with ARC-LENGTH; value read list-directed (integer: digits only)",
      "name": "PLATEAU-INCREMENTS",
-     "notes": "Plateau: smallest number of accepted arc-length increments in each displacement window. Value digits only and >= 2, else error (3965-3973); without a value error (3942). Read only together with ARC-LENGTH. Line numbers: uncommitted numgeo-src of 14.11.2026.",
+     "notes": "Plateau: smallest number of accepted arc-length increments in each displacement window. Value digits only and >= 2, else error (3992-4001); without a value error (3965-3969). Read only together with ARC-LENGTH. Line numbers: numgeo-src e15b379 of 18.11.2026.",
      "required": false,
      "source": {
       "anchor": "ebc27622c00c09c0",
       "file": "src/input/read_step_.f90",
-      "line": 3965,
+      "line": 3992,
       "routine": "read_reduction_options"
      },
      "value_type": "int",
@@ -10488,14 +10565,14 @@
       "routine": "reduction_arc_length_ty"
      },
      "doc": "docs/reference/step/reduction.md",
-     "match": "exact name before '=' of a comma token, only together with ARC-LENGTH; value read list-directed (real)",
+     "match": "exact name before '=' of a comma token, only together with ARC-LENGTH; value read list-directed (real) if it has no other characters than 0-9 . + - D E",
      "name": "PERTURBATION",
-     "notes": "Relative perturbation of the factor of safety for the pseudo-load dr/dFoS. Value > 0, else error (3986-3991); without a value error (3942). Read only together with ARC-LENGTH. Line numbers: uncommitted numgeo-src of 14.11.2026.",
+     "notes": "Relative perturbation of the factor of safety for the pseudo-load dr/dFoS. Value: digits, sign, point and exponent letter D or E only, finite and > 0, else error (3973-3990); without a value error (3965-3969). Read only together with ARC-LENGTH. Line numbers: numgeo-src e15b379 of 18.11.2026.",
      "required": false,
      "source": {
       "anchor": "e673b1128acb68ea",
       "file": "src/input/read_step_.f90",
-      "line": 3986,
+      "line": 3988,
       "routine": "read_reduction_options"
      },
      "value_type": "real",
@@ -13264,9 +13341,9 @@
       "routine": "contact_discretisation_EBM"
      },
      "source": {
-      "anchor": "1be869491f79a188",
+      "anchor": "db1b526841df5fb9",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 85,
+      "line": 89,
       "routine": "read_contact_pairing"
      }
     },
@@ -13290,7 +13367,7 @@
      "source": {
       "anchor": "ef4aaa6131caf8d5",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 86,
+      "line": 90,
       "routine": "read_contact_pairing"
      }
     },
@@ -13314,7 +13391,7 @@
      "source": {
       "anchor": "f4fbe41c49aed582",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 99,
+      "line": 103,
       "routine": "read_contact_pairing"
      }
     },
@@ -13338,7 +13415,7 @@
      "source": {
       "anchor": "62cbe46015231c3f",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 95,
+      "line": 99,
       "routine": "read_contact_pairing"
      }
     },
@@ -13360,9 +13437,9 @@
       "routine": "contact_discretisation_IPS"
      },
      "source": {
-      "anchor": "1d181ca354a591d0",
+      "anchor": "4a462dd9ffe9e7cc",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 90,
+      "line": 94,
       "routine": "read_contact_pairing"
      }
     },
@@ -13386,7 +13463,7 @@
      "source": {
       "anchor": "1f7c8dee949c7dd4",
       "file": "src/input/read_contact_pairing_.f90",
-      "line": 91,
+      "line": 95,
       "routine": "read_contact_pairing"
      }
     }
@@ -57007,8 +57084,8 @@
        "PLATEAU-TOLERANCE": 0.002
       },
       "option": "ARC-LENGTH (exact token), then MAX-DISPLACEMENT=, PLATEAU-TOLERANCE=, PLATEAU-INCREMENTS=, ARC-INCREMENTS=, PERTURBATION=",
-      "requires": "*Solver, Pardiso or MUMPS without iterative; no *Accelerator, type=anderson; no NOCUTBACK (error at the start of the step)",
-      "source": "src/input/read_step_.f90:3909-4006; src/fem/arc_length_.f90:152-327 (uncommitted numgeo-src of 14.11.2026)"
+      "requires": "*Solver, Pardiso or MUMPS without iterative; no *Accelerator, type=anderson; no NOCUTBACK; MAXITER >= 1 and MAXITER >= MINITER (error at the start of the step); data line: finite positive values with dFoS_min <= dFoS_0 <= dFoS_max (error when the input is read)",
+      "source": "src/input/read_step_.f90:425-432,3931-4025; src/fem/arc_length_.f90:144-322 (numgeo-src e15b379)"
      },
      "count_rule": "narg == 4",
      "data_line_fields": [
@@ -57018,7 +57095,7 @@
       "dFoS_min [-]"
      ],
      "defaults_set_by_solver": {
-      "FoS(start)": "FoS_0 - dFoS_0",
+      "FoS(start)": "FoS_0 - dFoS_0 (FoS_0 with ARC-LENGTH)",
       "control%u": "modify: max_inc_ratio=1e3, max_energy_ratio=1e-12, max_flux_ratio=1e-3, zero_solution_increment=1e-6, zero_unbalance_energy=1e-6, relaxation=1",
       "dt0": 1.0,
       "dtmax": 1.0,
@@ -57026,7 +57103,7 @@
       "extrapolation": "FOS-LINEAR",
       "material reduction_step": "istep (all materials)",
       "maxIter": "100 unless MAXITER",
-      "source": "src/input/read_step_.f90:414-445",
+      "source": "src/input/read_step_.f90:438-471",
       "t_end": "maxInc"
      },
      "doc": "docs/reference/step/reduction.md",
@@ -57038,7 +57115,7 @@
      "source": {
       "anchor": "e496e01a2d1a3fc3",
       "file": "src/input/read_step_.f90",
-      "line": 394,
+      "line": 400,
       "routine": "read_step"
      }
     },
